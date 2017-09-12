@@ -33,7 +33,7 @@
                 android:weightSum="3">
 
                 <LinearLayout
-                    android:id="@+id/in_training_program_storage"
+                    android:id="@+id/in_training_program_library"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -102,7 +102,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginBottom="10dp"
                         android:gravity="center"
-                        android:text="@string/title_exercise_storage"
+                        android:text="@string/title_exercise_library"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="15sp" />
                 </LinearLayout>
