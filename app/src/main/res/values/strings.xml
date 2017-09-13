@@ -5,7 +5,10 @@
     <string name="title_diet">饮食</string>
     <string name="title_training_record">训练日志</string>
     <string name="title_training_program">训练方案</string>
+
     <string name="title_training_today">今日训练</string>
+    <string name="text_start_training">开始今日的训练</string>
+
     <string name="title_exercise_library">动作库</string>
     <string name="year">年</string>
     <string name="month">月</string>

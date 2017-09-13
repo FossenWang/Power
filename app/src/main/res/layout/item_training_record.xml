@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimaryLight"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingBottom="8dp"
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp"
+    android:paddingTop="8dp">
+
+    <ImageButton
+        android:id="@+id/imageExercise"
+        android:layout_width="72dp"
+        android:layout_height="54dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="16dp">
+
+        <TextView
+            android:id="@+id/textExercise"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Exercise"
+            android:textColor="@color/textBlack"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/textSetLoadRep"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="set: load × reps"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+</LinearLayout>

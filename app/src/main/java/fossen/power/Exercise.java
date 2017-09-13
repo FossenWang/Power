@@ -11,7 +11,7 @@ public class Exercise {
     private String type;//动作类别：自重，器械，力量举等
     private int icon;//图标
 
-    //设置和返回动作名，类别，图标，最大次，最小次
+    //设置和返回动作名，类别，图标
     public void setName(String str){
         name = str;
     }
