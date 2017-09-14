@@ -15,7 +15,7 @@ import fossen.power.OneSet;
 import fossen.power.Sets;
 import fossen.power.TrainingDay;
 import fossen.power.R;
-import fossen.power.training_record.TrainingRecordAdapter;
+import fossen.power.training_log.TrainingRecordAdapter;
 
 public class TrainingTodayActivity extends AppCompatActivity {
 

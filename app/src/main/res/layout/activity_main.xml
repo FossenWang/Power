@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,7 +8,6 @@
     tools:context="fossen.power.MainActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_training"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="?attr/colorPrimary"
@@ -78,7 +78,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginBottom="10dp"
                         android:gravity="center"
-                        android:text="@string/title_training_record"
+                        android:text="@string/title_training_log"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="15sp" />
                 </LinearLayout>

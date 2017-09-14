@@ -1,4 +1,4 @@
-package fossen.power.training_record;
+package fossen.power.training_log;
 
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -3,7 +3,7 @@
     <string name="title_home">主页</string>
     <string name="title_training">训练</string>
     <string name="title_diet">饮食</string>
-    <string name="title_training_record">训练日志</string>
+    <string name="title_training_log">训练日志</string>
     <string name="title_training_program">训练方案</string>
 
     <string name="title_training_today">今日训练</string>
