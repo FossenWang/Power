@@ -10,7 +10,8 @@
         android:layout_height="48dp"
         android:gravity="center_vertical"
         android:paddingEnd="16dp"
-        android:paddingStart="32dp"
+        android:paddingStart="48dp"
         android:text="Exrecise name"
+        android:textColor="@color/textBlack"
         android:textSize="17sp" />
 </LinearLayout>

@@ -10,6 +10,7 @@
         android:layout_height="48dp"
         android:gravity="center_vertical"
         android:paddingEnd="16dp"
-        android:paddingStart="16dp"
-        android:textSize="17sp" />
+        android:paddingStart="32dp"
+        android:textColor="@color/textBlack"
+        android:textSize="21sp" />
 </LinearLayout>

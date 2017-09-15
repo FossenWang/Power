@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import fossen.power.exercise_library.ExerciseLibraryActivity;
 import fossen.power.training_program_library.TrainingProgramLibraryActivity;
 import fossen.power.training_today.TrainingTodayActivity;
 
@@ -31,6 +32,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), TrainingProgramLibraryActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //设置ExerciseLibraryActivity的入口
+        View inExerciseLibrary = findViewById(R.id.in_exercise_library);
+        inExerciseLibrary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), ExerciseLibraryActivity.class);
                 startActivity(intent);
             }
         });

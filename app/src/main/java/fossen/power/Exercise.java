@@ -11,6 +11,7 @@ public class Exercise {
     private String type;//动作类别：自重，器械，力量举等
     private int icon;//图标
 
+    public Exercise(){};
     public Exercise(String name){
         this.name = name;
     }
