@@ -8,7 +8,7 @@
     tools:context="fossen.power.MainActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_exercise_lib"
+        android:id="@+id/toolbar_el"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="?attr/colorPrimary"
