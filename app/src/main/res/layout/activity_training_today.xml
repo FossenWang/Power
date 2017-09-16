@@ -8,7 +8,7 @@
     tools:context="fossen.power.training_today.TrainingTodayActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_training_today"
+        android:id="@+id/toolbar_tt"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="?attr/colorPrimary"
@@ -21,7 +21,7 @@
         android:layout_height="match_parent">
 
         <ListView
-            android:id="@+id/list_training_today"
+            android:id="@+id/list_tt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@color/colorPrimaryLight"

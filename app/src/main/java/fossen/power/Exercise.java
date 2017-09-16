@@ -10,17 +10,25 @@ public class Exercise {
     private String name;//动作名称
     private String type;//动作类别：自重，器械，力量举等
     private int icon;//图标
+    private String muscle;//锻炼肌群
 
     public Exercise(){};
-    public Exercise(String name){
+    public Exercise(String name,String muscle){
         this.name = name;
+        this.muscle = muscle;
     }
-    //设置和返回动作名，类别，图标
+    //设置和返回动作名，类别，图标,锻炼肌群
     public void setName(String str){
         name = str;
     }
     public String getName(){
         return name;
+    }
+    public void setMuscle(String muscle) {
+        this.muscle = muscle;
+    }
+    public String getMuscle() {
+        return muscle;
     }
     public void setType(String str){
         type = str;

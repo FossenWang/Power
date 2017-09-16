@@ -6,12 +6,21 @@
 
     <TextView
         android:id="@+id/text_el_exercise"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:gravity="center_vertical"
         android:paddingEnd="16dp"
         android:paddingStart="48dp"
         android:text="Exrecise name"
         android:textColor="@color/textBlack"
-        android:textSize="17sp" />
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/text_el_muscle"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center|end"
+        android:paddingEnd="16dp"
+        android:text="muscle"
+        android:textSize="13sp" />
 </LinearLayout>

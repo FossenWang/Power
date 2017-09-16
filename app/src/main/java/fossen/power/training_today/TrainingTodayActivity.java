@@ -25,7 +25,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_training_today);
 
         //设置返回键
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_training_today);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_tt);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -39,7 +39,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
         TrainingDay trainingToday = createTrainingDay();
 
         //给listView添加headerView，用于显示训练的基本信息
-        ListView listTrainingToday = (ListView) findViewById(R.id.list_training_today);
+        ListView listTrainingToday = (ListView) findViewById(R.id.list_tt);
         View header = getLayoutInflater().inflate(R.layout.header_training_record,null);
         listTrainingToday.addHeaderView(header);
         TextView trainingTitle = (TextView) findViewById(R.id.text_htr_title);

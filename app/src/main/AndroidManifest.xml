@@ -18,11 +18,12 @@
         </activity>
         <activity
             android:name=".training_program_library.TrainingProgramLibraryActivity"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".training_today.TrainingTodayActivity"
-            android:parentActivityName=".MainActivity"></activity>
-        <activity android:name=".exercise_library.ExerciseLibraryActivity"></activity>
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".exercise_library.ExerciseLibraryActivity" />
+        <activity android:name=".exercise_library.ExerciseFormActivity"></activity>
     </application>
 
 </manifest>

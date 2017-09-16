@@ -19,8 +19,8 @@ import fossen.power.training_today.TrainingTodayActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static String dbName="exercise_library.db";//数据库的名字
-    private static String DATABASE_PATH="/data/data/fossen.power/databases/";
+    private static String dbName="exercise_library.db";//数据库的名字
+    private static String dbPath ="/data/data/fossen.power/databases/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean checkDataBase() {
         SQLiteDatabase checkDB = null;
         try {
-            String databaseFilename = DATABASE_PATH + dbName;
+            String databaseFilename = dbPath + dbName;
             checkDB = SQLiteDatabase.openDatabase(databaseFilename, null,
                     SQLiteDatabase.OPEN_READONLY);
         } catch (SQLiteException e) {
@@ -86,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
 
     //复制数据库到文件夹
     public void copyDataBase() throws IOException{
-        String databaseFilename = DATABASE_PATH+dbName;
-        File dir = new File(DATABASE_PATH);
+        String databaseFilename = dbPath +dbName;
+        File dir = new File(dbPath);
         if(!dir.exists())//判断文件夹是否存在，不存在就新建一个
             dir.mkdir();
         FileOutputStream output = null;

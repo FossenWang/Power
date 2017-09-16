@@ -90,16 +90,21 @@ public class ExerciseLibraryAdapter extends BaseExpandableListAdapter {
     //取得显示给定分组给定子位置的数据用的视图
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        TextView item_text;
+        TextView text_exercise;
+        TextView text_muscle;
         if(convertView == null){
             convertView = LayoutInflater.from(mContext).inflate(
                     R.layout.item_exerlib_item, parent, false);
-            item_text = (TextView) convertView.findViewById(R.id.text_el_exercise);
-            convertView.setTag(item_text);
+            text_exercise = (TextView) convertView.findViewById(R.id.text_el_exercise);
+            text_muscle = (TextView) convertView.findViewById(R.id.text_el_muscle);
+            convertView.setTag(text_exercise);
+            convertView.setTag(text_muscle);
         }else{
-            item_text = (TextView) convertView.getTag();
+            text_exercise = (TextView) convertView.getTag();
+            text_muscle = (TextView) convertView.getTag();
         }
-        item_text.setText(exerList.get(groupPosition).get(childPosition).getName());
+        text_exercise.setText(exerList.get(groupPosition).get(childPosition).getName());
+        text_muscle.setText(exerList.get(groupPosition).get(childPosition).getMuscle());
         return convertView;
     }
 }

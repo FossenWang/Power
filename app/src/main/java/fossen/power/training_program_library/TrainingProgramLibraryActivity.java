@@ -67,15 +67,6 @@ public class TrainingProgramLibraryActivity extends AppCompatActivity {
         tp2.setDate(2017,8,16);
         tpList.add(tp2);
 
-
-        tpList.add(tp1);
-        tpList.add(tp1);
-        tpList.add(tp1);
-        tpList.add(tp1);
-        tpList.add(tp1);
-        tpList.add(tp1);
-        tpList.add(tp1);
-        tpList.add(tp1);
         return tpList;
     }
 }
