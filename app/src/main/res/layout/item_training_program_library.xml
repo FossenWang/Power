@@ -28,7 +28,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:layout_marginStart="16dp"
-            android:background="@color/colorPrimaryLight"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="目标: 增肌    循环: 20/30天"
@@ -43,7 +42,7 @@
         android:layout_gravity="center|end"
         android:layout_marginEnd="16dp"
         android:background="@drawable/button_2"
-        android:textColor="@color/textWhite"
+        android:textColor="@color/text_button_itpl"
         android:textSize="15sp" />
 
 </FrameLayout>

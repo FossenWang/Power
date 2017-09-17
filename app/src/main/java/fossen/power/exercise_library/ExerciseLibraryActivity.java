@@ -42,20 +42,18 @@ public class ExerciseLibraryActivity extends AppCompatActivity {
 
         //从数据库导入动作分类数据
         ELDBOpenHelper eldbOpenHelper = new ELDBOpenHelper(this);
+        eldbOpenHelper.getWritableDatabase().close();
         final ArrayList<ArrayList<Exercise>> exerLists = eldbOpenHelper.inputExercises();
 
         //设置配适器
         ExpandableListView expListView = (ExpandableListView) findViewById(R.id.explist_el);
         ExerciseLibraryAdapter elAdapter = new ExerciseLibraryAdapter(sort,exerLists,this);
         expListView.setAdapter(elAdapter);
+
         //为列表设置点击事件
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                /*Toast.makeText(ExerciseLibraryActivity.this,
-                        "你点击了：" + exerLists.get(groupPosition).get(childPosition).getName(),
-                        Toast.LENGTH_SHORT).show();
-                */
                 //进入动作形式Activity
                 Intent intent = new Intent(ExerciseLibraryActivity.this,ExerciseFormActivity.class);
                 intent.putExtra("name",exerLists.get(groupPosition).get(childPosition).getName());

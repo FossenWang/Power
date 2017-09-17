@@ -19,7 +19,8 @@ import fossen.power.training_today.TrainingTodayActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static String dbName="exercise_library.db";//数据库的名字
+    private static String eldbName="exercise_library.db";//动作数据库的名字
+    private static String tpdbName="training_program.db";//训练方案数据库的名字
     private static String dbPath ="/data/data/fossen.power/databases/";
 
     @Override
@@ -57,23 +58,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //判断数据库是否存在
-        boolean dbExist = checkDataBase();
+        /*/判断数据库是否存在
+        boolean dbExist = checkDataBase(dbPath + eldbName);
         if (dbExist) {
         } else {//不存在就把raw里的数据库写入手机
             try {
-                copyDataBase();
+                copyDataBase(dbPath, eldbName);
             } catch (IOException e) {
                 throw new Error("Error copying database");
             }
         }
+        dbExist = checkDataBase(dbPath + tpdbName);
+        if (dbExist) {
+        } else {//不存在就把raw里的数据库写入手机
+            try {
+                copyDataBase(dbPath, tpdbName);
+            } catch (IOException e) {
+                throw new Error("Error copying database");
+            }
+        }*/
     }
 
-    //检查数据库是否存在，返回布尔值
-    public boolean checkDataBase() {
+    /*检查数据库是否存在，返回布尔值
+    public boolean checkDataBase(String databaseFilename) {
         SQLiteDatabase checkDB = null;
         try {
-            String databaseFilename = dbPath + dbName;
             checkDB = SQLiteDatabase.openDatabase(databaseFilename, null,
                     SQLiteDatabase.OPEN_READONLY);
         } catch (SQLiteException e) {
@@ -85,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //复制数据库到文件夹
-    public void copyDataBase() throws IOException{
+    public void copyDataBase(String dbPath, String dbName) throws IOException{
         String databaseFilename = dbPath +dbName;
         File dir = new File(dbPath);
         if(!dir.exists())//判断文件夹是否存在，不存在就新建一个
@@ -111,5 +120,5 @@ public class MainActivity extends AppCompatActivity {
         }catch(IOException e){
             e.printStackTrace();
         }
-    }
+    }*/
 }

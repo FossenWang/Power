@@ -10,7 +10,7 @@ import java.util.Calendar;
 public class TrainingProgram {
     //训练日列表
     private ArrayList<TrainingDay> tList = new ArrayList<TrainingDay>();
-    private String title;//标题
+    private String name;//方案名
     private String note;//说明
     private String goal;//训练目的
     //方案启用时的日期
@@ -24,6 +24,12 @@ public class TrainingProgram {
     //向列表尾端添加训练日
     public void addTrainingDay(TrainingDay trainingDay){
         tList.add(trainingDay);
+    }
+    //添加多个空训练日，记录循环周期
+    public void addTrainingDay(int circle){
+        for (int i = 0; i < circle;i++ ) {
+            tList.add(new TrainingDay());
+        }
     }
     //将训练日插入列表中的某位置
     public void addTrainingDay(int index,TrainingDay trainingDay){
@@ -46,12 +52,12 @@ public class TrainingProgram {
         return tList.size();
     }
 
-    //存取标题，目标，说明，开始日期，总天数,开始与否等信息
-    public void setTitle(String str){
-        title = str;
+    //存取方案名，目标，说明，开始日期，总天数,开始与否等信息
+    public void setName(String str){
+        name = str;
     }
-    public String getTitle(){
-        return title;
+    public String getName(){
+        return name;
     }
     public void setGoal(String goal) {
         this.goal = goal;

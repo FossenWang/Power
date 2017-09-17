@@ -51,15 +51,27 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
         Button button = (Button) convertView.findViewById(R.id.button_itpl);
 
         TrainingProgram program = pList.get(position);
-        text_title.setText(program.getTitle());
-        if (program.isStart()) {
+        final boolean start = program.isStart();
+        text_title.setText(program.getName());
+        if (start) {
             text_cg.setText("目标: "+program.getGoal()+"    循环: "
                     +program.countNumberOfDays()+"/"+program.circleDays()+"天");
-            button.setText("停用");
+            button.setText("使用中");
+            button.setSelected(start);
         }else {
             text_cg.setText("目标: "+program.getGoal()+"    循环: 0/"+program.circleDays()+"天");
-            button.setText("启用");
+            button.setText("未使用");
+            button.setSelected(start);
         }
+
+        /*button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(start){
+
+                }
+            }
+        });*/
         return convertView;
     }
 }
