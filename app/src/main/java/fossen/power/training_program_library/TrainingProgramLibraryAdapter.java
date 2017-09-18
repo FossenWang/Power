@@ -1,6 +1,7 @@
 package fossen.power.training_program_library;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,28 +43,36 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        convertView =
-                LayoutInflater.from(mContext).inflate(
-                        R.layout.item_training_program_library,parent,false);
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        if(convertView == null){
+            convertView =
+                    LayoutInflater.from(mContext).inflate(
+                            R.layout.item_training_program_library,parent,false);
+        }
         TextView text_title = (TextView) convertView.findViewById(R.id.text_itpl_title);
         TextView text_cg = (TextView) convertView.findViewById(R.id.text_itpl_circle_goal);
         Button button = (Button) convertView.findViewById(R.id.button_itpl);
 
-        TrainingProgram program = pList.get(position);
+        final TrainingProgram program = pList.get(position);
         final boolean start = program.isStart();
         text_title.setText(program.getName());
         if (start) {
-            text_cg.setText("目标: "+program.getGoal()+"    循环: "
-                    +program.countNumberOfDays()+"/"+program.circleDays()+"天");
+            text_cg.setText(program.getCircleGoal());
             button.setText("使用中");
             button.setSelected(start);
         }else {
-            text_cg.setText("目标: "+program.getGoal()+"    循环: 0/"+program.circleDays()+"天");
+            text_cg.setText(program.getCircleGoal());
             button.setText("未使用");
             button.setSelected(start);
         }
 
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(),TrainingProgramContentActivity.class);
+                intent.putExtra("id",program.)
+            }
+        });
         /*button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

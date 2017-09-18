@@ -12,7 +12,9 @@ public class Sets {
     //组的列表，训练记录中使用
     private ArrayList<Exercise> exerciseList =  new ArrayList<Exercise>();
     //第一个为首选动作，其余为备选动作，最多5个
+    private String repmax;
     private int rest;//休息时间，单位s
+    private String structure;//组结构
 
     //在末尾添加组
     public void addSet(OneSet set){
@@ -68,6 +70,18 @@ public class Sets {
     }
 
     //添加，获取，移除，替换动作
+
+    public void setExerciseList(ArrayList<Exercise> exerciseList) {
+        this.exerciseList = exerciseList;
+    }
+    public void setExerciseList(String[] exerciseIdList){
+        for(String id : exerciseIdList){
+            addExercise(id);
+        }
+    }
+    public void addExercise(String id){
+        exerciseList.add(new Exercise(id));
+    }
     public void addExercise(Exercise exercise){
         exerciseList.add(exercise);
     }
@@ -81,11 +95,23 @@ public class Sets {
         return exerciseList.set(index,exercise);
     }
 
-    //设置和返回休息时间
+    //设置和返回休息时间,RM，组结构
     public void setRest(int rest) {
         this.rest = rest;
     }
     public int getRest() {
         return rest;
+    }
+    public void setRepmax(String repmax){
+        this.repmax = repmax;
+    }
+    public String getRepmax(){
+        return repmax;
+    }
+    public void setStructure(String structure) {
+        this.structure = structure;
+    }
+    public String getStructure() {
+        return structure;
     }
 }

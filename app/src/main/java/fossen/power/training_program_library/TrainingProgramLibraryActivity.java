@@ -34,7 +34,6 @@ public class TrainingProgramLibraryActivity extends AppCompatActivity {
 
         //加载训练方案列表
         TPDBOpenHelper tpdbOpenHelper = new TPDBOpenHelper(this);
-        tpdbOpenHelper.getWritableDatabase().close();
         ArrayList<TrainingProgram> programs = tpdbOpenHelper.inputTrainingProgramList();
 
         //绑定配适器
@@ -43,37 +42,4 @@ public class TrainingProgramLibraryActivity extends AppCompatActivity {
                 new TrainingProgramLibraryAdapter(programs,this);
         listView.setAdapter(tplAdapter);
     }
-
-    /*public ArrayList<TrainingProgram> inputProgramList(){
-
-        ArrayList<TrainingProgram> tpList = new ArrayList<TrainingProgram>();
-        TrainingProgram tp = new TrainingProgram();
-
-        ArrayList<TrainingProgram> tpList = new ArrayList<TrainingProgram>();
-        TrainingProgram tp1 = new TrainingProgram();
-        tp1.setName("推拉腿式训练");
-        tp1.setGoal("增肌");
-        tp1.addTrainingDay(new TrainingDay());
-        tp1.addTrainingDay(new TrainingDay());
-        tp1.addTrainingDay(new TrainingDay());
-        tp1.addTrainingDay(new TrainingDay());
-        tp1.addTrainingDay(new TrainingDay());
-        tp1.addTrainingDay(new TrainingDay());
-        tp1.addTrainingDay(new TrainingDay());
-        tpList.add(tp1);
-
-        TrainingProgram tp2 = new TrainingProgram();
-        tp2.setName("入门式训练");
-        tp2.setGoal("增肌");
-        tp2.addTrainingDay(new TrainingDay());
-        tp2.addTrainingDay(new TrainingDay());
-        tp2.addTrainingDay(new TrainingDay());
-        tp2.addTrainingDay(new TrainingDay());
-        tp2.addTrainingDay(new TrainingDay());
-        tp2.setStart(true);
-        tp2.setDate(2017,8,16);
-        tpList.add(tp2);
-
-        return tpList;
-    }*/
 }

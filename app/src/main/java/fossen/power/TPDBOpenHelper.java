@@ -68,7 +68,32 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
             tp.setNote(note);
             programs.add(tp);
         }
-            cursor.close();
+        cursor.close();
         return programs;
+    }
+
+    //从数据库导入某个方案的全部数据
+    public TrainingProgram inputTrainingProgram(int id, int circle, String[] day_name){
+        TrainingProgram tp = new TrainingProgram();
+        TrainingDay td;
+        Sets sets;
+        SQLiteDatabase tpdb = this.getReadableDatabase();
+        for(int day = 1; day<=circle ; ){
+            Cursor cursor = tpdb.rawQuery("SELECT * FROM "+id+" ORDER BY order WHERE day="+day,null);
+            td = new TrainingDay();
+            td.setTitle(day_name[day-1]);
+            while (cursor.moveToNext()) {
+                sets = new Sets();
+                sets.addSet(cursor.getInt(cursor.getColumnIndex("sets")));
+                sets.setExerciseList(cursor.getString(cursor.getColumnIndex("exercise")).split(","));
+                sets.setRest(cursor.getInt(cursor.getColumnIndex("rest")));
+                sets.setRepmax(cursor.getString(cursor.getColumnIndex("repmax")));
+                sets.setStructure(cursor.getString(cursor.getColumnIndex("structure")));
+                td.addSets(sets);
+            }
+            cursor.close();
+            tp.addTrainingDay(td);
+        }
+        return tp;
     }
 }

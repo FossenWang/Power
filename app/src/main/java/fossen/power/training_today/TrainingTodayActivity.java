@@ -43,10 +43,10 @@ public class TrainingTodayActivity extends AppCompatActivity {
         View header = getLayoutInflater().inflate(R.layout.header_training_record,null);
         listTrainingToday.addHeaderView(header);
         TextView trainingTitle = (TextView) findViewById(R.id.text_htr_title);
-        trainingTitle.setText(trainingToday.getProgram()+": "+trainingToday.getTitle());
+        trainingTitle.setText(trainingToday.getTitle());
         final TextView trainingNote = (TextView) findViewById(R.id.text_htr_note);
         final ImageView arrow = (ImageView) findViewById(R.id.arrow_htr_note);
-        trainingNote.setText(trainingToday.getNote());
+        trainingNote.setText("aaa\nbbb\nccc");
         //设置监听器，实现点击缩放说明栏文字
         trainingNote.setOnClickListener(new View.OnClickListener() {
             Boolean flag = true;
@@ -99,8 +99,6 @@ public class TrainingTodayActivity extends AppCompatActivity {
         tD.addSets(exer2);
         tD.addSets(exer2);
         tD.setDate(date);
-        tD.setNote("今日训练胸肌和肱三头肌\n今日训练胸肌和肱三头肌\n今日训练胸肌和肱三头肌\n今日训练胸肌和肱三头肌\n今日训练胸肌和肱三头肌");
-        tD.setProgram("推拉腿式训练");
         tD.setTitle("练胸日");
         return tD;
     }

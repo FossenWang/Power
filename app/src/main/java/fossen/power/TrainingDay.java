@@ -9,13 +9,11 @@ import java.util.Calendar;
 //自建数据类TrainingDay包含一个训练日的训练内容
 public class TrainingDay {
     private ArrayList<Sets> sList = new ArrayList<Sets>();//声明动作列表
-    private String program;//训练方案名称
     private String title;//训练日标题
-    private String note;//附注
     private int year;
     private int month;
     private int day;
-    private boolean rest = false;
+    private boolean restDay = false;
 
     //向列表尾端添加动作
     public void addSets(Sets sets){
@@ -49,12 +47,6 @@ public class TrainingDay {
     public String getTitle(){
         return title;
     }
-    public void setNote(String str){
-        note = str;
-    }
-    public String getNote(){
-        return note;
-    }
     public void setDate(Calendar d){
         year = d.get(Calendar.YEAR);
         month = d.get(Calendar.MONTH)+1;
@@ -72,16 +64,10 @@ public class TrainingDay {
     public int getDay(){
         return day;
     }
-    public void setProgram(String str){
-        program = str;
+    public void setRestDay(boolean restDay) {
+        this.restDay = restDay;
     }
-    public String getProgram(){
-        return program;
-    }
-    public void setRest(boolean rest) {
-        this.rest = rest;
-    }
-    public boolean isRest() {
-        return rest;
+    public boolean isRestDay() {
+        return restDay;
     }
 }

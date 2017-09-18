@@ -14,11 +14,10 @@ public class TrainingProgram {
     private String note;//说明
     private String goal;//训练目的
     //方案启用时的日期
-    private int year;
-    private int month;
-    private int day;
-    //循环周期中的第几天
-    private int numberOfDays = 0;
+    private int year = 0;
+    private int month = 0;
+    private int day = 0;
+    //是否使用该方案
     private boolean start = false;
 
     //向列表尾端添加训练日
@@ -93,21 +92,22 @@ public class TrainingProgram {
     public int getDay(){
         return day;
     }
-    public int countNumberOfDays(){
+    public int countNumberOfCircle(){
         Calendar begin = Calendar.getInstance();
         Calendar now = Calendar.getInstance();
         begin.set(year,month-1,day);
         int n = (Math.round((now.getTimeInMillis()-begin.getTimeInMillis())/(1000*3600*24))
                 + 1)%circleDays();
-        if (n == 0){
-            numberOfDays = circleDays();
-        }else {
-            numberOfDays = n;
-        }
-        return numberOfDays;
+        return n;
     }
-    public int getNumberOfDays(){
-        return numberOfDays;
+    public String getCircleGoal(){
+        String str;
+        if (start) {
+            str = "目标: "+goal+"    循环: " +countNumberOfCircle()+"/"+circleDays()+"天";
+        }else {
+            str = "目标: "+goal+"    循环: 0/"+circleDays()+"天";
+        }
+        return str;
     }
     public void setStart(boolean start) {
         this.start = start;

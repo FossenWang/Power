@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_tpc"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text_tpc_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:text="推拉腿式训练"
+            android:textColor="@color/textBlack"
+            android:textSize="21sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_tpc_circle_goal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="目标: 增肌    循环: 1/7天"
+            android:textSize="13sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text_tpc_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingBottom="8dp"
+            android:paddingEnd="32dp"
+            android:paddingStart="16dp"
+            android:text="说明"
+            android:textSize="13sp" />
+
+        <ImageView
+            android:id="@+id/arrow_tpc_note"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="2dp"
+            app:srcCompat="@drawable/ic_arrow_down_24dp" />
+    </FrameLayout>
+
+</LinearLayout>

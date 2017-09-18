@@ -74,15 +74,11 @@ public class ExerciseLibraryAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 
-        TextView group_text;
         if(convertView == null){
             convertView = LayoutInflater.from(mContext).inflate(
                     R.layout.item_exerlib_group, parent, false);
-            group_text = (TextView) convertView.findViewById(R.id.text_el_sort);
-            convertView.setTag(group_text);
-        }else{
-            group_text = (TextView) convertView.getTag();
         }
+        TextView group_text = (TextView) convertView.findViewById(R.id.text_el_sort);
         group_text.setText(sort.get(groupPosition));
         return convertView;
     }
@@ -91,8 +87,10 @@ public class ExerciseLibraryAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
-        convertView = LayoutInflater.from(mContext).inflate(
-                R.layout.item_exerlib_item, parent, false);
+        if(convertView == null){
+            convertView = LayoutInflater.from(mContext).inflate(
+                    R.layout.item_exerlib_item, parent, false);
+        }
         TextView text_exercise = (TextView) convertView.findViewById(R.id.text_el_exercise);
         TextView text_muscle = (TextView) convertView.findViewById(R.id.text_el_muscle);
         text_exercise.setText(exerList.get(groupPosition).get(childPosition).getName());
