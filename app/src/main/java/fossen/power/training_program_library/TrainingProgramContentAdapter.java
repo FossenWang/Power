@@ -26,7 +26,7 @@ public class TrainingProgramContentAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return trainingProgram.countNumberOfCircle();
+        return trainingProgram.circleDays();
     }
 
     @Override
@@ -50,10 +50,10 @@ public class TrainingProgramContentAdapter extends BaseAdapter {
         TextView textCount =(TextView) convertView.findViewById(R.id.text_tpc_count);
         TrainingDay trainingDay = trainingProgram.getTrainingDay(position);
         if(trainingDay.isRestDay()){
-            textDay.setText(position + "休息");
+            textDay.setText((position+1) + "  休息");
             textCount.setText("");
         }else{
-            textDay.setText(position + "  训练日: " + trainingDay.getTitle());
+            textDay.setText((position+1) + "  训练日: " + trainingDay.getTitle());
         }
         return convertView;
     }

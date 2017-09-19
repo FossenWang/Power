@@ -10,6 +10,7 @@ import java.util.Calendar;
 public class TrainingProgram {
     //训练日列表
     private ArrayList<TrainingDay> tList = new ArrayList<TrainingDay>();
+    private String id;
     private String name;//方案名
     private String note;//说明
     private String goal;//训练目的
@@ -28,6 +29,11 @@ public class TrainingProgram {
     public void addTrainingDay(int circle){
         for (int i = 0; i < circle;i++ ) {
             tList.add(new TrainingDay());
+        }
+    }
+    public void addTrainingDay(String[] titles){
+        for(String title : titles){
+            tList.add(new TrainingDay(title));
         }
     }
     //将训练日插入列表中的某位置
@@ -52,6 +58,12 @@ public class TrainingProgram {
     }
 
     //存取方案名，目标，说明，开始日期，总天数,开始与否等信息
+    public void setId(String id) {
+        this.id = id;
+    }
+    public String getId() {
+        return id;
+    }
     public void setName(String str){
         name = str;
     }
@@ -92,7 +104,7 @@ public class TrainingProgram {
     public int getDay(){
         return day;
     }
-    public int countNumberOfCircle(){
+    public int countTodayInCircle(){
         Calendar begin = Calendar.getInstance();
         Calendar now = Calendar.getInstance();
         begin.set(year,month-1,day);
@@ -103,9 +115,9 @@ public class TrainingProgram {
     public String getCircleGoal(){
         String str;
         if (start) {
-            str = "目标: "+goal+"    循环: " +countNumberOfCircle()+"/"+circleDays()+"天";
+            str = "目标: "+goal+"    周期: " + countTodayInCircle()+"/"+circleDays()+"天";
         }else {
-            str = "目标: "+goal+"    循环: 0/"+circleDays()+"天";
+            str = "目标: "+goal+"    周期: 0/"+circleDays()+"天";
         }
         return str;
     }

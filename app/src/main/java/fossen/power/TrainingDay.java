@@ -15,6 +15,11 @@ public class TrainingDay {
     private int day;
     private boolean restDay = false;
 
+    public TrainingDay(){}
+    public TrainingDay(String title){
+        this.title = title;
+    }
+
     //向列表尾端添加动作
     public void addSets(Sets sets){
         sList.add(sets);

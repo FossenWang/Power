@@ -54,7 +54,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(flag){
                     flag = false;
-                    trainingNote.setMaxLines(20);
+                    trainingNote.setMaxLines(30);
                     arrow.setRotation(180);
                 }else {
                     flag = true;

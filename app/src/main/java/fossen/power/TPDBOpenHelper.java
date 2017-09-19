@@ -31,10 +31,15 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         //导入SQL文件中的语句，直接生成数据库
         InputStream input = tpContext.getResources().openRawResource(R.raw.training_program);
         BufferedReader buffer = new BufferedReader(new InputStreamReader(input));
-        String sql;
+        String sql ="";
+        String line;
         try{
-            while((sql = buffer.readLine())!=null){
-                db.execSQL(sql);
+            while((line = buffer.readLine())!=null){
+                sql += line;
+                if(sql.endsWith(";")){
+                    db.execSQL(sql);
+                    sql = "";
+                }
             }
             input.close();
         }catch(IOException e){}
@@ -52,20 +57,15 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         Cursor cursor = tpdb.rawQuery("SELECT * FROM program_list ORDER BY id",null);
         while (cursor.moveToNext()) {
             tp = new TrainingProgram();
-            String name = cursor.getString(cursor.getColumnIndex("name"));
-            String goal = cursor.getString(cursor.getColumnIndex("goal"));
-            int circle = cursor.getInt(cursor.getColumnIndex("circle"));
-            int start = cursor.getInt(cursor.getColumnIndex("start"));
-            int year = cursor.getInt(cursor.getColumnIndex("year"));
-            int month = cursor.getInt(cursor.getColumnIndex("month"));
-            int day = cursor.getInt(cursor.getColumnIndex("day"));
-            String note = cursor.getString(cursor.getColumnIndex("note"));
-            tp.setName(name);
-            tp.setGoal(goal);
-            tp.addTrainingDay(circle);
-            tp.setStart(start!=0);
-            tp.setDate(year,month,day);
-            tp.setNote(note);
+            tp.setId(cursor.getString(cursor.getColumnIndex("id")));
+            tp.setName(cursor.getString(cursor.getColumnIndex("name")));
+            tp.setGoal(cursor.getString(cursor.getColumnIndex("goal")));
+            tp.addTrainingDay(cursor.getString(cursor.getColumnIndex("day_name")).split(","));
+            tp.setStart(cursor.getInt(cursor.getColumnIndex("start"))!=0);
+            tp.setDate(cursor.getInt(cursor.getColumnIndex("year")),
+                    cursor.getInt(cursor.getColumnIndex("month")),
+                    cursor.getInt(cursor.getColumnIndex("day")));
+            tp.setNote(cursor.getString(cursor.getColumnIndex("note")));
             programs.add(tp);
         }
         cursor.close();
@@ -73,26 +73,43 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
     }
 
     //从数据库导入某个方案的全部数据
-    public TrainingProgram inputTrainingProgram(int id, int circle, String[] day_name){
+    public TrainingProgram inputTrainingProgram(String id){
         TrainingProgram tp = new TrainingProgram();
         TrainingDay td;
         Sets sets;
         SQLiteDatabase tpdb = this.getReadableDatabase();
-        for(int day = 1; day<=circle ; ){
-            Cursor cursor = tpdb.rawQuery("SELECT * FROM "+id+" ORDER BY order WHERE day="+day,null);
-            td = new TrainingDay();
-            td.setTitle(day_name[day-1]);
+
+        //导入训练方案的基本信息
+        Cursor cursor = tpdb.rawQuery("SELECT * FROM program_list WHERE id=?",new String[]{id});
+        while (cursor.moveToNext()) {
+            tp = new TrainingProgram();
+            tp.setId(cursor.getString(cursor.getColumnIndex("id")));
+            tp.setName(cursor.getString(cursor.getColumnIndex("name")));
+            tp.setGoal(cursor.getString(cursor.getColumnIndex("goal")));
+            tp.addTrainingDay(cursor.getString(cursor.getColumnIndex("day_name")).split(","));
+            tp.setStart(cursor.getInt(cursor.getColumnIndex("start"))!=0);
+            tp.setDate(cursor.getInt(cursor.getColumnIndex("year")),
+                    cursor.getInt(cursor.getColumnIndex("month")),
+                    cursor.getInt(cursor.getColumnIndex("day")));
+            tp.setNote(cursor.getString(cursor.getColumnIndex("note")));
+        }
+        cursor.close();
+
+        //导入训练方案的全部内容
+        for(int day = 1; day<=tp.circleDays();day++){
+            cursor = tpdb.rawQuery("SELECT * FROM "+id+" WHERE day = ? ORDER BY number",new String[]{Integer.toString(day)});
+            td = tp.getTrainingDay(day-1);
             while (cursor.moveToNext()) {
                 sets = new Sets();
                 sets.addSet(cursor.getInt(cursor.getColumnIndex("sets")));
                 sets.setExerciseList(cursor.getString(cursor.getColumnIndex("exercise")).split(","));
                 sets.setRest(cursor.getInt(cursor.getColumnIndex("rest")));
-                sets.setRepmax(cursor.getString(cursor.getColumnIndex("repmax")));
+                sets.setRepmax(cursor.getString(cursor.getColumnIndex("reps")));
                 sets.setStructure(cursor.getString(cursor.getColumnIndex("structure")));
+                td.setRestDay(cursor.getInt(cursor.getColumnIndex("number"))==0);//待优化
                 td.addSets(sets);
             }
             cursor.close();
-            tp.addTrainingDay(td);
         }
         return tp;
     }

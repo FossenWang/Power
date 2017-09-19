@@ -1,9 +1,11 @@
 package fossen.power.training_program_library;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -41,5 +43,14 @@ public class TrainingProgramLibraryActivity extends AppCompatActivity {
         TrainingProgramLibraryAdapter tplAdapter =
                 new TrainingProgramLibraryAdapter(programs,this);
         listView.setAdapter(tplAdapter);
+
+        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(TrainingProgramLibraryActivity.this,TrainingProgramContentActivity.class);
+                intent.putExtra("id",programs.get(position).getId());
+                startActivity(intent);
+            }
+        });*/
     }
 }

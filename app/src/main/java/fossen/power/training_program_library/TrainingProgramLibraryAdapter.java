@@ -34,7 +34,7 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return pList.get(position);
     }
 
     @Override
@@ -49,6 +49,7 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
                     LayoutInflater.from(mContext).inflate(
                             R.layout.item_training_program_library,parent,false);
         }
+        View in_tpc = convertView.findViewById(R.id.in_tpc);
         TextView text_title = (TextView) convertView.findViewById(R.id.text_itpl_title);
         TextView text_cg = (TextView) convertView.findViewById(R.id.text_itpl_circle_goal);
         Button button = (Button) convertView.findViewById(R.id.button_itpl);
@@ -66,11 +67,12 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
             button.setSelected(start);
         }
 
-        convertView.setOnClickListener(new View.OnClickListener() {
+        in_tpc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(),TrainingProgramContentActivity.class);
-                intent.putExtra("id",program.)
+                Intent intent = new Intent(mContext,TrainingProgramContentActivity.class);
+                intent.putExtra("id",program.getId());
+                mContext.startActivity(intent);
             }
         });
         /*button.setOnClickListener(new View.OnClickListener() {

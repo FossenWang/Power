@@ -2,10 +2,12 @@ package fossen.power.training_program_library;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,21 +34,24 @@ public class TrainingProgramContentActivity extends AppCompatActivity {
         });
 
         //加载训练方案
+        Intent intent = getIntent();
+        String id = intent.getStringExtra("id");
         TPDBOpenHelper tpdbOpenHelper = new TPDBOpenHelper(this);
-        TrainingProgram trainingProgram = tpdbOpenHelper.inputTrainingProgram(id,circle,day_name);
+        TrainingProgram trainingProgram = tpdbOpenHelper.inputTrainingProgram(id);
 
         // 给listView添加headerView，用于显示训练方案的基本信息
         ListView list_tpc = (ListView) findViewById(R.id.list_tpc);
         View header = getLayoutInflater().inflate(R.layout.header_training_program_content,null);
         list_tpc.addHeaderView(header);
-        View layout = (View) findViewById(R.id.layout_tpc);
+        View layout = findViewById(R.id.layout_tpc);
         TextView textTitle = (TextView) findViewById(R.id.text_tpc_title);
         TextView textCircleGoal = (TextView) findViewById(R.id.text_tpc_circle_goal);
         final TextView textNote = (TextView) findViewById(R.id.text_tpc_note);
         final ImageView arrow = (ImageView) findViewById(R.id.arrow_tpc_note);
         textTitle.setText(trainingProgram.getName());
         textCircleGoal.setText(trainingProgram.getCircleGoal() );
-        textNote.setText(trainingProgram.getNote());
+        textNote.setText(trainingProgram.getNote().replace("\\n","\n"));
+
         //设置监听器，实现点击缩放说明栏文字
         layout.setOnClickListener(new View.OnClickListener() {
             Boolean flag = true;
@@ -54,7 +59,7 @@ public class TrainingProgramContentActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(flag){
                     flag = false;
-                    textNote.setMaxLines(20);
+                    textNote.setMaxLines(30);
                     arrow.setRotation(180);
                 }else {
                     flag = true;
@@ -68,13 +73,6 @@ public class TrainingProgramContentActivity extends AppCompatActivity {
         TrainingProgramContentAdapter tpcAdapter =
                 new TrainingProgramContentAdapter(trainingProgram, this);
         list_tpc.setAdapter(tpcAdapter);
-
-
-        /*FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        TrainingProgramContentFragment fragment = new TrainingProgramContentFragment();
-        fragmentTransaction.add(R.id.fragment_container_tpc,fragment);
-        fragmentTransaction.commit();*/
     }
 
 }
