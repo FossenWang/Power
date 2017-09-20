@@ -12,7 +12,7 @@
         android:layout_height="56dp"
         android:background="?attr/colorPrimary"
         android:elevation="3dp"
-        android:theme="?attr/actionBarTheme"
+        android:theme="@style/Toolbar"
         app:title="@string/app_name" />
 
     <ScrollView

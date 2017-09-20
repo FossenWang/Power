@@ -1,27 +1,16 @@
 package fossen.power;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 import fossen.power.exercise_library.ExerciseLibraryActivity;
 import fossen.power.training_program_library.TrainingProgramLibraryActivity;
 import fossen.power.training_today.TrainingTodayActivity;
 
 public class MainActivity extends AppCompatActivity {
-
-    private static String eldbName="exercise_library.db";//动作数据库的名字
-    private static String tpdbName="training_program.db";//训练方案数据库的名字
-    private static String dbPath ="/data/data/fossen.power/databases/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,68 +46,5 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        /*/判断数据库是否存在
-        boolean dbExist = checkDataBase(dbPath + eldbName);
-        if (dbExist) {
-        } else {//不存在就把raw里的数据库写入手机
-            try {
-                copyDataBase(dbPath, eldbName);
-            } catch (IOException e) {
-                throw new Error("Error copying database");
-            }
-        }
-        dbExist = checkDataBase(dbPath + tpdbName);
-        if (dbExist) {
-        } else {//不存在就把raw里的数据库写入手机
-            try {
-                copyDataBase(dbPath, tpdbName);
-            } catch (IOException e) {
-                throw new Error("Error copying database");
-            }
-        }*/
     }
-
-    /*检查数据库是否存在，返回布尔值
-    public boolean checkDataBase(String databaseFilename) {
-        SQLiteDatabase checkDB = null;
-        try {
-            checkDB = SQLiteDatabase.openDatabase(databaseFilename, null,
-                    SQLiteDatabase.OPEN_READONLY);
-        } catch (SQLiteException e) {
-        }
-        if (checkDB != null) {
-            checkDB.close();
-        }
-        return checkDB != null ? true : false;
-    }
-
-    //复制数据库到文件夹
-    public void copyDataBase(String dbPath, String dbName) throws IOException{
-        String databaseFilename = dbPath +dbName;
-        File dir = new File(dbPath);
-        if(!dir.exists())//判断文件夹是否存在，不存在就新建一个
-            dir.mkdir();
-        FileOutputStream output = null;
-        try{
-            output = new FileOutputStream(databaseFilename);//得到数据库文件的写入流
-        }catch(FileNotFoundException e){
-            e.printStackTrace();
-        }
-        InputStream input = this.getResources().openRawResource(R.raw.exercise_library);//得到数据库文件的数据流
-        byte[] buffer = new byte[8192];
-        int count = 0;
-        try{
-            while((count=input.read(buffer))>0){
-                output.write(buffer, 0, count);
-                output.flush();
-            }
-        }catch(IOException e){}
-        try{
-            input.close();
-            output.close();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-    }*/
 }
