@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.Calendar;
 
+import fossen.power.ComponentCreator;
 import fossen.power.Exercise;
 import fossen.power.OneSet;
 import fossen.power.Sets;
@@ -24,16 +25,8 @@ public class TrainingTodayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training_today);
 
-        //设置返回键
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_tt);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        //设置toolbar和返回键
+        ComponentCreator.createBackToolbar(this,R.id.toolbar_tt);
 
         //加载训练日数据
         TrainingDay trainingToday = createTrainingDay();

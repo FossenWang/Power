@@ -24,7 +24,7 @@
             android:id="@+id/list_tt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:divider="@color/colorPrimaryLight"
+            android:divider="@drawable/divider_1dp"
             android:dividerHeight="0dp"
             android:paddingBottom="48dp" />
 
@@ -33,11 +33,9 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_gravity="bottom"
-            android:background="@color/colorPrimary"
             android:elevation="8dp"
             android:gravity="center"
             android:text="@string/text_start_training"
-            android:textColor="@color/colorPrimaryLight"
             android:textSize="24sp" />
 
     </FrameLayout>

@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import fossen.power.ComponentCreator;
 import fossen.power.R;
 
 public class ExerciseFormActivity extends AppCompatActivity {

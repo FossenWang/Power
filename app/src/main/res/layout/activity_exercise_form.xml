@@ -31,7 +31,7 @@
                 android:paddingStart="16dp"
                 android:paddingTop="8dp"
                 android:text="动作名称"
-                android:textColor="@color/textBlack"
+                android:textColor="@color/black"
                 android:textSize="21sp" />
 
             <TextView
@@ -41,7 +41,7 @@
                 android:paddingStart="16dp"
                 android:paddingTop="8dp"
                 android:text="动作介绍"
-                android:textColor="@color/textBlack"
+                android:textColor="@color/black"
                 android:textSize="15sp" />
         </LinearLayout>
     </ScrollView>

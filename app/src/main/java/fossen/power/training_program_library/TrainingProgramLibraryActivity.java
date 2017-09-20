@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import fossen.power.ComponentCreator;
 import fossen.power.R;
 import fossen.power.TPDBOpenHelper;
 import fossen.power.TrainingDay;
@@ -24,17 +25,8 @@ public class TrainingProgramLibraryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training_program_library);
 
-
-        //设置返回键
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_tpl);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        //设置toolbar和返回键
+        ComponentCreator.createBackToolbar(this,R.id.toolbar_tpl);
 
         //加载训练方案列表
         tpdbOpenHelper = new TPDBOpenHelper(this);

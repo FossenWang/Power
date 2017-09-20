@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimaryLight"
     android:gravity="center"
     android:orientation="horizontal"
     android:paddingBottom="8dp"
@@ -28,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Exercise"
-            android:textColor="@color/textBlack"
+            android:textColor="@color/black"
             android:textSize="15sp" />
 
         <TextView

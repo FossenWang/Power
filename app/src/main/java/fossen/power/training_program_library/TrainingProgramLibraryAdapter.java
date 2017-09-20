@@ -62,9 +62,8 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
         Button button = (Button) convertView.findViewById(R.id.button_itpl);
 
         final TrainingProgram program = pList.get(position);
-        int start = program.getStart();
         text_title.setText(program.getName());
-        if (start!=0) {
+        if (program.getStart()!=0) {
             text_cg.setText(program.getCircleGoal());
             button.setText("使用中");
             button.setSelected(true);
@@ -88,18 +87,29 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if(program.getStart()!=0){
-                    program.setStart(0);
-                    tpdbOpenHelper.outputStartDate(program);
-                    notifyDataSetChanged();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("确定要停止训练吗？")
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    program.setStart(0);
+                                    tpdbOpenHelper.outputStartDate(program);
+                                    notifyDataSetChanged();
+                                }})
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }});
+                    builder.create().show();
                 }else {
-                    program.setStart(6);
-                    program.setDate(Calendar.getInstance());
                     showDialog();
                 }
             }
 
             public void showDialog(){
                 String[] days = new String[program.circleDays()];
+                final int[] start = {1};
                 for(int i = 0; i<program.circleDays(); i++){
                     days[i] = Integer.toString(i+1)+ "  " + program.getTrainingDay(i).getTitle();
                 }
@@ -108,15 +118,22 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
                         .setSingleChoiceItems(days, 0, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                program.setStart(which+1);
+                                start[0] = (which+1);
                             }})
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                program.setStart(start[0]);
+                                program.setDate(Calendar.getInstance());
                                 tpdbOpenHelper.outputStartDate(program);
                                 notifyDataSetChanged();
+                            }})
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
-                            }});
+                            }
+                        });
                 builder.create().show();
             }
         });

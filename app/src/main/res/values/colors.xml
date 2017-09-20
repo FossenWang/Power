@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#616161</color>
-    <color name="colorPrimaryDark">#373737</color>
-    <color name="colorPrimaryLight">#ffffff</color>
-    <color name="colorAccent">#e0e0e0</color>
-    <color name="statusBarColor">#616161</color>
-    <color name="naviIconColor">#616161</color>
-    <color name="naviIconColorLight">#e0e0e0</color>
-    <color name="textBlack">#000000</color>
-    <color name="textWhite">#ffffff</color>
+    <color name="grey">#dfdfdf</color>
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
 </resources>

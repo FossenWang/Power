@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import fossen.power.ComponentCreator;
 import fossen.power.ELDBOpenHelper;
 import fossen.power.Exercise;
 import fossen.power.R;
@@ -23,16 +24,8 @@ public class ExerciseLibraryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise_library);
 
-        //设置返回键
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_el);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        //设置toolbar和返回键
+        ComponentCreator.createBackToolbar(this,R.id.toolbar_el);
 
         //准备数据
         ArrayList<String> sort = new ArrayList<String>();
