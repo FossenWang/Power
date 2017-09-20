@@ -10,16 +10,16 @@ import java.util.Calendar;
 public class TrainingProgram {
     //训练日列表
     private ArrayList<TrainingDay> tList = new ArrayList<TrainingDay>();
-    private String id;
-    private String name;//方案名
-    private String note;//说明
-    private String goal;//训练目的
+    private String id = "";
+    private String name = "" ;//方案名
+    private String note = "";//说明
+    private String goal = "";//训练目的
     //方案启用时的日期
     private int year = 0;
     private int month = 0;
     private int day = 0;
-    //是否使用该方案
-    private boolean start = false;
+    //start为0时表示方案未使用，非零时表示方案使用中，数字表示从周期中的第几天开始方案
+    private int start = 0;
 
     //向列表尾端添加训练日
     public void addTrainingDay(TrainingDay trainingDay){
@@ -110,21 +110,21 @@ public class TrainingProgram {
         begin.set(year,month-1,day);
         int n = (Math.round((now.getTimeInMillis()-begin.getTimeInMillis())/(1000*3600*24))
                 + 1)%circleDays();
-        return n;
+        return n+start-1;
     }
     public String getCircleGoal(){
         String str;
-        if (start) {
+        if (start!=0) {
             str = "目标: "+goal+"    周期: " + countTodayInCircle()+"/"+circleDays()+"天";
         }else {
-            str = "目标: "+goal+"    周期: 0/"+circleDays()+"天";
+            str = "目标: "+goal+"    周期: "+circleDays()+"天";
         }
         return str;
     }
-    public void setStart(boolean start) {
+    public void setStart(int start) {
         this.start = start;
     }
-    public boolean isStart() {
+    public int getStart() {
         return start;
     }
 }

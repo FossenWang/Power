@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:statusBarColor">@color/statusBarColor</item>
         <item name="android:colorBackground">@color/colorPrimaryLight</item>
-        <item name="android:textColorPrimary">@color/textWhite</item>
+        <item name="android:textColorPrimary">@color/textBlack</item>
         <item name="android:textColorSecondary">@color/textBlack</item>
         <item name="android:textColorSecondaryInverse">@color/textBlack</item>
         <item name="android:textColorPrimaryInverse">@color/textWhite</item>

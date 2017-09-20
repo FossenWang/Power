@@ -6,8 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -61,7 +59,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
             tp.setName(cursor.getString(cursor.getColumnIndex("name")));
             tp.setGoal(cursor.getString(cursor.getColumnIndex("goal")));
             tp.addTrainingDay(cursor.getString(cursor.getColumnIndex("day_name")).split(","));
-            tp.setStart(cursor.getInt(cursor.getColumnIndex("start"))!=0);
+            tp.setStart(cursor.getInt(cursor.getColumnIndex("start")));
             tp.setDate(cursor.getInt(cursor.getColumnIndex("year")),
                     cursor.getInt(cursor.getColumnIndex("month")),
                     cursor.getInt(cursor.getColumnIndex("day")));
@@ -87,7 +85,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
             tp.setName(cursor.getString(cursor.getColumnIndex("name")));
             tp.setGoal(cursor.getString(cursor.getColumnIndex("goal")));
             tp.addTrainingDay(cursor.getString(cursor.getColumnIndex("day_name")).split(","));
-            tp.setStart(cursor.getInt(cursor.getColumnIndex("start"))!=0);
+            tp.setStart(cursor.getInt(cursor.getColumnIndex("start")));
             tp.setDate(cursor.getInt(cursor.getColumnIndex("year")),
                     cursor.getInt(cursor.getColumnIndex("month")),
                     cursor.getInt(cursor.getColumnIndex("day")));
@@ -112,5 +110,19 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
             cursor.close();
         }
         return tp;
+    }
+
+    //将更改后的使用状态写入数据库
+    public void outputStartDate(TrainingProgram trainingProgram){
+        SQLiteDatabase tpdb = this.getReadableDatabase();
+        String start = Integer.toString(trainingProgram.getStart());
+        String year = Integer.toString(trainingProgram.getYear());
+        String month = Integer.toString(trainingProgram.getMonth());
+        String day = Integer.toString(trainingProgram.getDay());
+        String id = trainingProgram.getId();
+        tpdb.execSQL("UPDATE program_list " +
+                        "SET start = ?, year = ?, month = ?, day = ? " +
+                        "WHERE id = ?",
+                new String[]{start,year,month,day,id});
     }
 }

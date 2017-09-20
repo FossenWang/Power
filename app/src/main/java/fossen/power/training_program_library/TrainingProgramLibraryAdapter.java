@@ -1,6 +1,8 @@
 package fossen.power.training_program_library;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +12,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import fossen.power.R;
+import fossen.power.TPDBOpenHelper;
 import fossen.power.TrainingProgram;
 
 /**
@@ -20,10 +24,13 @@ import fossen.power.TrainingProgram;
 
 public class TrainingProgramLibraryAdapter extends BaseAdapter {
     private ArrayList<TrainingProgram> pList;
+    private TPDBOpenHelper tpdbOpenHelper;
     private Context mContext;
+    int choice = -1;
 
-    public TrainingProgramLibraryAdapter(ArrayList<TrainingProgram> pList,Context mContext){
+    public TrainingProgramLibraryAdapter(ArrayList<TrainingProgram> pList,TPDBOpenHelper tpdbOpenHelper,Context mContext){
         this.pList = pList;
+        this.tpdbOpenHelper = tpdbOpenHelper;
         this.mContext = mContext;
     }
 
@@ -43,7 +50,7 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
         if(convertView == null){
             convertView =
                     LayoutInflater.from(mContext).inflate(
@@ -55,18 +62,19 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
         Button button = (Button) convertView.findViewById(R.id.button_itpl);
 
         final TrainingProgram program = pList.get(position);
-        final boolean start = program.isStart();
+        int start = program.getStart();
         text_title.setText(program.getName());
-        if (start) {
+        if (start!=0) {
             text_cg.setText(program.getCircleGoal());
             button.setText("使用中");
-            button.setSelected(start);
+            button.setSelected(true);
         }else {
             text_cg.setText(program.getCircleGoal());
             button.setText("未使用");
-            button.setSelected(start);
+            button.setSelected(false);
         }
 
+        //设置点击事件，进入方案详情页
         in_tpc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,14 +83,45 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
                 mContext.startActivity(intent);
             }
         });
-        /*button.setOnClickListener(new View.OnClickListener() {
+
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(start){
-
+                if(program.getStart()!=0){
+                    program.setStart(0);
+                    tpdbOpenHelper.outputStartDate(program);
+                    notifyDataSetChanged();
+                }else {
+                    program.setStart(6);
+                    program.setDate(Calendar.getInstance());
+                    showDialog();
                 }
             }
-        });*/
+
+            public void showDialog(){
+                String[] days = new String[program.circleDays()];
+                for(int i = 0; i<program.circleDays(); i++){
+                    days[i] = Integer.toString(i+1)+ "  " + program.getTrainingDay(i).getTitle();
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("请选择选择今天的训练：")
+                        .setSingleChoiceItems(days, 0, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                program.setStart(which+1);
+                            }})
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                tpdbOpenHelper.outputStartDate(program);
+                                notifyDataSetChanged();
+                                dialog.cancel();
+                            }});
+                builder.create().show();
+            }
+        });
+
         return convertView;
     }
+
 }

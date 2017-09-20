@@ -14,7 +14,7 @@
         </shape>
     </item>
 
-    <item>
+    <item android:state_selected="false">
         <shape>
             <stroke android:color="@color/colorPrimary"
                 android:width="1dp" />

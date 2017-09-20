@@ -17,6 +17,8 @@ import fossen.power.TrainingProgram;
 
 public class TrainingProgramLibraryActivity extends AppCompatActivity {
 
+    private TPDBOpenHelper tpdbOpenHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,22 +37,14 @@ public class TrainingProgramLibraryActivity extends AppCompatActivity {
         });
 
         //加载训练方案列表
-        TPDBOpenHelper tpdbOpenHelper = new TPDBOpenHelper(this);
+        tpdbOpenHelper = new TPDBOpenHelper(this);
         ArrayList<TrainingProgram> programs = tpdbOpenHelper.inputTrainingProgramList();
 
         //绑定配适器
         ListView listView =(ListView) findViewById(R.id.list_tpl);
         TrainingProgramLibraryAdapter tplAdapter =
-                new TrainingProgramLibraryAdapter(programs,this);
+                new TrainingProgramLibraryAdapter(programs,tpdbOpenHelper,this);
         listView.setAdapter(tplAdapter);
 
-        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(TrainingProgramLibraryActivity.this,TrainingProgramContentActivity.class);
-                intent.putExtra("id",programs.get(position).getId());
-                startActivity(intent);
-            }
-        });*/
     }
 }
