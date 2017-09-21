@@ -21,5 +21,5 @@
         android:layout_height="wrap_content"
         android:gravity="end"
         android:paddingEnd="16dp"
-        android:text="9个动作，27组" />
+        android:text="n个动作，m组" />
 </LinearLayout>

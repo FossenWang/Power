@@ -73,13 +73,17 @@ public class ExerciseLibraryAdapter extends BaseExpandableListAdapter {
     //取得用于显示给定分组的视图. 这个方法仅返回分组的视图对象
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-
+        GroupViewHolder groupHolder;
         if(convertView == null){
             convertView = LayoutInflater.from(mContext).inflate(
                     R.layout.item_exerlib_group, parent, false);
+            groupHolder = new GroupViewHolder();
+            groupHolder.group_text = (TextView) convertView.findViewById(R.id.text_el_sort);
+            convertView.setTag(groupHolder);
+        }else {
+            groupHolder = (GroupViewHolder) convertView.getTag();
         }
-        TextView group_text = (TextView) convertView.findViewById(R.id.text_el_sort);
-        group_text.setText(sort.get(groupPosition));
+        groupHolder.group_text.setText(sort.get(groupPosition));
         return convertView;
     }
 
@@ -87,14 +91,28 @@ public class ExerciseLibraryAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
+        ChildViewHolder childHolder;
         if(convertView == null){
             convertView = LayoutInflater.from(mContext).inflate(
                     R.layout.item_exerlib_item, parent, false);
+            childHolder = new ChildViewHolder();
+            childHolder.text_exercise = (TextView) convertView.findViewById(R.id.text_el_exercise);
+            childHolder.text_muscle = (TextView) convertView.findViewById(R.id.text_el_muscle);
+            convertView.setTag(childHolder);
+        }else{
+            childHolder = (ChildViewHolder) convertView.getTag();
         }
-        TextView text_exercise = (TextView) convertView.findViewById(R.id.text_el_exercise);
-        TextView text_muscle = (TextView) convertView.findViewById(R.id.text_el_muscle);
-        text_exercise.setText(exerList.get(groupPosition).get(childPosition).getName());
-        text_muscle.setText(exerList.get(groupPosition).get(childPosition).getMuscle());
+        childHolder.text_exercise.setText(exerList.get(groupPosition).get(childPosition).getName());
+        childHolder.text_muscle.setText(exerList.get(groupPosition).get(childPosition).getMuscle());
         return convertView;
+    }
+
+    private static class GroupViewHolder{
+        TextView group_text;
+    }
+    private static class ChildViewHolder{
+        TextView text_exercise;
+        TextView text_muscle;
+
     }
 }

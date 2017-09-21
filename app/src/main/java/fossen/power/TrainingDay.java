@@ -44,6 +44,16 @@ public class TrainingDay {
     public int numberOfSets(){
         return sList.size();
     }
+    public int numberOfExercise(){
+        return sList.size();
+    }
+    public int numberOfSingleSets(){
+        int n = 0;
+        for(Sets sets : sList){
+            n+=sets.numberOfSingleSets();
+        }
+        return n;
+    }
 
     //设置与返回标题，附注，日期，训练方案,休息等参数
     public void setTitle(String str){

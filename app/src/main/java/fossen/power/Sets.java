@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Sets {
 
-    private ArrayList<OneSet> setList = new ArrayList<OneSet>();
+    private ArrayList<SingleSet> setList = new ArrayList<SingleSet>();
     //组的列表，训练记录中使用
     private ArrayList<Exercise> exerciseList =  new ArrayList<Exercise>();
     //第一个为首选动作，其余为备选动作，最多5个
@@ -17,33 +17,33 @@ public class Sets {
     private String structure;//组结构
 
     //在末尾添加组
-    public void addSet(OneSet set){
+    public void addSet(SingleSet set){
         setList.add(set);
     }
     //添加n个空组
     public void addSet(int n) {
         for (int i = 0;i<n;i+=1) {
-            setList.add(new OneSet());
+            setList.add(new SingleSet());
         }
     }
     //按下标添加组
-    public void addSet(int index,OneSet set){
+    public void addSet(int index,SingleSet set){
         setList.add(index,set);
     }
     //按下标返回一个组
-    public OneSet getSet(int index){
+    public SingleSet getSet(int index){
         return setList.get(index);
     }
     //按下标移除一个组
-    public OneSet removeSet(int index){
+    public SingleSet removeSet(int index){
         return setList.remove(index);
     }
     //替换某位置的组
-    public OneSet replaceSet(int index, OneSet set){
+    public SingleSet replaceSet(int index, SingleSet set){
         return setList.set(index, set);
     }
     //返回总组数
-    public int numberOfSets(){
+    public int numberOfSingleSets(){
         return setList.size();
     }
     //返回所有组数，重量，次数，参数为重量单位
@@ -51,7 +51,7 @@ public class Sets {
         String allSets = "";
         int i = 0;
         if (unit == "kg"){    //以kg为单位输出
-            for (OneSet set : setList) {
+            for (SingleSet set : setList) {
                 i+=1;
                 //判断重量是否为整数，是则输出整数，否则保留一位小数输出
                 if(set.getLoad()==set.getLoad().intValue()){
@@ -61,7 +61,7 @@ public class Sets {
                 }
             }
         }else {    //以lb为单位输出
-            for (OneSet set : setList) {
+            for (SingleSet set : setList) {
                 i+=1;
                 allSets+="#"+i+":  "+set.getLoadToPound()+" lb × "+set.getReps()+"\n";
             }

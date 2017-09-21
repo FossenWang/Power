@@ -4,24 +4,24 @@ package fossen.power;
  * Created by Administrator on 2017/8/13.
  */
 
-public class OneSet {
+public class SingleSet {
     private Double load;//负重，单位为公斤
     private int reps;//次数
     private int duration;//持续时间，单位为s
 
-    public OneSet(){}
+    public SingleSet(){}
     //！！！输入一个参数则记录持续时间，两个参数则记录负重与次数
     //！！！输入的重量为Double型时单位为kg，int型时单位为lb
     //！！！重量单位的判断应只在创建视图时执行
-    public OneSet(Double load_kg, int reps){
+    public SingleSet(Double load_kg, int reps){
         setLoad(load_kg);
         setReps(reps);
     }
-    public OneSet(int load_lb, int reps){
+    public SingleSet(int load_lb, int reps){
         setLoad(load_lb);
         setReps(reps);
     }
-    public OneSet(int duration){
+    public SingleSet(int duration){
         setDuration(duration);
     }
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -41,16 +42,28 @@ public class TrainingRecordAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView =
-                LayoutInflater.from(mContext).inflate(
-                        R.layout.item_training_record,parent,false);
-        ImageButton img_exercise = (ImageButton) convertView.findViewById(R.id.imageExercise);
-        TextView txt_exercise = (TextView) convertView.findViewById(R.id.textExercise);
-        TextView txt_setLoadRep = (TextView) convertView.findViewById(R.id.textSetLoadRep);
+        ViewHolder holder;
+        if(convertView == null) {
+            convertView =
+                    LayoutInflater.from(mContext).inflate(
+                            R.layout.item_training_record, parent, false);
+            holder = new ViewHolder();
+            holder.img_exercise = (ImageButton) convertView.findViewById(R.id.imageExercise);
+            holder.txt_exercise = (TextView) convertView.findViewById(R.id.textExercise);
+            holder.txt_setLoadRep = (TextView) convertView.findViewById(R.id.textSetLoadRep);
+            convertView.setTag(holder);
+        }else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
-        img_exercise.setBackgroundResource(trainingDay.getSets(position).getExercise(0).getIcon());
-        txt_exercise.setText(trainingDay.getSets(position).getExercise(0).getName());
-        txt_setLoadRep.setText(trainingDay.getSets(position).getAllSets("kg"));
+        holder.img_exercise.setBackgroundResource(trainingDay.getSets(position).getExercise(0).getIcon());
+        holder.txt_exercise.setText(trainingDay.getSets(position).getExercise(0).getName());
+        holder.txt_setLoadRep.setText(trainingDay.getSets(position).getAllSets("kg"));
         return convertView;
+    }
+    private static class ViewHolder{
+        ImageButton img_exercise;
+        TextView txt_exercise;
+        TextView txt_setLoadRep;
     }
 }

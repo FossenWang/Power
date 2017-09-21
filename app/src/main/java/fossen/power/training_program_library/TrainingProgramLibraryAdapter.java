@@ -26,7 +26,6 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
     private ArrayList<TrainingProgram> pList;
     private TPDBOpenHelper tpdbOpenHelper;
     private Context mContext;
-    int choice = -1;
 
     public TrainingProgramLibraryAdapter(ArrayList<TrainingProgram> pList,TPDBOpenHelper tpdbOpenHelper,Context mContext){
         this.pList = pList;
@@ -51,30 +50,35 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
+        ViewHolder holder;
         if(convertView == null){
             convertView =
                     LayoutInflater.from(mContext).inflate(
                             R.layout.item_training_program_library,parent,false);
+            holder = new ViewHolder();
+            holder.in_tpc = convertView.findViewById(R.id.in_tpc);
+            holder.text_title = (TextView) convertView.findViewById(R.id.text_itpl_title);
+            holder.text_cg = (TextView) convertView.findViewById(R.id.text_itpl_circle_goal);
+            holder.button = (Button) convertView.findViewById(R.id.button_itpl);
+            convertView.setTag(holder);
+        }else {
+            holder = (ViewHolder) convertView.getTag();
         }
-        View in_tpc = convertView.findViewById(R.id.in_tpc);
-        TextView text_title = (TextView) convertView.findViewById(R.id.text_itpl_title);
-        TextView text_cg = (TextView) convertView.findViewById(R.id.text_itpl_circle_goal);
-        Button button = (Button) convertView.findViewById(R.id.button_itpl);
 
         final TrainingProgram program = pList.get(position);
-        text_title.setText(program.getName());
+        holder.text_title.setText(program.getName());
         if (program.getStart()!=0) {
-            text_cg.setText(program.getCircleGoal());
-            button.setText("使用中");
-            button.setSelected(true);
+            holder.text_cg.setText(program.getCircleGoal());
+            holder.button.setText("使用中");
+            holder.button.setSelected(true);
         }else {
-            text_cg.setText(program.getCircleGoal());
-            button.setText("未使用");
-            button.setSelected(false);
+            holder.text_cg.setText(program.getCircleGoal());
+            holder.button.setText("未使用");
+            holder.button.setSelected(false);
         }
 
         //设置点击事件，进入方案详情页
-        in_tpc.setOnClickListener(new View.OnClickListener() {
+        holder.in_tpc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext,TrainingProgramContentActivity.class);
@@ -83,7 +87,8 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
             }
         });
 
-        button.setOnClickListener(new View.OnClickListener() {
+        //点击按钮弹出对话框，选择训练开始的天数
+        holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(program.getStart()!=0){
@@ -141,4 +146,10 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
         return convertView;
     }
 
+    private static class ViewHolder{
+        View in_tpc;
+        TextView text_title;
+        TextView text_cg;
+        Button button;
+    }
 }

@@ -108,9 +108,9 @@ public class TrainingProgram {
         Calendar begin = Calendar.getInstance();
         Calendar now = Calendar.getInstance();
         begin.set(year,month-1,day);
-        int n = (Math.round((now.getTimeInMillis()-begin.getTimeInMillis())/(1000*3600*24))
-                + 1)%circleDays();
-        return n+start-1;
+        int n =  ((int)(Math.floor((now.getTimeInMillis()-begin.getTimeInMillis())/(1000*3600*24))
+                + start)%(circleDays() + 1));
+        return n;
     }
     public String getCircleGoal(){
         String str;
