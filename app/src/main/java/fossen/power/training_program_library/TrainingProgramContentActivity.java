@@ -3,10 +3,9 @@ package fossen.power.training_program_library;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import fossen.power.ComponentCreator;
@@ -31,10 +30,10 @@ public class TrainingProgramContentActivity extends AppCompatActivity {
         TrainingProgram trainingProgram = tpdbOpenHelper.inputTrainingProgram(id);
 
         // 给listView添加headerView，用于显示训练方案的基本信息
-        ListView list_tpc = (ListView) findViewById(R.id.list_tpc);
+        ExpandableListView list_tpc = (ExpandableListView) findViewById(R.id.explist_tpc);
         View header = getLayoutInflater().inflate(R.layout.header_training_program_content,null);
         list_tpc.addHeaderView(header);
-        View layout = findViewById(R.id.layout_tpc);
+        View layout = findViewById(R.id.layout_tpc_header);
         TextView textTitle = (TextView) findViewById(R.id.text_tpc_title);
         TextView textCircleGoal = (TextView) findViewById(R.id.text_tpc_circle_goal);
         final TextView textNote = (TextView) findViewById(R.id.text_tpc_note);
@@ -62,7 +61,7 @@ public class TrainingProgramContentActivity extends AppCompatActivity {
 
         //绑定配适器
         TrainingProgramContentAdapter tpcAdapter =
-                new TrainingProgramContentAdapter(trainingProgram, this);
+                new TrainingProgramContentAdapter(trainingProgram, tpdbOpenHelper, this);
         list_tpc.setAdapter(tpcAdapter);
     }
 

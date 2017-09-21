@@ -5,9 +5,9 @@ package fossen.power;
  */
 
 public class SingleSet {
-    private Double load;//负重，单位为公斤
-    private int reps;//次数
-    private int duration;//持续时间，单位为s
+    private Double load = 0.0;//负重，单位为公斤
+    private int reps = 0;//次数
+    private int duration = 0;//持续时间，单位为s
 
     public SingleSet(){}
     //！！！输入一个参数则记录持续时间，两个参数则记录负重与次数

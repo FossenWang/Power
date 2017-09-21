@@ -7,19 +7,19 @@ import java.util.ArrayList;
  */
 
 public class Exercise {
-    private String id;//动作编号
-    private String name;//动作名称
-    private String type;//动作类别：自重，器械，力量举等
+    private String id = "";//动作编号
+    private String name = "";//动作名称
+    private String type = "";//动作类别：自重，器械，力量举等
     private int icon;//图标
-    private String muscle;//锻炼肌群
+    private String muscle = "";//锻炼肌群
 
     public Exercise(){};
     public Exercise(String name,String muscle){
         this.name = name;
         this.muscle = muscle;
     }
-    public Exercise(String id){
-        this.id = id;
+    public Exercise(String name){
+        this.name = name;
     }
 
     //设置和返回动作名，类别，图标,锻炼肌群

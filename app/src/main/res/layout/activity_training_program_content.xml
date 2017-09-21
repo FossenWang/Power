@@ -16,9 +16,11 @@
         android:theme="@style/Toolbar"
         app:title="@string/title_training_program" />
 
-    <ListView
-        android:id="@+id/list_tpc"
+    <ExpandableListView
+        android:id="@+id/explist_tpc"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:childDivider="?android:attr/windowBackground"
+        android:groupIndicator="@null" />
 
 </LinearLayout>

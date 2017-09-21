@@ -12,9 +12,9 @@ public class Sets {
     //组的列表，训练记录中使用
     private ArrayList<Exercise> exerciseList =  new ArrayList<Exercise>();
     //第一个为首选动作，其余为备选动作，最多5个
-    private String repmax;
-    private int rest;//休息时间，单位s
-    private String structure;//组结构
+    private String repmax = "";
+    private int rest = 0;//休息时间，单位s
+    private String structure = "";//组结构
 
     //在末尾添加组
     public void addSet(SingleSet set){
@@ -74,13 +74,13 @@ public class Sets {
     public void setExerciseList(ArrayList<Exercise> exerciseList) {
         this.exerciseList = exerciseList;
     }
-    public void setExerciseList(String[] exerciseIdList){
-        for(String id : exerciseIdList){
-            addExercise(id);
+    public void setExerciseList(String[] nameList){
+        for(String name : nameList){
+            addExercise(name);
         }
     }
-    public void addExercise(String id){
-        exerciseList.add(new Exercise(id));
+    public void addExercise(String name){
+        exerciseList.add(new Exercise(name));
     }
     public void addExercise(Exercise exercise){
         exerciseList.add(exercise);
@@ -94,6 +94,14 @@ public class Sets {
     public Exercise replaceExercise(int index, Exercise exercise){
         return exerciseList.set(index,exercise);
     }
+    public ArrayList<Exercise> getExerciseList(){
+        return exerciseList;
+    }
+    public void exchangeExercise(int n, int m){
+        Exercise x = exerciseList.get(n);
+        exerciseList.set(n,exerciseList.get(m));
+        exerciseList.set(m,x);
+    }
 
     //设置和返回休息时间,RM，组结构
     public void setRest(int rest) {
@@ -101,6 +109,15 @@ public class Sets {
     }
     public int getRest() {
         return rest;
+    }
+    public String getRestSting(){
+        if (rest<60){
+            return rest + "s";
+        }else if(rest%60==0){
+            return rest/60 + "min";
+        }else {
+            return rest/60 + "min" + rest%60 + "s";
+        }
     }
     public void setRepmax(String repmax){
         this.repmax = repmax;

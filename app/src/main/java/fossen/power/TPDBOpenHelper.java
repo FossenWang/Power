@@ -112,8 +112,8 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         return tp;
     }
 
-    //将更改后的使用状态写入数据库
-    public void outputStartDate(TrainingProgram trainingProgram){
+    //更新训练方案的使用状态
+    public void updateStartDate(TrainingProgram trainingProgram){
         SQLiteDatabase tpdb = this.getReadableDatabase();
         String start = Integer.toString(trainingProgram.getStart());
         String year = Integer.toString(trainingProgram.getYear());
@@ -124,5 +124,17 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
                         "SET start = ?, year = ?, month = ?, day = ? " +
                         "WHERE id = ?",
                 new String[]{start,year,month,day,id});
+    }
+
+    //将更新组集中的动作
+    public void updateExercise(String programId, int day, int number, Sets sets){
+        SQLiteDatabase tpdb = this.getReadableDatabase();
+        String names = "";
+        for(Exercise exercise : sets.getExerciseList()){
+            names += (exercise.getName() + ",");
+        }
+        names.substring(0,names.length()-1);
+        tpdb.execSQL("UPDATE " + programId + " SET exercise = ?"
+                        + " WHERE day = ? AND number = ?", new String[]{names,day+"",number+""});
     }
 }

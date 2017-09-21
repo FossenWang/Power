@@ -9,11 +9,11 @@ import java.util.Calendar;
 //自建数据类TrainingDay包含一个训练日的训练内容
 public class TrainingDay {
     private ArrayList<Sets> sList = new ArrayList<Sets>();//声明动作列表
-    private String title;//训练日标题
-    private int year;
-    private int month;
-    private int day;
-    private boolean restDay = false;
+    private String title = "";//训练日标题
+    private int year = 0;
+    private int month = 0;
+    private int day = 0;
+    private boolean restDay = true;
 
     public TrainingDay(){}
     public TrainingDay(String title){

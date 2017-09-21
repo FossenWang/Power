@@ -98,7 +98,7 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     program.setStart(0);
-                                    tpdbOpenHelper.outputStartDate(program);
+                                    tpdbOpenHelper.updateStartDate(program);
                                     notifyDataSetChanged();
                                 }})
                             .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -119,7 +119,7 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
                     days[i] = Integer.toString(i+1)+ "  " + program.getTrainingDay(i).getTitle();
                 }
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle("请选择选择今天的训练：")
+                builder.setTitle("请选择今天的训练：")
                         .setSingleChoiceItems(days, 0, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -130,7 +130,7 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
                             public void onClick(DialogInterface dialog, int which) {
                                 program.setStart(start[0]);
                                 program.setDate(Calendar.getInstance());
-                                tpdbOpenHelper.outputStartDate(program);
+                                tpdbOpenHelper.updateStartDate(program);
                                 notifyDataSetChanged();
                             }})
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {
