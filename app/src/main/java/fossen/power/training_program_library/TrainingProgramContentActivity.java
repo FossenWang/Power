@@ -3,10 +3,16 @@ package fossen.power.training_program_library;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import fossen.power.ComponentCreator;
 import fossen.power.R;
@@ -59,10 +65,17 @@ public class TrainingProgramContentActivity extends AppCompatActivity {
             }
         });
 
+        layout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(TrainingProgramContentActivity.this, "长按该视图弹出修改对话窗", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
         //绑定配适器
         TrainingProgramContentAdapter tpcAdapter =
                 new TrainingProgramContentAdapter(trainingProgram, tpdbOpenHelper, this);
         list_tpc.setAdapter(tpcAdapter);
     }
-
 }

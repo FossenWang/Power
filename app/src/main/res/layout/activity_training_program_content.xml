@@ -21,6 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:childDivider="?android:attr/windowBackground"
+        android:divider="?android:attr/windowBackground"
         android:groupIndicator="@null" />
 
 </LinearLayout>
