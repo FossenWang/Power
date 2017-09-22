@@ -5,11 +5,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import fossen.power.R;
 import fossen.power.Sets;
@@ -138,33 +142,31 @@ public class TrainingProgramContentAdapter extends BaseExpandableListAdapter {
         childHolder.arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int[] first = {0};
-                String[] names = new String[sets.getExerciseList().size()];
-                for(int i = 0; i<sets.getExerciseList().size(); i++){
-                    names[i] = sets.getExercise(i).getName();
+                PopupMenu popup = new PopupMenu(mContext, v);
+                Menu menu = popup.getMenu();
+                menu.add("请选择替换的动作：");
+                if(sets.getExerciseList().size()>1){
+                    for(int i = 1; i<sets.getExerciseList().size(); i++){
+                        menu.add(Menu.NONE,Menu.NONE,i,sets.getExercise(i).getName());
+                    }
+                }else {
+                    menu.add("无");
                 }
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle("请选择替换的动作：")
-                        .setSingleChoiceItems(names, 0, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                 first[0] = which;
-                            }})
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                sets.exchangeExercise(0,first[0]);
-                                tpdbOpenHelper.updateExercise(trainingProgram.getId(),
-                                        groupPosition + 1, childPosition + 1, sets);
-                                notifyDataSetChanged();
-                            }})
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                builder.create().show();
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        int i = item.getOrder();
+                        if(i>0) {
+                            sets.exchangeExercise(0, i);
+                            tpdbOpenHelper.updateExercise(trainingProgram.getId(),
+                                    groupPosition + 1, childPosition + 1, sets);
+                            notifyDataSetChanged();
+                            Toast.makeText(mContext, "你选择了："+item.getTitle(), Toast.LENGTH_SHORT).show();
+                        }
+                        return true;
+                    }
+                });
+                popup.show();
             }
         });
 
