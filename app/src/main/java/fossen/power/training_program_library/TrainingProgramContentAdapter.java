@@ -4,12 +4,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -82,20 +85,20 @@ public class TrainingProgramContentAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+    public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         GroupViewHolder groupHolder ;
-        if(convertView == null){
+        final TrainingDay trainingDay = trainingProgram.getTrainingDay(groupPosition);
+        if(convertView == null){//判断是否加载视图
             convertView =
-                    LayoutInflater.from(mContext).inflate(
-                            R.layout.item_tpc_group,parent,false);
+                    LayoutInflater.from(mContext)
+                            .inflate(R.layout.item_tpc_group, parent, false);
             groupHolder = new GroupViewHolder();
-            groupHolder.textDay =(TextView) convertView.findViewById(R.id.text_tpc_day);
-            groupHolder.textCount =(TextView) convertView.findViewById(R.id.text_tpc_count);
+            groupHolder.textDay = (TextView) convertView.findViewById(R.id.text_tpc_day);
+            groupHolder.textCount = (TextView) convertView.findViewById(R.id.text_tpc_count);
             convertView.setTag(groupHolder);
-        }else{
+        }else {
             groupHolder = (GroupViewHolder) convertView.getTag();
         }
-        TrainingDay trainingDay = trainingProgram.getTrainingDay(groupPosition);
         if(trainingDay.isRestDay()){
             groupHolder.textDay.setText((groupPosition+1) + "  休息");
             groupHolder.textCount.setText("");
@@ -129,6 +132,7 @@ public class TrainingProgramContentAdapter extends BaseExpandableListAdapter {
         childHolder.text_sets.setText(sets.getRepmax() + " RM × " + sets.numberOfSingleSets());
         childHolder.text_rest.setText(sets.getRestSting());
 
+        //单击进入动作形式Activity
         childHolder.layout_sets.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,6 +143,7 @@ public class TrainingProgramContentAdapter extends BaseExpandableListAdapter {
             }
         });
 
+        //单击下箭头弹出菜单，选择替换动作
         childHolder.arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

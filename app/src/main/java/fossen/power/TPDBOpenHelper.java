@@ -126,7 +126,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
                 new String[]{start,year,month,day,id});
     }
 
-    //将更新组集中的动作
+    //更新组集中的动作
     public void updateExercise(String programId, int day, int number, Sets sets){
         SQLiteDatabase tpdb = this.getReadableDatabase();
         String names = "";
@@ -136,5 +136,25 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         names.substring(0,names.length()-1);
         tpdb.execSQL("UPDATE " + programId + " SET exercise = ?"
                         + " WHERE day = ? AND number = ?", new String[]{names,day+"",number+""});
+    }
+
+    //更新训练计划
+    public void updateTrainingProgram(TrainingProgram trainingProgram){
+        SQLiteDatabase tpdb = this.getReadableDatabase();
+        String name = trainingProgram.getName();
+        String goal = trainingProgram.getGoal();
+        String note= trainingProgram.getNote();
+        String id = trainingProgram.getId();
+
+        String dayNames = "";
+        for(int i = 0; i < trainingProgram.circleDays(); i++){
+            dayNames += (trainingProgram.getTrainingDay(i).getTitle() + ",");
+        }
+        dayNames.substring(0,dayNames.length()-1);
+
+        tpdb.execSQL("UPDATE program_list " +
+                        "SET name = ?, goal = ?, note = ?, day_name = ? " +
+                        "WHERE id = ?",
+                new String[]{name, goal, note, dayNames, id});
     }
 }

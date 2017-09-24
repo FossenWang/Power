@@ -112,7 +112,7 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
                 }
             }
 
-            public void showDialog(){
+            private void showDialog(){
                 String[] days = new String[program.circleDays()];
                 final int[] start = {1};
                 for(int i = 0; i<program.circleDays(); i++){

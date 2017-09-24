@@ -24,7 +24,8 @@
             android:parentActivityName=".MainActivity" />
         <activity android:name=".exercise_library.ExerciseLibraryActivity" />
         <activity android:name=".exercise_library.ExerciseFormActivity" />
-        <activity android:name=".training_program_library.TrainingProgramContentActivity"></activity>
+        <activity android:name=".training_program_library.TrainingProgramContentActivity" />
+        <activity android:name=".training_program_library.TrainingProgramModifyActivity"/>
     </application>
 
 </manifest>

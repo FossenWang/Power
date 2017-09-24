@@ -15,19 +15,21 @@
 
         <TextView
             android:id="@+id/text_tpc_day"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="48dp"
+            android:layout_gravity="center"
             android:gravity="center_vertical"
+            android:maxLines="1"
             android:paddingStart="16dp"
-            android:text="1   训练日: 全身"
+            android:text="1   训练日"
             android:textColor="@color/black"
             android:textSize="17sp" />
 
         <TextView
             android:id="@+id/text_tpc_count"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
+            android:layout_height="48dp"
+            android:gravity="center|end"
             android:paddingEnd="16dp"
             android:text="n个动作，m组" />
     </LinearLayout>

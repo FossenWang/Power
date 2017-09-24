@@ -27,7 +27,7 @@
             app:srcCompat="@drawable/ic_arrow_down_24dp" />
 
         <FrameLayout
-            android:layout_width="120dp"
+            android:layout_width="108dp"
             android:layout_height="48dp">
 
             <TextView

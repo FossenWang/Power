@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/ripple_itpc_sets"
+        android:elevation="2dp">
+
+        <EditText
+            android:id="@+id/edit_tpc_day_mod"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:hint="训练日标题"
+            android:inputType="text"
+            android:singleLine="true" />
+
+    </FrameLayout>
+
+</LinearLayout>
