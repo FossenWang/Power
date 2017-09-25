@@ -60,7 +60,6 @@ public class TrainingProgramModifyAdapter extends BaseAdapter {
             holder.edit_day.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    //注意，此处必须使用getTag的方式，不能将position定义为final，写成mTouchItemPosition = position
                     mTouchItemPosition = position;
                     return false;
                 }
