@@ -82,11 +82,13 @@ public class TrainingProgramContentActivity extends AppCompatActivity {
             }
         });
 
-        //设置监听器，长按弹出修改对话框
-        viewHolder.layout.setOnLongClickListener(new View.OnLongClickListener() {
+        //设置进入修改模式的按钮
+        viewHolder.toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(TrainingProgramContentActivity.this, "长按该视图弹出修改对话窗", Toast.LENGTH_SHORT).show();
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent intent = new Intent(TrainingProgramContentActivity.this,TrainingProgramModifyActivity.class);
+                intent.putExtra("id",trainingProgram.getId());
+                TrainingProgramContentActivity.this.startActivity(intent);
                 return true;
             }
         });
@@ -111,17 +113,5 @@ public class TrainingProgramContentActivity extends AppCompatActivity {
         final TrainingProgramContentAdapter tpcAdapter =
                 new TrainingProgramContentAdapter(trainingProgram, tpdbOpenHelper, this);
         viewHolder.list_tpc.setAdapter(tpcAdapter);
-
-        //设置修改模式按钮
-        viewHolder.toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(TrainingProgramContentActivity.this,TrainingProgramModifyActivity.class);
-                intent.putExtra("id",trainingProgram.getId());
-                TrainingProgramContentActivity.this.startActivity(intent);
-                Toast.makeText(TrainingProgramContentActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
     }
 }

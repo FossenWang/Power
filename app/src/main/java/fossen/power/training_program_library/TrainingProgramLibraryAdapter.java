@@ -5,10 +5,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -84,6 +87,26 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
                 Intent intent = new Intent(mContext,TrainingProgramContentActivity.class);
                 intent.putExtra("id",program.getId());
                 mContext.startActivity(intent);
+            }
+        });
+
+        holder.in_tpc.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                PopupMenu popup = new PopupMenu(mContext, v);
+                Menu menu = popup.getMenu();
+                menu.add("删除");
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        tpdbOpenHelper.deleteTrainingProgram(program.getId());
+                        pList.remove(position);
+                        notifyDataSetChanged();
+                        return true;
+                    }
+                });
+                popup.show();
+                return true;
             }
         });
 

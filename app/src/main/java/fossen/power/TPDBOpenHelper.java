@@ -145,7 +145,6 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         String goal = trainingProgram.getGoal();
         String note= trainingProgram.getNote();
         String id = trainingProgram.getId();
-
         String dayNames = "";
         for(int i = 0; i < trainingProgram.circleDays(); i++){
             dayNames += (trainingProgram.getTrainingDay(i).getTitle() + ",");
@@ -156,5 +155,46 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
                         "SET name = ?, goal = ?, note = ?, day_name = ? " +
                         "WHERE id = ?",
                 new String[]{name, goal, note, dayNames, id});
+    }
+
+    //创建新的训练计划
+    public String createTrainingProgram(TrainingProgram trainingProgram){
+        SQLiteDatabase tpdb = this.getReadableDatabase();
+        String name = trainingProgram.getName();
+        String goal = trainingProgram.getGoal();
+        String note= trainingProgram.getNote();
+        String id;
+        Cursor cursor = tpdb.rawQuery("SELECT id FROM program_list ORDER BY id",null);
+        ArrayList<String> idList = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            idList.add(cursor.getString(cursor.getColumnIndex("id")));
+        }
+        loop:for(int i = 1; true; i++){
+            for (String s: idList) {
+                if (("tp" + i).equals(s)) {
+                    continue loop;
+                }
+            }
+            id = "tp" + i;
+            break;
+        }
+        tpdb.execSQL("INSERT INTO program_list VALUES (?,?,?,'',0,0,0,0,?)",
+                new String[]{id, name, goal, note,});
+        tpdb.execSQL("CREATE TABLE " + id + "(day INTEGER, " +
+                "number INTEGER, " +
+                "exercise TEXT, " +
+                "sets INTEGER, " +
+                "reps TEXT, " +
+                "rest INTEGER, " +
+                "structure INTEGER)");
+        tpdb.execSQL("INSERT INTO " + id + " VALUES (1,0,'','','','','')");
+    return id;
+    }
+
+    //删除指定训练计划
+    public void deleteTrainingProgram(String id){
+        SQLiteDatabase tpdb = this.getReadableDatabase();
+        tpdb.execSQL("DROP TABLE " + id);
+        tpdb.execSQL("DELETE FROM program_list WHERE id = ?", new String[]{id});
     }
 }

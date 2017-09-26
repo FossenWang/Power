@@ -100,10 +100,10 @@ public class TrainingProgramContentAdapter extends BaseExpandableListAdapter {
             groupHolder = (GroupViewHolder) convertView.getTag();
         }
         if(trainingDay.isRestDay()){
-            groupHolder.textDay.setText((groupPosition+1) + "  休息");
+            groupHolder.textDay.setText((groupPosition+1) + "  休息: " + trainingDay.getTitle());
             groupHolder.textCount.setText("");
         }else{
-            groupHolder.textDay.setText((groupPosition+1) + "  训练日: " + trainingDay.getTitle());
+            groupHolder.textDay.setText((groupPosition+1) + "  训练: " + trainingDay.getTitle());
             groupHolder.textCount.setText(trainingDay.numberOfExercise() + "个动作  "
                     + trainingDay.numberOfSingleSets() + "组");
         }

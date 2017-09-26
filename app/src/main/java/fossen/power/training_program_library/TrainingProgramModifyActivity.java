@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,7 +18,7 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
     private TPDBOpenHelper tpdbOpenHelper;
     private TrainingProgram tp;
     private ViewHolder viewHolder;
-    private int focus = 0;
+    private TrainingProgramModifyAdapter tpmAdapter;
 
     private static class ViewHolder{
         ListView list_tpm;
@@ -76,25 +75,21 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
             }
         });
 
-        viewHolder.editTitle.setOnTouchListener(new View.OnTouchListener() {
+        //保存修改后的数据
+        Button button_save = (Button) findViewById(R.id.button_tpm_save);
+        button_save.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                focus = 1;
-                return false;
+            public void onClick(View v) {
+                tpmAdapter.saveModification();
+                TrainingProgramModifyActivity.this.finish();
             }
         });
-        viewHolder.editGoal.setOnTouchListener(new View.OnTouchListener() {
+        //取消返回上一个活动
+        Button button_cancel = (Button) findViewById(R.id.button_tpm_cancel);
+        button_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                focus = 2;
-                return false;
-            }
-        });
-        viewHolder.editNote.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                focus = 3;
-                return false;
+            public void onClick(View v) {
+                TrainingProgramModifyActivity.this.finish();
             }
         });
     }
@@ -114,38 +109,8 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
         viewHolder.editGoal.setText(tp.getGoal() );
         viewHolder.editNote.setText(tp.getNote().replace("\\n","\n"));
 
-        switch (focus) {
-            case 1 :
-                viewHolder.editTitle.requestFocus();
-                break;
-            case 2 :
-                viewHolder.editGoal.requestFocus();
-                break;
-            case 3 :
-                viewHolder.editNote.requestFocus();
-                break;
-        }
-
         //绑定配适器
-        final TrainingProgramModifyAdapter tpmAdapter = new TrainingProgramModifyAdapter(tp, tpdbOpenHelper, this);
+        tpmAdapter = new TrainingProgramModifyAdapter(tp, tpdbOpenHelper, this);
         viewHolder.list_tpm.setAdapter(tpmAdapter);
-
-        //保存修改后的数据
-        Button button_save = (Button) findViewById(R.id.button_tpm_save);
-        button_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tpmAdapter.saveModification();
-                TrainingProgramModifyActivity.this.finish();
-            }
-        });
-        //取消返回上一个活动
-        Button button_cancel = (Button) findViewById(R.id.button_tpm_cancel);
-        button_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TrainingProgramModifyActivity.this.finish();
-            }
-        });
     }
 }

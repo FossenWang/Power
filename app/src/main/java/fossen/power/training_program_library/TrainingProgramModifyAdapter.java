@@ -20,7 +20,6 @@ import fossen.power.TrainingProgram;
 
 public class TrainingProgramModifyAdapter extends BaseAdapter {
     private TrainingProgram trainingProgram;
-    private TrainingProgram trainingProgramMod;
     private TPDBOpenHelper tpdbOpenHelper;
     private Context mContext;
     //定义成员变量mTouchItemPosition,用来记录手指触摸的EditText的位置
@@ -28,7 +27,6 @@ public class TrainingProgramModifyAdapter extends BaseAdapter {
 
     public TrainingProgramModifyAdapter(TrainingProgram trainingProgram, TPDBOpenHelper tpdbOpenHelper, Context mContext) {
         this.trainingProgram = trainingProgram;
-        this.trainingProgramMod = trainingProgram;
         this.tpdbOpenHelper = tpdbOpenHelper;
         this.mContext = mContext;
     }
@@ -64,6 +62,7 @@ public class TrainingProgramModifyAdapter extends BaseAdapter {
                     return false;
                 }
             });
+            //监听编辑栏内容
             holder.edit_day.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -71,7 +70,7 @@ public class TrainingProgramModifyAdapter extends BaseAdapter {
                 public void onTextChanged(CharSequence s, int start, int before, int count) {}
                 @Override
                 public void afterTextChanged(Editable s) {
-                    trainingProgramMod.getTrainingDay(position).setTitle(s.toString());
+                    trainingProgram.getTrainingDay(position).setTitle(s.toString());
                 }
             });
             convertView.setTag(holder);
@@ -96,6 +95,6 @@ public class TrainingProgramModifyAdapter extends BaseAdapter {
     }
 
     public void saveModification(){
-        tpdbOpenHelper.updateTrainingProgram(trainingProgramMod);
+        tpdbOpenHelper.updateTrainingProgram(trainingProgram);
     }
 }
