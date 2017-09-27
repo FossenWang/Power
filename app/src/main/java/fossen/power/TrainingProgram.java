@@ -111,7 +111,7 @@ public class TrainingProgram {
         int n =  (Math.round((now.getTimeInMillis()-begin.getTimeInMillis())/(1000*3600*24))
                 + start)%circleDays();
         if(n==0){
-            return 7;
+            return circleDays();
         }else {
             return n;
         }

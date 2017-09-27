@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -16,24 +17,14 @@
             android:id="@+id/edit_tpc_title_mod"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
             android:ems="10"
             android:hint="@string/training_title"
+            android:singleLine="true"
             android:textColor="@color/black"
             android:textSize="21sp" />
-
-        <EditText
-            android:id="@+id/edit_tpc_goal_mod"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:ems="5"
-            android:hint="@string/training_goal"
-            android:textSize="13sp" />
 
         <EditText
             android:id="@+id/edit_tpc_note_mod"
@@ -48,15 +39,44 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
 
-        </FrameLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginStart="16dp"
+                android:gravity="center"
+                android:text="目标:"
+                android:textColor="@color/black"
+                android:textSize="13sp" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/edit_tpc_goal_mod"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginStart="48dp"
+                android:ems="4"
+                android:hint="@string/training_goal"
+                android:textSize="13sp" />
 
+            <ImageView
+                android:id="@+id/button_tpcm_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|end"
+                android:layout_marginEnd="16dp"
+                app:srcCompat="@drawable/ic_add_black_24dp" />
+
+            <TextView
+                android:id="@+id/text_tpcm_circle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|end"
+                android:layout_marginEnd="56dp"
+                android:textSize="13sp" />
         </FrameLayout>
 
     </LinearLayout>
+
 </LinearLayout>

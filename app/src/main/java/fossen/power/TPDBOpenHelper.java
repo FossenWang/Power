@@ -58,7 +58,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
             tp.setId(cursor.getString(cursor.getColumnIndex("id")));
             tp.setName(cursor.getString(cursor.getColumnIndex("name")));
             tp.setGoal(cursor.getString(cursor.getColumnIndex("goal")));
-            tp.addTrainingDay(cursor.getString(cursor.getColumnIndex("day_name")).split(","));
+            tp.addTrainingDay(cursor.getString(cursor.getColumnIndex("day_name")).split(",",-1));
             tp.setStart(cursor.getInt(cursor.getColumnIndex("start")));
             tp.setDate(cursor.getInt(cursor.getColumnIndex("year")),
                     cursor.getInt(cursor.getColumnIndex("month")),
@@ -84,7 +84,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
             tp.setId(cursor.getString(cursor.getColumnIndex("id")));
             tp.setName(cursor.getString(cursor.getColumnIndex("name")));
             tp.setGoal(cursor.getString(cursor.getColumnIndex("goal")));
-            tp.addTrainingDay(cursor.getString(cursor.getColumnIndex("day_name")).split(","));
+            tp.addTrainingDay(cursor.getString(cursor.getColumnIndex("day_name")).split(",",-1));
             tp.setStart(cursor.getInt(cursor.getColumnIndex("start")));
             tp.setDate(cursor.getInt(cursor.getColumnIndex("year")),
                     cursor.getInt(cursor.getColumnIndex("month")),
@@ -133,7 +133,6 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         for(Exercise exercise : sets.getExerciseList()){
             names += (exercise.getName() + ",");
         }
-        names.substring(0,names.length()-1);
         tpdb.execSQL("UPDATE " + programId + " SET exercise = ?"
                         + " WHERE day = ? AND number = ?", new String[]{names,day+"",number+""});
     }
@@ -149,7 +148,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         for(int i = 0; i < trainingProgram.circleDays(); i++){
             dayNames += (trainingProgram.getTrainingDay(i).getTitle() + ",");
         }
-        dayNames.substring(0,dayNames.length()-1);
+        dayNames = dayNames.substring(0,dayNames.length()-1);
 
         tpdb.execSQL("UPDATE program_list " +
                         "SET name = ?, goal = ?, note = ?, day_name = ? " +
@@ -179,7 +178,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
             break;
         }
         tpdb.execSQL("INSERT INTO program_list VALUES (?,?,?,'',0,0,0,0,?)",
-                new String[]{id, name, goal, note,});
+                new String[]{id, name, goal, note});
         tpdb.execSQL("CREATE TABLE " + id + "(day INTEGER, " +
                 "number INTEGER, " +
                 "exercise TEXT, " +

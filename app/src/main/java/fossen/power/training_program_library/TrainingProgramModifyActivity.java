@@ -3,12 +3,12 @@ package fossen.power.training_program_library;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import fossen.power.R;
 import fossen.power.TPDBOpenHelper;
@@ -17,61 +17,38 @@ import fossen.power.TrainingProgram;
 public class TrainingProgramModifyActivity extends AppCompatActivity {
     private TPDBOpenHelper tpdbOpenHelper;
     private TrainingProgram tp;
-    private ViewHolder viewHolder;
     private TrainingProgramModifyAdapter tpmAdapter;
 
-    private static class ViewHolder{
-        ListView list_tpm;
-        View header;
-        EditText editTitle;
-        EditText editGoal;
-        EditText editNote;
-    }
+    private ListView list_tpm;
+    private View header;
+    private EditText editTitle;
+    private EditText editGoal;
+    private EditText editNote;
+    private ImageView add_day;
+    private TextView text_circle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training_program_modify);
 
-        viewHolder = new ViewHolder();
-
         // 给listView添加headerView，用于显示训练方案的基本信息
-        viewHolder.list_tpm = (ListView) findViewById(R.id.list_tpm);
-        viewHolder.header = getLayoutInflater().inflate(R.layout.header_tpc_modification,null);
-        viewHolder.list_tpm.addHeaderView(viewHolder.header);
-        viewHolder.editTitle = (EditText) findViewById(R.id.edit_tpc_title_mod);
-        viewHolder.editGoal = (EditText) findViewById(R.id.edit_tpc_goal_mod);
-        viewHolder.editNote = (EditText) findViewById(R.id.edit_tpc_note_mod);
+        list_tpm = (ListView) findViewById(R.id.list_tpm);
+        header = getLayoutInflater().inflate(R.layout.header_tpc_modification,null);
+        list_tpm.addHeaderView(header);
+        editTitle = (EditText) findViewById(R.id.edit_tpc_title_mod);
+        editGoal = (EditText) findViewById(R.id.edit_tpc_goal_mod);
+        editNote = (EditText) findViewById(R.id.edit_tpc_note_mod);
+        add_day = (ImageView) findViewById(R.id.button_tpcm_add);
+        text_circle = (TextView) findViewById(R.id.text_tpcm_circle);
 
-        //监听编辑文字内容
-        viewHolder.editTitle.addTextChangedListener(new TextWatcher() {
+        //添加新训练日
+        add_day.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override
-            public void afterTextChanged(Editable s) {
-                tp.setName(s.toString());
-            }
-        });
-        viewHolder.editGoal.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override
-            public void afterTextChanged(Editable s) {
-                tp.setGoal(s.toString());
-            }
-        });
-        viewHolder.editNote.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override
-            public void afterTextChanged(Editable s) {
-                tp.setNote(s.toString());
+            public void onClick(View v) {
+                tp.addTrainingDay(1);
+                tpmAdapter.notifyDataSetChanged();
+                text_circle.setText("周期: " + tp.circleDays() + "天");
             }
         });
 
@@ -80,6 +57,9 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
         button_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tp.setName(editTitle.getText().toString());
+                tp.setGoal(editGoal.getText().toString());
+                tp.setNote(editNote.getText().toString());
                 tpmAdapter.saveModification();
                 TrainingProgramModifyActivity.this.finish();
             }
@@ -105,12 +85,13 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
         tp = tpdbOpenHelper.inputTrainingProgram(id);
 
         //设置列表头视图的内容
-        viewHolder.editTitle.setText(tp.getName());
-        viewHolder.editGoal.setText(tp.getGoal() );
-        viewHolder.editNote.setText(tp.getNote().replace("\\n","\n"));
+        editTitle.setText(tp.getName());
+        editGoal.setText(tp.getGoal() );
+        editNote.setText(tp.getNote().replace("\\n","\n"));
+        text_circle.setText("周期: " + tp.circleDays() + "天");
 
         //绑定配适器
         tpmAdapter = new TrainingProgramModifyAdapter(tp, tpdbOpenHelper, this);
-        viewHolder.list_tpm.setAdapter(tpmAdapter);
+        list_tpm.setAdapter(tpmAdapter);
     }
 }

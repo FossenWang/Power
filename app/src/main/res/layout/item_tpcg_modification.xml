@@ -18,10 +18,18 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginStart="16dp"
-            android:ems="10"
+            android:ems="5"
             android:hint="训练日标题"
             android:inputType="text"
             android:singleLine="true" />
+
+        <ImageView
+            android:id="@+id/button_tpcm_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|end"
+            android:layout_marginEnd="16dp"
+            app:srcCompat="@drawable/ic_clear_24dp" />
 
     </FrameLayout>
 
