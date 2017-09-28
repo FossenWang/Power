@@ -1,6 +1,5 @@
 package fossen.power;
 
-import java.util.ArrayList;
 
 /**
  * Created by WXY on 2017/8/12.

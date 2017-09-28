@@ -43,15 +43,15 @@
                     android:gravity="center"
                     android:paddingEnd="8dp"
                     android:paddingStart="8dp"
-                    android:text="动作名动作名"
+                    android:text="选择训练动作"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/button_tpc_delete_sets"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|end"
                     android:layout_marginEnd="8dp"
                     app:srcCompat="@drawable/ic_clear_24dp" />
             </FrameLayout>
@@ -92,7 +92,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" RM    × "
+                android:text=" RM  × "
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 
@@ -123,7 +123,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="间歇 "
+                android:text="休息"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 
@@ -133,6 +133,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:inputType="number"
+                android:text="0"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 
@@ -149,6 +150,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:inputType="number"
+                android:text="0"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 

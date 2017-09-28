@@ -7,31 +7,26 @@ CREATE TABLE IF NOT EXISTS `tp3` (
 	`sets`	INTEGER,
 	`reps`	TEXT,
 	`rest`	INTEGER,
-	`structure`	INTEGER
+	`structure`	TEXT
 );
-INSERT INTO `tp3` VALUES (1,0,'','','','','');
-INSERT INTO `tp3` VALUES (2,0,'','','','','');
-INSERT INTO `tp3` VALUES (3,0,'','','','','');
-INSERT INTO `tp3` VALUES (4,0,'','','','','');
-INSERT INTO `tp3` VALUES (5,1,'深蹲',3,'8-12',120,'normal');
-INSERT INTO `tp3` VALUES (5,2,'硬拉',3,'8-12',120,'normal');
-INSERT INTO `tp3` VALUES (5,3,'卧推',3,'8-12',120,'normal');
-INSERT INTO `tp3` VALUES (5,4,'器械腿推',3,'8-12',120,'normal');
+INSERT INTO `tp3` VALUES (5,1,'深蹲',3,'8~12',120,'normal');
+INSERT INTO `tp3` VALUES (5,2,'硬拉',3,'8~12',120,'normal');
+INSERT INTO `tp3` VALUES (5,3,'卧推',3,'8~12',120,'normal');
+INSERT INTO `tp3` VALUES (5,4,'器械腿推',3,'8~12',120,'normal');
 INSERT INTO `tp3` VALUES (5,5,'杠铃划船,阔背下拉',3,'8-12',120,'normal');
-INSERT INTO `tp3` VALUES (5,6,'哑铃侧平举',3,'10-15',60,'normal');
-INSERT INTO `tp3` VALUES (5,7,'站立小腿举',3,'10-15',60,'normal');
-INSERT INTO `tp3` VALUES (5,8,'仰卧臂屈伸',3,'10-15',60,'normal');
+INSERT INTO `tp3` VALUES (5,6,'哑铃侧平举',3,'10~15',60,'normal');
+INSERT INTO `tp3` VALUES (5,7,'站立小腿举',3,'10~15',60,'normal');
+INSERT INTO `tp3` VALUES (5,8,'仰卧臂屈伸',3,'10~15',60,'normal');
 INSERT INTO `tp3` VALUES (5,9,'哑铃弯举,杠铃弯举',3,'10-15',60,'normal');
-INSERT INTO `tp3` VALUES (6,0,'','','','','');
-INSERT INTO `tp3` VALUES (7,1,'深蹲',3,'8-12',120,'normal');
-INSERT INTO `tp3` VALUES (7,2,'硬拉',3,'8-12',120,'normal');
-INSERT INTO `tp3` VALUES (7,3,'杠铃肩推',3,'8-12',120,'normal');
-INSERT INTO `tp3` VALUES (7,4,'哑铃弓步',3,'10-15',60,'normal');
-INSERT INTO `tp3` VALUES (7,5,'杠铃划船',3,'8-12',120,'normal');
-INSERT INTO `tp3` VALUES (7,6,'器械飞鸟',3,'10-15',60,'normal');
-INSERT INTO `tp3` VALUES (7,7,'坐姿小腿举',3,'8-12',120,'normal');
-INSERT INTO `tp3` VALUES (7,8,'绳索下压',3,'10-15',60,'normal');
-INSERT INTO `tp3` VALUES (7,9,'锤式弯举',3,'10-15',60,'normal');
+INSERT INTO `tp3` VALUES (7,1,'深蹲',3,'8~12',120,'normal');
+INSERT INTO `tp3` VALUES (7,2,'硬拉',3,'8~12',120,'normal');
+INSERT INTO `tp3` VALUES (7,3,'杠铃肩推',3,'8~12',120,'normal');
+INSERT INTO `tp3` VALUES (7,4,'哑铃弓步',3,'10~15',60,'normal');
+INSERT INTO `tp3` VALUES (7,5,'杠铃划船',3,'8~12',120,'normal');
+INSERT INTO `tp3` VALUES (7,6,'器械飞鸟',3,'10~15',60,'normal');
+INSERT INTO `tp3` VALUES (7,7,'坐姿小腿举',3,'8~12',120,'normal');
+INSERT INTO `tp3` VALUES (7,8,'绳索下压',3,'10~15',60,'normal');
+INSERT INTO `tp3` VALUES (7,9,'锤式弯举',3,'10~15',60,'normal');
 DROP TABLE IF EXISTS `program_list`;
 CREATE TABLE IF NOT EXISTS `program_list` (
 	`id`	TEXT,

@@ -68,6 +68,9 @@ public class Sets {
         }
         return allSets.substring(0,allSets.length()-1);
     }
+    public void clearSets(){
+        setList.clear();
+    }
 
     //添加，获取，移除，替换动作
 

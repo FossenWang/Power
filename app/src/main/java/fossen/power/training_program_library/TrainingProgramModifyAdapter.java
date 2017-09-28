@@ -1,19 +1,24 @@
 package fossen.power.training_program_library;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import fossen.power.R;
 import fossen.power.TPDBOpenHelper;
+import fossen.power.TrainingDay;
 import fossen.power.TrainingProgram;
 
 /**
@@ -60,17 +65,35 @@ public class TrainingProgramModifyAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.edit_day = (EditText) convertView.findViewById(R.id.edit_tpc_day_mod);
             holder.delete_day = (ImageView) convertView.findViewById(R.id.button_tpcm_delete);
+            holder.drag_view = (ImageView) convertView.findViewById(R.id.button_tpcm_drag);
+            holder.in_tdm = (TextView) convertView.findViewById(R.id.in_tdm);
             convertView.setTag(holder);
         }else {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        holder.in_tdm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //进入训练日修改Activity
+                saveModification();
+                Intent intent = new Intent(mContext,TrainingDayModifyActivity.class);
+                intent.putExtra("id",trainingProgram.getId());
+                intent.putExtra("dayIndex", pos);
+                mContext.startActivity(intent);
+            }
+        });
+
         //设置删除按钮
         holder.delete_day.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trainingProgram.removeTrainingDay(pos);
-                notifyDataSetChanged();
+                if(trainingProgram.circleDays()>1){
+                    trainingProgram.removeTrainingDay(pos);
+                    notifyDataSetChanged();
+                }else {
+                    Toast.makeText(mContext,R.string.cant_delete_last_training_day,Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -93,7 +116,6 @@ public class TrainingProgramModifyAdapter extends BaseAdapter {
         holder.edit_day.addTextChangedListener(watcher);
         holder.edit_day.setTag(watcher);
 
-
         //记录焦点位置
         holder.edit_day.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -108,12 +130,15 @@ public class TrainingProgramModifyAdapter extends BaseAdapter {
             holder.edit_day.requestFocus();
             holder.edit_day.setSelection(holder.edit_day.getText().length());
         }
+
         return convertView;
     }
 
     private static class ViewHolder{
         EditText edit_day;
         ImageView delete_day;
+        ImageView drag_view;
+        TextView in_tdm;
     }
 
     //保存修改

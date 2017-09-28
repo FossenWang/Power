@@ -11,6 +11,7 @@
     <string name="note">说明</string>
     <string name="training_title">训练标题</string>
     <string name="training_goal">训练目标</string>
+    <string name="cant_delete_last_training_day">不能删除最后一个训练日</string>
 
     <string name="title_training_today">今日训练</string>
     <string name="text_start_training">开始今日的训练</string>

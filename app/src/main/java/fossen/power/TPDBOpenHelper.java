@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by Administrator on 2017/9/16.
@@ -97,15 +98,20 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         for(int day = 1; day<=tp.circleDays();day++){
             cursor = tpdb.rawQuery("SELECT * FROM "+id+" WHERE day = ? ORDER BY number",new String[]{Integer.toString(day)});
             td = tp.getTrainingDay(day-1);
-            while (cursor.moveToNext()) {
-                sets = new Sets();
-                sets.addSet(cursor.getInt(cursor.getColumnIndex("sets")));
-                sets.setExerciseList(cursor.getString(cursor.getColumnIndex("exercise")).split(","));
-                sets.setRest(cursor.getInt(cursor.getColumnIndex("rest")));
-                sets.setRepmax(cursor.getString(cursor.getColumnIndex("reps")));
-                sets.setStructure(cursor.getString(cursor.getColumnIndex("structure")));
-                td.setRestDay(cursor.getInt(cursor.getColumnIndex("number"))==0);//待优化
-                td.addSets(sets);
+            if(cursor.moveToFirst()){//有组集Sets记录则为训练日，无则为休息日
+                td.setRestDay(false);
+                cursor.moveToPrevious();
+                while (cursor.moveToNext()) {
+                    sets = new Sets();
+                    sets.addSet(cursor.getInt(cursor.getColumnIndex("sets")));
+                    sets.setExerciseList(cursor.getString(cursor.getColumnIndex("exercise")).split(","));
+                    sets.setRest(cursor.getInt(cursor.getColumnIndex("rest")));
+                    sets.setRepmax(cursor.getString(cursor.getColumnIndex("reps")));
+                    sets.setStructure(cursor.getString(cursor.getColumnIndex("structure")));
+                    td.addSets(sets);
+                }
+            }else {
+                td.setRestDay(true);
             }
             cursor.close();
         }
@@ -114,7 +120,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
 
     //更新训练方案的使用状态
     public void updateStartDate(TrainingProgram trainingProgram){
-        SQLiteDatabase tpdb = this.getReadableDatabase();
+        SQLiteDatabase tpdb = this.getWritableDatabase();
         String start = Integer.toString(trainingProgram.getStart());
         String year = Integer.toString(trainingProgram.getYear());
         String month = Integer.toString(trainingProgram.getMonth());
@@ -128,7 +134,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
 
     //更新组集中的动作
     public void updateExercise(String programId, int day, int number, Sets sets){
-        SQLiteDatabase tpdb = this.getReadableDatabase();
+        SQLiteDatabase tpdb = this.getWritableDatabase();
         String names = "";
         for(Exercise exercise : sets.getExerciseList()){
             names += (exercise.getName() + ",");
@@ -139,7 +145,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
 
     //更新训练计划
     public void updateTrainingProgram(TrainingProgram trainingProgram){
-        SQLiteDatabase tpdb = this.getReadableDatabase();
+        SQLiteDatabase tpdb = this.getWritableDatabase();
         String name = trainingProgram.getName();
         String goal = trainingProgram.getGoal();
         String note= trainingProgram.getNote();
@@ -150,35 +156,62 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         }
         dayNames = dayNames.substring(0,dayNames.length()-1);
 
+        //更新program_list
         tpdb.execSQL("UPDATE program_list " +
                         "SET name = ?, goal = ?, note = ?, day_name = ? " +
                         "WHERE id = ?",
                 new String[]{name, goal, note, dayNames, id});
+
+        //更新id表单，先删除所有记录，再写入所有记录
+        tpdb.execSQL("DELETE FROM " + id);
+        for(int day = 1; day<=trainingProgram.circleDays();day++){
+            TrainingDay trainingDay = trainingProgram.getTrainingDay(day-1);
+            if(trainingDay.numberOfSets()>0){
+                for(int i = 0; i<trainingDay.numberOfSets(); i++) {
+                    Sets sets = trainingDay.getSets(i);
+                    String[] values = {
+                            Integer.toString(day),
+                            Integer.toString(i+1),
+                            sets.getExercise(0).getName(),
+                            Integer.toString(sets.numberOfSingleSets()),
+                            sets.getRepmax(),
+                            Integer.toString(sets.getRest())
+                    };
+                    tpdb.execSQL("INSERT INTO " + id + " VALUES (?,?,?,?,?,?,'')",values);
+                }
+            }
+        }
+    }
+
+    //更新训练日
+    public void updateTrainingDay(String id, int day, TrainingDay trainingDay){
+        SQLiteDatabase tpdb = this.getWritableDatabase();
+        Sets sets;
+        tpdb.execSQL("DELETE FROM " + id + " WHERE day = ?",new String[]{Integer.toString(day)});
+        if(trainingDay.numberOfSets()>0){
+            for(int i = 0; i<trainingDay.numberOfSets(); i++) {
+                sets = trainingDay.getSets(i);
+                String[] values = {
+                        Integer.toString(day),
+                        Integer.toString(i+1),
+                        sets.getExercise(0).getName(),
+                        Integer.toString(sets.numberOfSingleSets()),
+                        sets.getRepmax(),
+                        Integer.toString(sets.getRest())
+                };
+                tpdb.execSQL("INSERT INTO " + id + " VALUES (?,?,?,?,?,?,'')",values);
+            }
+        }
     }
 
     //创建新的训练计划
     public String createTrainingProgram(TrainingProgram trainingProgram){
-        SQLiteDatabase tpdb = this.getReadableDatabase();
+        SQLiteDatabase tpdb = this.getWritableDatabase();
         String name = trainingProgram.getName();
-        String goal = trainingProgram.getGoal();
-        String note= trainingProgram.getNote();
-        String id;
-        Cursor cursor = tpdb.rawQuery("SELECT id FROM program_list ORDER BY id",null);
-        ArrayList<String> idList = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            idList.add(cursor.getString(cursor.getColumnIndex("id")));
-        }
-        loop:for(int i = 1; true; i++){
-            for (String s: idList) {
-                if (("tp" + i).equals(s)) {
-                    continue loop;
-                }
-            }
-            id = "tp" + i;
-            break;
-        }
-        tpdb.execSQL("INSERT INTO program_list VALUES (?,?,?,'',0,0,0,0,?)",
-                new String[]{id, name, goal, note});
+        String id = "tp" + Calendar.getInstance().getTimeInMillis();
+
+        tpdb.execSQL("INSERT INTO program_list VALUES (?,?,'','',0,0,0,0,'')",
+                new String[]{id, name});
         tpdb.execSQL("CREATE TABLE " + id + "(day INTEGER, " +
                 "number INTEGER, " +
                 "exercise TEXT, " +
@@ -186,13 +219,12 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
                 "reps TEXT, " +
                 "rest INTEGER, " +
                 "structure INTEGER)");
-        tpdb.execSQL("INSERT INTO " + id + " VALUES (1,0,'','','','','')");
     return id;
     }
 
     //删除指定训练计划
     public void deleteTrainingProgram(String id){
-        SQLiteDatabase tpdb = this.getReadableDatabase();
+        SQLiteDatabase tpdb = this.getWritableDatabase();
         tpdb.execSQL("DROP TABLE " + id);
         tpdb.execSQL("DELETE FROM program_list WHERE id = ?", new String[]{id});
     }

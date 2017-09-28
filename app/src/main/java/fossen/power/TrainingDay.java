@@ -8,7 +8,7 @@ import java.util.Calendar;
  */
 //自建数据类TrainingDay包含一个训练日的训练内容
 public class TrainingDay {
-    private ArrayList<Sets> sList = new ArrayList<Sets>();//声明动作列表
+    private ArrayList<Sets> sList = new ArrayList<Sets>();//声明组集列表
     private String title = "";//训练日标题
     private int year = 0;
     private int month = 0;
@@ -20,7 +20,7 @@ public class TrainingDay {
         this.title = title;
     }
 
-    //向列表尾端添加动作
+    //向列表尾端添加组集
     public void addSets(Sets sets){
         sList.add(sets);
     }
@@ -28,17 +28,21 @@ public class TrainingDay {
     public void addSets(int index,Sets sets){
         sList.add(index,sets);
     }
-    //按下标返回一个动作
+    //按下标返回一个组集
     public Sets getSets(int index){
         return sList.get(index);
     }
-    //按下标移除一个动作
+    //按下标移除一个组集
     public Sets removeSets(int index){
         return sList.remove(index);
     }
-    //替换某位置的动作
+    //替换某位置的组集
     public Sets replaceSets(int index,Sets sets){
         return sList.set(index, sets);
+    }
+    //清空组集
+    public void clearSets(){
+        sList.clear();
     }
     //返回组集总数
     public int numberOfSets(){
