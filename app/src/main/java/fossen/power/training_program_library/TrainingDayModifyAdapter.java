@@ -32,16 +32,22 @@ public class TrainingDayModifyAdapter extends BaseAdapter {
     private int dayIndex;
     private TrainingDay trainingDay;
     private TPDBOpenHelper tpdbOpenHelper;
+    private TextView text_day;
+    private TextView text_count;
     private Context mContext;
     //定义成员变量mTouchItemPosition,用来记录手指触摸的EditText的位置
     private int mTouchItemPosition = -1;
     private int mTouchItemEdit = -1;
 
-    public TrainingDayModifyAdapter(String id, int dayIndex, TrainingDay trainingDay, TPDBOpenHelper tpdbOpenHelper, Context mContext){
+    public TrainingDayModifyAdapter(String id, int dayIndex, TrainingDay trainingDay,
+                                    TPDBOpenHelper tpdbOpenHelper,TextView text_day,
+                                    TextView text_count, Context mContext){
         this.id = id;
         this.dayIndex = dayIndex;
         this.trainingDay = trainingDay;
         this.tpdbOpenHelper = tpdbOpenHelper;
+        this.text_day = text_day;
+        this.text_count = text_count;
         this.mContext = mContext;
     }
 
@@ -66,7 +72,7 @@ public class TrainingDayModifyAdapter extends BaseAdapter {
         final int pos = position;
         final Sets sets = trainingDay.getSets(pos);
         final String rapmax[] = new String[]{"0","0"};
-        if(sets.getRepmax()!=""){
+        if(!sets.getRepmax().equals("")){
             rapmax[0] = sets.getRepmax().split("~")[0];
             rapmax[1] = sets.getRepmax().split("~")[1];
         }
@@ -141,8 +147,17 @@ public class TrainingDayModifyAdapter extends BaseAdapter {
         holder.button_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    trainingDay.removeSets(pos);
-                    notifyDataSetChanged();
+                trainingDay.removeSets(pos);
+                notifyDataSetChanged();
+                //设置列表头视图的内容
+                if(trainingDay.isRestDay()){
+                    text_day.setText((dayIndex+1) + "  休息: " + trainingDay.getTitle());
+                    text_count.setText("");
+                }else{
+                    text_day.setText((dayIndex+1) + "  训练: " + trainingDay.getTitle());
+                    text_count.setText(trainingDay.numberOfExercise() + "个动作  "
+                            + trainingDay.numberOfSingleSets() + "组");
+                }
             }
         });
 
@@ -204,9 +219,13 @@ public class TrainingDayModifyAdapter extends BaseAdapter {
             public void afterTextChanged(Editable s) {
                 if(s.toString().isEmpty()){
                     sets.clearSets();
+                    text_count.setText(trainingDay.numberOfExercise() + "个动作  "
+                            + trainingDay.numberOfSingleSets() + "组");
                 }else {
                     sets.clearSets();
                     sets.addSet(Integer.parseInt(s.toString()));
+                    text_count.setText(trainingDay.numberOfExercise() + "个动作  "
+                            + trainingDay.numberOfSingleSets() + "组");
                 }
             }
         };

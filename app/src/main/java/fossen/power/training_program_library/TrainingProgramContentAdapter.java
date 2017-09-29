@@ -125,7 +125,7 @@ public class TrainingProgramContentAdapter extends BaseExpandableListAdapter {
         final Sets sets = trainingProgram.getTrainingDay(groupPosition).getSets(childPosition);
         childHolder.text_exercise.setText(sets.getExercise(0).getName());
         childHolder.text_sets.setText(sets.getRepmax() + " RM × " + sets.numberOfSingleSets());
-        childHolder.text_rest.setText(sets.getRestSting());
+        childHolder.text_rest.setText("休息: " + sets.getRestSting());
 
         //单击进入动作形式Activity
         childHolder.layout_sets.setOnClickListener(new View.OnClickListener() {

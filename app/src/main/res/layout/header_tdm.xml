@@ -21,7 +21,7 @@
             android:layout_marginStart="16dp"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:text="1   训练日"
+            android:text="1  训练日"
             android:textColor="@color/black"
             android:textSize="17sp" />
 

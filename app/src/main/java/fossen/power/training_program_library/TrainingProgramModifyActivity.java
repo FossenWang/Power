@@ -125,7 +125,7 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
         text_circle.setText("周期: " + tp.circleDays() + "天");
 
         //绑定配适器
-        tpmAdapter = new TrainingProgramModifyAdapter(tp, tpdbOpenHelper, this);
+        tpmAdapter = new TrainingProgramModifyAdapter(tp, tpdbOpenHelper, text_circle, this);
         list_tpm.setAdapter(tpmAdapter);
     }
 }

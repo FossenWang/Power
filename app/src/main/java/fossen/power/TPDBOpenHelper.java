@@ -98,20 +98,14 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         for(int day = 1; day<=tp.circleDays();day++){
             cursor = tpdb.rawQuery("SELECT * FROM "+id+" WHERE day = ? ORDER BY number",new String[]{Integer.toString(day)});
             td = tp.getTrainingDay(day-1);
-            if(cursor.moveToFirst()){//有组集Sets记录则为训练日，无则为休息日
-                td.setRestDay(false);
-                cursor.moveToPrevious();
-                while (cursor.moveToNext()) {
-                    sets = new Sets();
-                    sets.addSet(cursor.getInt(cursor.getColumnIndex("sets")));
-                    sets.setExerciseList(cursor.getString(cursor.getColumnIndex("exercise")).split(","));
-                    sets.setRest(cursor.getInt(cursor.getColumnIndex("rest")));
-                    sets.setRepmax(cursor.getString(cursor.getColumnIndex("reps")));
-                    sets.setStructure(cursor.getString(cursor.getColumnIndex("structure")));
-                    td.addSets(sets);
-                }
-            }else {
-                td.setRestDay(true);
+            while (cursor.moveToNext()) {//有组集Sets记录则为训练日，无则为休息日
+                sets = new Sets();
+                sets.addSet(cursor.getInt(cursor.getColumnIndex("sets")));
+                sets.setExerciseList(cursor.getString(cursor.getColumnIndex("exercise")).split(","));
+                sets.setRest(cursor.getInt(cursor.getColumnIndex("rest")));
+                sets.setRepmax(cursor.getString(cursor.getColumnIndex("reps")));
+                sets.setStructure(cursor.getString(cursor.getColumnIndex("structure")));
+                td.addSets(sets);
             }
             cursor.close();
         }
@@ -166,7 +160,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         tpdb.execSQL("DELETE FROM " + id);
         for(int day = 1; day<=trainingProgram.circleDays();day++){
             TrainingDay trainingDay = trainingProgram.getTrainingDay(day-1);
-            if(trainingDay.numberOfSets()>0){
+            if(!trainingDay.isRestDay()){
                 for(int i = 0; i<trainingDay.numberOfSets(); i++) {
                     Sets sets = trainingDay.getSets(i);
                     String[] values = {
@@ -191,10 +185,15 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         if(trainingDay.numberOfSets()>0){
             for(int i = 0; i<trainingDay.numberOfSets(); i++) {
                 sets = trainingDay.getSets(i);
+                String exerciseNames = "";
+                for(int j = 0; j < sets.getExerciseList().size(); j++){
+                    exerciseNames += (sets.getExercise(j).getName()+ ",");
+                }
+                exerciseNames = exerciseNames.substring(0,exerciseNames.length()-1);
                 String[] values = {
                         Integer.toString(day),
                         Integer.toString(i+1),
-                        sets.getExercise(0).getName(),
+                        exerciseNames,
                         Integer.toString(sets.numberOfSingleSets()),
                         sets.getRepmax(),
                         Integer.toString(sets.getRest())

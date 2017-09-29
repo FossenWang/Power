@@ -3,54 +3,77 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/layout_tpcgm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"
         android:background="@drawable/ripple_itpc_sets"
-        android:elevation="2dp">
+        android:elevation="2dp"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/button_tpcm_drag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="8dp"
-            app:srcCompat="@drawable/ic_menu_24dp" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/edit_tpc_day_mod"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginStart="32dp"
-            android:ems="5"
-            android:hint="训练日标题"
-            android:inputType="text"
-            android:singleLine="true"
-            android:textSize="17sp" />
+            <TextView
+                android:id="@+id/text_tpcm_day"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:gravity="center"
+                android:text="1  休息: "
+                android:textColor="@color/black"
+                android:textSize="17sp" />
 
-        <TextView
+            <EditText
+                android:id="@+id/edit_tpcm_day"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="80dp"
+                android:ems="5"
+                android:hint="@string/training_day_title"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textSize="17sp" />
+
+            <ImageView
+                android:id="@+id/button_tpcm_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|end"
+                android:layout_marginEnd="16dp"
+                app:srcCompat="@drawable/ic_clear_24dp" />
+        </FrameLayout>
+
+        <LinearLayout
             android:id="@+id/in_tdm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|end"
-            android:layout_marginEnd="56dp"
-            android:text="训练详情"
-            android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:layout_marginStart="16dp"
+            android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/button_tpcm_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|end"
-            android:layout_marginEnd="16dp"
-            app:srcCompat="@drawable/ic_clear_24dp" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                app:srcCompat="@drawable/ic_mode_edit_24dp" />
 
-    </FrameLayout>
+            <TextView
+                android:id="@+id/text_tpcm_count"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:text="n个动作  m组"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

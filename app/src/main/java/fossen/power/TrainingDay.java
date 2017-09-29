@@ -8,12 +8,12 @@ import java.util.Calendar;
  */
 //自建数据类TrainingDay包含一个训练日的训练内容
 public class TrainingDay {
-    private ArrayList<Sets> sList = new ArrayList<Sets>();//声明组集列表
+    //声明组集列表,空列表即为休息日
+    private ArrayList<Sets> sList = new ArrayList<Sets>();
     private String title = "";//训练日标题
     private int year = 0;
     private int month = 0;
     private int day = 0;
-    private boolean restDay = true;
 
     public TrainingDay(){}
     public TrainingDay(String title){
@@ -83,10 +83,7 @@ public class TrainingDay {
     public int getDay(){
         return day;
     }
-    public void setRestDay(boolean restDay) {
-        this.restDay = restDay;
-    }
     public boolean isRestDay() {
-        return restDay;
+        return sList.size()==0;
     }
 }

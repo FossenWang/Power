@@ -2,14 +2,12 @@ package fossen.power.training_program_library;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,7 +16,6 @@ import android.widget.Toast;
 
 import fossen.power.R;
 import fossen.power.TPDBOpenHelper;
-import fossen.power.TrainingDay;
 import fossen.power.TrainingProgram;
 
 /**
@@ -28,13 +25,17 @@ import fossen.power.TrainingProgram;
 public class TrainingProgramModifyAdapter extends BaseAdapter {
     private TrainingProgram trainingProgram;
     private TPDBOpenHelper tpdbOpenHelper;
+    private TextView text_circle;
     private Context mContext;
     //定义成员变量mTouchItemPosition,用来记录手指触摸的EditText的位置
     private int mTouchItemPosition = -1;
 
-    public TrainingProgramModifyAdapter(TrainingProgram trainingProgram, TPDBOpenHelper tpdbOpenHelper, Context mContext) {
+    public TrainingProgramModifyAdapter(TrainingProgram trainingProgram,
+                                        TPDBOpenHelper tpdbOpenHelper,
+                                        TextView text_circle, Context mContext) {
         this.trainingProgram = trainingProgram;
         this.tpdbOpenHelper = tpdbOpenHelper;
+        this.text_circle = text_circle;
         this.mContext = mContext;
     }
 
@@ -63,13 +64,25 @@ public class TrainingProgramModifyAdapter extends BaseAdapter {
                     LayoutInflater.from(mContext).inflate(
                             R.layout.item_tpcg_modification, parent, false);
             holder = new ViewHolder();
-            holder.edit_day = (EditText) convertView.findViewById(R.id.edit_tpc_day_mod);
+            holder.edit_day = (EditText) convertView.findViewById(R.id.edit_tpcm_day);
             holder.delete_day = (ImageView) convertView.findViewById(R.id.button_tpcm_delete);
-            holder.drag_view = (ImageView) convertView.findViewById(R.id.button_tpcm_drag);
-            holder.in_tdm = (TextView) convertView.findViewById(R.id.in_tdm);
+            holder.in_tdm = convertView.findViewById(R.id.in_tdm);
+            holder.text_day = (TextView) convertView.findViewById(R.id.text_tpcm_day);
+            holder.text_count = (TextView) convertView.findViewById(R.id.text_tpcm_count);
             convertView.setTag(holder);
         }else {
             holder = (ViewHolder) convertView.getTag();
+        }
+
+        if(trainingProgram.getTrainingDay(position).isRestDay()){
+            holder.text_day.setText((position+1) + "  休息: ");
+            holder.text_count.setText("添加动作");
+        }else {
+            holder.text_day.setText((position + 1) + "  训练: ");
+            holder.text_count.setText(trainingProgram.getTrainingDay(position).numberOfExercise()
+                    + "个动作  "
+                    + trainingProgram.getTrainingDay(position).numberOfSingleSets()
+                    + "组");
         }
 
         holder.in_tdm.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +104,8 @@ public class TrainingProgramModifyAdapter extends BaseAdapter {
                 if(trainingProgram.circleDays()>1){
                     trainingProgram.removeTrainingDay(pos);
                     notifyDataSetChanged();
+                    //更新列表头的信息
+                    text_circle.setText("周期: " + trainingProgram.circleDays() + "天");
                 }else {
                     Toast.makeText(mContext,R.string.cant_delete_last_training_day,Toast.LENGTH_SHORT).show();
                 }
@@ -137,8 +152,9 @@ public class TrainingProgramModifyAdapter extends BaseAdapter {
     private static class ViewHolder{
         EditText edit_day;
         ImageView delete_day;
-        ImageView drag_view;
-        TextView in_tdm;
+        View in_tdm;
+        TextView text_day;
+        TextView text_count;
     }
 
     //保存修改

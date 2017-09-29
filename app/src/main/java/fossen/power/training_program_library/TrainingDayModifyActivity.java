@@ -44,17 +44,6 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
         button_save = (Button) findViewById(R.id.button_tdm_save);
         button_cancel = (Button) findViewById(R.id.button_tdm_cancel);
 
-        //添加新组集
-        button_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                td.addSets(new Sets());
-                tdmAdapter.notifyDataSetChanged();
-                text_count.setText(td.numberOfExercise() + "个动作  "
-                        + td.numberOfSingleSets() + "组");
-            }
-        });
-
         //保存修改后的数据
         button_save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +69,7 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
         //加载训练方案
         Intent intent = getIntent();
         String id = intent.getStringExtra("id");
-        int index = intent.getIntExtra("dayIndex", 0);
+        final int index = intent.getIntExtra("dayIndex", 0);
         tpdbOpenHelper = new TPDBOpenHelper(this);
         tp = tpdbOpenHelper.inputTrainingProgram(id);
         td = tp.getTrainingDay(index);
@@ -94,9 +83,24 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
             text_count.setText(td.numberOfExercise() + "个动作  "
                     + td.numberOfSingleSets() + "组");
         }
-
+        //添加新组集
+        button_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                td.addSets(new Sets());
+                tdmAdapter.notifyDataSetChanged();
+                if(td.isRestDay()){
+                    text_day.setText((index+1) + "  休息: " + td.getTitle());
+                    text_count.setText("");
+                }else{
+                    text_day.setText((index+1) + "  训练: " + td.getTitle());
+                    text_count.setText(td.numberOfExercise() + "个动作  "
+                            + td.numberOfSingleSets() + "组");
+                }
+            }
+        });
         //绑定配适器
-        tdmAdapter = new TrainingDayModifyAdapter(id, index, td, tpdbOpenHelper, this);
+        tdmAdapter = new TrainingDayModifyAdapter(id, index, td, tpdbOpenHelper, text_day, text_count, this);
         list_tdm.setAdapter(tdmAdapter);
     }
 }

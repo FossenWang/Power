@@ -10,6 +10,7 @@
     <string name="modification">修改</string>
     <string name="note">说明</string>
     <string name="training_title">训练标题</string>
+    <string name="training_day_title">训练日标题</string>
     <string name="training_goal">训练目标</string>
     <string name="cant_delete_last_training_day">不能删除最后一个训练日</string>
 

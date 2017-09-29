@@ -51,7 +51,7 @@
                 android:id="@+id/text_tpc_sets"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="40dp"
                 android:gravity="center"
                 android:text="10~12 RM × 10 组"
                 android:textColor="@color/black"
