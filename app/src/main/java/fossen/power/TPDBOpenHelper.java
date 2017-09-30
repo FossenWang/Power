@@ -23,6 +23,10 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         super(context, "training_program.db", null, 1);
         tpContext = context;
     }
+    /*public TPDBOpenHelper(boolean buffer, Context context){
+        super(context, "training_program_buffer.db", null, 1);
+        tpContext = context;
+    }*/
 
     @Override
     //数据库第一次创建时被调用

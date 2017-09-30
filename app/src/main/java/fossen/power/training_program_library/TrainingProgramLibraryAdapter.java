@@ -112,9 +112,26 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
 
         //点击按钮弹出对话框，选择训练开始的天数
         holder.button.setOnClickListener(new View.OnClickListener() {
+            private AlertDialog dialog_stop;
+            private AlertDialog dialog_start;
+
             @Override
             public void onClick(View v) {
                 if(program.getStart()!=0){
+                    if(dialog_stop == null){
+                        dialog_stop = createDialog(0);
+                    }
+                    dialog_stop.show();
+                }else {
+                    if(dialog_start == null){
+                        dialog_start = createDialog(1);
+                    }
+                    dialog_start.show();
+                }
+            }
+
+            private AlertDialog createDialog(int type){
+                if(type == 0){
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setTitle("确定要停止训练吗？")
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -129,40 +146,36 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.cancel();
                                 }});
-                    builder.create().show();
+                    return builder.create();
                 }else {
-                    showDialog();
+                    String[] days = new String[program.circleDays()];
+                    final int[] start = {1};
+                    for(int i = 0; i<program.circleDays(); i++){
+                        days[i] = Integer.toString(i+1)+ "  " + program.getTrainingDay(i).getTitle();
+                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("请选择今天的训练：")
+                            .setSingleChoiceItems(days, 0, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    start[0] = (which+1);
+                                }})
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    program.setStart(start[0]);
+                                    program.setDate(Calendar.getInstance());
+                                    tpdbOpenHelper.updateStartDate(program);
+                                    notifyDataSetChanged();
+                                }})
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                    return builder.create();
                 }
-            }
-
-            private void showDialog(){
-                String[] days = new String[program.circleDays()];
-                final int[] start = {1};
-                for(int i = 0; i<program.circleDays(); i++){
-                    days[i] = Integer.toString(i+1)+ "  " + program.getTrainingDay(i).getTitle();
-                }
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle("请选择今天的训练：")
-                        .setSingleChoiceItems(days, 0, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                start[0] = (which+1);
-                            }})
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                program.setStart(start[0]);
-                                program.setDate(Calendar.getInstance());
-                                tpdbOpenHelper.updateStartDate(program);
-                                notifyDataSetChanged();
-                            }})
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                builder.create().show();
             }
         });
 

@@ -1,5 +1,7 @@
 package fossen.power.training_program_library;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,7 +21,9 @@ import fossen.power.TrainingProgram;
 public class TrainingProgramModifyActivity extends AppCompatActivity {
     private TPDBOpenHelper tpdbOpenHelper;
     private TrainingProgram tp;
+    private TrainingProgram backUpTp;
     private TrainingProgramModifyAdapter tpmAdapter;
+    private String id;
 
     private ListView list_tpm;
     private View header;
@@ -28,13 +32,18 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
     private EditText editNote;
     private ImageView button_add;
     private TextView text_circle;
-    Button button_save;
-    Button button_cancel;
+    private Button button_save;
+    private Button button_cancel;
+    private AlertDialog dialog_cancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training_program_modify);
+
+        //获取训练方案id
+        Intent intent = getIntent();
+        id = intent.getStringExtra("id");
 
         // 给listView添加headerView，用于显示训练方案的基本信息
         list_tpm = (ListView) findViewById(R.id.list_tpm);
@@ -67,11 +76,27 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
             }
         });
 
+        //建立确认不保存的对话框
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("直接退出将丢失所有已更改的方案内容，确定不保存吗？")
+                .setPositiveButton("不保存", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        tpdbOpenHelper.updateTrainingProgram(backUpTp);
+                        TrainingProgramModifyActivity.this.finish();
+                    }})
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }});
+        dialog_cancel = builder.create();
+
         //取消返回上一个活动
         button_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TrainingProgramModifyActivity.this.finish();
+                dialog_cancel.show();
             }
         });
 
@@ -113,9 +138,10 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
         super.onStart();
 
         //加载训练方案
-        Intent intent = getIntent();
-        String id = intent.getStringExtra("id");
-        tpdbOpenHelper = new TPDBOpenHelper(this);
+        if(tpdbOpenHelper == null){
+            tpdbOpenHelper = new TPDBOpenHelper(this);
+            backUpTp = tpdbOpenHelper.inputTrainingProgram(id);
+        }
         tp = tpdbOpenHelper.inputTrainingProgram(id);
 
         //设置列表头视图的内容
@@ -127,5 +153,11 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
         //绑定配适器
         tpmAdapter = new TrainingProgramModifyAdapter(tp, tpdbOpenHelper, text_circle, this);
         list_tpm.setAdapter(tpmAdapter);
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        tpdbOpenHelper.close();
     }
 }

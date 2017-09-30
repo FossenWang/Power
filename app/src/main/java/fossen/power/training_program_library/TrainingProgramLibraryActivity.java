@@ -59,12 +59,19 @@ public class TrainingProgramLibraryActivity extends AppCompatActivity {
         super.onStart();
 
         //加载训练方案列表
-        tpdbOpenHelper = new TPDBOpenHelper(this);
+        if(tpdbOpenHelper == null){
+            tpdbOpenHelper = new TPDBOpenHelper(this);
+        }
         programs = tpdbOpenHelper.inputTrainingProgramList();
 
         //绑定配适器
         tplAdapter = new TrainingProgramLibraryAdapter(programs,tpdbOpenHelper,this);
         listView.setAdapter(tplAdapter);
+    }
 
+    @Override
+    protected void onStop(){
+        super.onStop();
+        tpdbOpenHelper.close();
     }
 }

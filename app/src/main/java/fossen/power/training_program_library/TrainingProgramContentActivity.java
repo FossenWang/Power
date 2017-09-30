@@ -20,6 +20,7 @@ public class TrainingProgramContentActivity extends AppCompatActivity {
     private TPDBOpenHelper tpdbOpenHelper;
     private TrainingProgram trainingProgram;
     private TrainingProgramContentAdapter tpcAdapter;
+    private String id;
 
     private Toolbar toolbar;
     private ExpandableListView list_tpc;
@@ -40,6 +41,10 @@ public class TrainingProgramContentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training_program_content);
+
+        //获取训练方案id
+        Intent intent = getIntent();
+        id = intent.getStringExtra("id");
 
         //设置toolbar和返回键
         toolbar = ComponentCreator.createBackToolbar(this,R.id.toolbar_tpc);
@@ -88,9 +93,9 @@ public class TrainingProgramContentActivity extends AppCompatActivity {
         super.onStart();
 
         //加载训练方案
-        Intent intent = getIntent();
-        String id = intent.getStringExtra("id");
-        tpdbOpenHelper = new TPDBOpenHelper(this);
+        if(tpdbOpenHelper == null){
+            tpdbOpenHelper = new TPDBOpenHelper(this);
+        }
         trainingProgram = tpdbOpenHelper.inputTrainingProgram(id);
 
         //设置列表头视图的内容
@@ -101,5 +106,11 @@ public class TrainingProgramContentActivity extends AppCompatActivity {
         //绑定配适器
         tpcAdapter = new TrainingProgramContentAdapter(trainingProgram, tpdbOpenHelper, this);
         list_tpc.setAdapter(tpcAdapter);
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        tpdbOpenHelper.close();
     }
 }

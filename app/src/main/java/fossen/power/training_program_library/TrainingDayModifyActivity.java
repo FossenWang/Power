@@ -20,19 +20,26 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
     private TrainingProgram tp;
     private TrainingDay td;
     private TrainingDayModifyAdapter tdmAdapter;
+    private String id;
+    private int index;
 
-    ListView list_tdm;
-    Button button_cancel;
-    Button button_save;
-    View header;
-    TextView text_day;
-    TextView text_count;
-    ImageView button_add;
+    private ListView list_tdm;
+    private Button button_cancel;
+    private Button button_save;
+    private View header;
+    private TextView text_day;
+    private TextView text_count;
+    private ImageView button_add;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training_day_modify);
+
+        //获取训练日引索
+        Intent intent = getIntent();
+        id = intent.getStringExtra("id");
+        index = intent.getIntExtra("dayIndex", 0);
 
         // 给listView添加headerView，显示训练日的基本信息
         list_tdm = (ListView) findViewById(R.id.list_tdm);
@@ -44,46 +51,8 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
         button_save = (Button) findViewById(R.id.button_tdm_save);
         button_cancel = (Button) findViewById(R.id.button_tdm_cancel);
 
-        //保存修改后的数据
-        button_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tdmAdapter.saveModification();
-                TrainingDayModifyActivity.this.finish();
-            }
-        });
 
-        //取消返回上一个活动
-        button_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TrainingDayModifyActivity.this.finish();
-            }
-        });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        //加载训练方案
-        Intent intent = getIntent();
-        String id = intent.getStringExtra("id");
-        final int index = intent.getIntExtra("dayIndex", 0);
-        tpdbOpenHelper = new TPDBOpenHelper(this);
-        tp = tpdbOpenHelper.inputTrainingProgram(id);
-        td = tp.getTrainingDay(index);
-
-        //设置列表头视图的内容
-        if(td.isRestDay()){
-            text_day.setText((index+1) + "  休息: " + td.getTitle());
-            text_count.setText("");
-        }else{
-            text_day.setText((index+1) + "  训练: " + td.getTitle());
-            text_count.setText(td.numberOfExercise() + "个动作  "
-                    + td.numberOfSingleSets() + "组");
-        }
-        //添加新组集
+        //设置添加新组集按钮
         button_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,8 +68,56 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
                 }
             }
         });
+
+        //保存修改后的数据
+        button_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tdmAdapter.saveModification();
+                tpdbOpenHelper.close();
+                TrainingDayModifyActivity.this.finish();
+            }
+        });
+
+        //取消返回上一个活动
+        button_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tpdbOpenHelper.close();
+                TrainingDayModifyActivity.this.finish();
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //加载训练方案
+        if(tpdbOpenHelper == null){
+            tpdbOpenHelper = new TPDBOpenHelper(this);
+        }
+        tp = tpdbOpenHelper.inputTrainingProgram(id);
+        td = tp.getTrainingDay(index);
+
+        //设置列表头视图的内容
+        if(td.isRestDay()){
+            text_day.setText((index+1) + "  休息: " + td.getTitle());
+            text_count.setText("");
+        }else{
+            text_day.setText((index+1) + "  训练: " + td.getTitle());
+            text_count.setText(td.numberOfExercise() + "个动作  "
+                    + td.numberOfSingleSets() + "组");
+        }
+
         //绑定配适器
         tdmAdapter = new TrainingDayModifyAdapter(id, index, td, tpdbOpenHelper, text_day, text_count, this);
         list_tdm.setAdapter(tdmAdapter);
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        tpdbOpenHelper.close();
     }
 }
