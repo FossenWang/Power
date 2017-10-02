@@ -46,7 +46,6 @@ public class ELDBOpenHelper extends SQLiteOpenHelper {
 
     //从数据库导入动作分类数据
     public ArrayList<ArrayList<Exercise>> inputExercises(){
-        //ELDBOpenHelper eldbOpenHelper = new ELDBOpenHelper(this);
         SQLiteDatabase eldb = this.getReadableDatabase();
         ArrayList<ArrayList<Exercise>> exerLists = new ArrayList<>();
         ArrayList<Exercise> exerList;

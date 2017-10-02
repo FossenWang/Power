@@ -1,11 +1,14 @@
-package fossen.power.exercise_library;
+package fossen.power.training_program_library;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -13,63 +16,71 @@ import fossen.power.Exercise;
 import fossen.power.R;
 
 /**
- * Created by Administrator on 2017/9/14.
+ * Created by Administrator on 2017/10/2.
  */
 
-public class ExerciseLibraryAdapter extends BaseExpandableListAdapter {
+public class ChooseExerciseAdapter extends BaseExpandableListAdapter implements CompoundButton.OnCheckedChangeListener {
     private ArrayList<String> sort;
     private ArrayList<ArrayList<Exercise>> exerciseList;
+    private ArrayList<String> checkedExercises;
     private Context mContext;
 
-    public ExerciseLibraryAdapter(ArrayList<String> sort,
-                                  ArrayList<ArrayList<Exercise>> exerciseList,
-                                  Context mContext){
+    public ChooseExerciseAdapter(ArrayList<String> sort,
+                                 ArrayList<ArrayList<Exercise>> exerciseList,
+                                 ArrayList<String> checkedExercises,
+                                 Context mContext){
         this.sort = sort;
         this.exerciseList = exerciseList;
+        this.checkedExercises = checkedExercises;
         this.mContext = mContext;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        TextView text = (TextView) buttonView.getTag();
+        if(buttonView.isChecked()){
+            checkedExercises.add((String) buttonView.getText());
+            text.setText(Integer.toString(checkedExercises.size()));
+            Toast.makeText(mContext, checkedExercises.get(0) + checkedExercises.get(1), Toast.LENGTH_SHORT).show();
+        }else {
+            checkedExercises.remove(Integer.parseInt(text.getText().toString())-1);
+            text.setText("");
+        }
     }
 
     @Override
     public int getGroupCount() {
         return sort.size();
     }
-
     @Override
     public int getChildrenCount(int groupPosition) {
         return exerciseList.get(groupPosition).size();
     }
-
     @Override
     public String getGroup(int groupPosition) {
         return sort.get(groupPosition);
     }
-
     @Override
     public Exercise getChild(int groupPosition, int childPosition) {
         return exerciseList.get(groupPosition).get(childPosition);
     }
-
     @Override
     public long getGroupId(int groupPosition) {
         return groupPosition;
     }
-
     @Override
     public long getChildId(int groupPosition, int childPosition) {
         return childPosition;
     }
-
     @Override
     public boolean hasStableIds() {
         return false;
     }
-    //设置子列表是否可选中
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
 
-    //取得用于显示给定分组的视图. 这个方法仅返回分组的视图对象
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         GroupViewHolder groupHolder;
@@ -86,22 +97,28 @@ public class ExerciseLibraryAdapter extends BaseExpandableListAdapter {
         return convertView;
     }
 
-    //取得显示给定分组给定子位置的数据用的视图
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         ChildViewHolder childHolder;
         if(convertView == null){
             convertView = LayoutInflater.from(mContext).inflate(
-                    R.layout.item_exerlib_item, parent, false);
+                    R.layout.item_exercise_check, parent, false);
             childHolder = new ChildViewHolder();
-            childHolder.text_exercise = (TextView) convertView.findViewById(R.id.text_el_exercise);
-            childHolder.text_muscle = (TextView) convertView.findViewById(R.id.text_el_muscle);
+            childHolder.check_exercise = (CheckBox) convertView.findViewById(R.id.check_cei_exercise);
+            childHolder.text_order = (TextView) convertView.findViewById(R.id.text_cei_order);
+            childHolder.text_muscle = (TextView) convertView.findViewById(R.id.text_cei_muscle);
             convertView.setTag(childHolder);
         }else{
             childHolder = (ChildViewHolder) convertView.getTag();
         }
-        childHolder.text_exercise.setText(exerciseList.get(groupPosition).get(childPosition).getName());
-        childHolder.text_muscle.setText(exerciseList.get(groupPosition).get(childPosition).getMuscle());
+        Exercise exercise = exerciseList.get(groupPosition).get(childPosition);
+        childHolder.text_muscle.setText(exercise.getMuscle());
+        childHolder.check_exercise.setText(exercise.getName());
+        //childHolder.check_exercise.setTag(exercise);
+        childHolder.check_exercise.setTag(childHolder.text_order);
+        childHolder.check_exercise.setOnCheckedChangeListener(this);
+        if(checkedExercises.contains(exercise.getName()))
+            childHolder.check_exercise.setChecked(true);
         return convertView;
     }
 
@@ -109,7 +126,8 @@ public class ExerciseLibraryAdapter extends BaseExpandableListAdapter {
         TextView group_text;
     }
     private static class ChildViewHolder{
-        TextView text_exercise;
+        CheckBox check_exercise;
+        TextView text_order;
         TextView text_muscle;
     }
 }

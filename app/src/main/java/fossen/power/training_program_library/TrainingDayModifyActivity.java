@@ -36,10 +36,13 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training_day_modify);
 
-        //获取训练日引索
+        //加载训练方案
         Intent intent = getIntent();
         id = intent.getStringExtra("id");
         index = intent.getIntExtra("dayIndex", 0);
+        tpdbOpenHelper = new TPDBOpenHelper(this);
+        tp = tpdbOpenHelper.inputTrainingProgram(id);
+        td = tp.getTrainingDay(index);
 
         // 给listView添加headerView，显示训练日的基本信息
         list_tdm = (ListView) findViewById(R.id.list_tdm);
@@ -51,6 +54,9 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
         button_save = (Button) findViewById(R.id.button_tdm_save);
         button_cancel = (Button) findViewById(R.id.button_tdm_cancel);
 
+        //绑定配适器
+        tdmAdapter = new TrainingDayModifyAdapter(id, index, td, tpdbOpenHelper, text_day, text_count, this, this);
+        list_tdm.setAdapter(tdmAdapter);
 
         //设置添加新组集按钮
         button_add.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +80,6 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 tdmAdapter.saveModification();
-                tpdbOpenHelper.close();
                 TrainingDayModifyActivity.this.finish();
             }
         });
@@ -83,7 +88,6 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
         button_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tpdbOpenHelper.close();
                 TrainingDayModifyActivity.this.finish();
             }
         });
@@ -92,13 +96,6 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        //加载训练方案
-        if(tpdbOpenHelper == null){
-            tpdbOpenHelper = new TPDBOpenHelper(this);
-        }
-        tp = tpdbOpenHelper.inputTrainingProgram(id);
-        td = tp.getTrainingDay(index);
 
         //设置列表头视图的内容
         if(td.isRestDay()){
@@ -109,15 +106,22 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
             text_count.setText(td.numberOfExercise() + "个动作  "
                     + td.numberOfSingleSets() + "组");
         }
-
-        //绑定配适器
-        tdmAdapter = new TrainingDayModifyAdapter(id, index, td, tpdbOpenHelper, text_day, text_count, this);
-        list_tdm.setAdapter(tdmAdapter);
     }
 
     @Override
     protected void onStop(){
         super.onStop();
         tpdbOpenHelper.close();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (resultCode){
+            case RESULT_OK : String names = data.getStringExtra("names");
+                td.getSets(requestCode).setExerciseList(names.split(","));
+                break;
+            case RESULT_CANCELED : default:
+        }
     }
 }

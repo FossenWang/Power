@@ -78,6 +78,7 @@ public class Sets {
         this.exerciseList = exerciseList;
     }
     public void setExerciseList(String[] nameList){
+        exerciseList.clear();
         for(String name : nameList){
             addExercise(name);
         }

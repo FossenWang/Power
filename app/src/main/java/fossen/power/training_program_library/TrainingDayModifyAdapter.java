@@ -1,6 +1,9 @@
 package fossen.power.training_program_library;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -16,6 +19,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import fossen.power.Exercise;
 import fossen.power.R;
 import fossen.power.Sets;
 import fossen.power.TPDBOpenHelper;
@@ -34,20 +38,23 @@ public class TrainingDayModifyAdapter extends BaseAdapter {
     private TPDBOpenHelper tpdbOpenHelper;
     private TextView text_day;
     private TextView text_count;
+    private Activity tdmActivity;
     private Context mContext;
     //定义成员变量mTouchItemPosition,用来记录手指触摸的EditText的位置
     private int mTouchItemPosition = -1;
     private int mTouchItemEdit = -1;
 
     public TrainingDayModifyAdapter(String id, int dayIndex, TrainingDay trainingDay,
-                                    TPDBOpenHelper tpdbOpenHelper,TextView text_day,
-                                    TextView text_count, Context mContext){
+                                    TPDBOpenHelper tpdbOpenHelper, TextView text_day,
+                                    TextView text_count,
+                                    Activity activity, Context mContext){
         this.id = id;
         this.dayIndex = dayIndex;
         this.trainingDay = trainingDay;
         this.tpdbOpenHelper = tpdbOpenHelper;
         this.text_day = text_day;
         this.text_count = text_count;
+        tdmActivity = activity;
         this.mContext = mContext;
     }
 
@@ -97,49 +104,28 @@ public class TrainingDayModifyAdapter extends BaseAdapter {
             holder.edit_min = (EditText) convertView.findViewById(R.id.edit_tpc_min_mod);
             holder.edit_sec = (EditText) convertView.findViewById(R.id.edit_tpc_s_mod);
             holder.text_exercise = (TextView) convertView.findViewById(R.id.text_tpc_exercise_mod);
-            holder.arrow = (ImageView) convertView.findViewById(R.id.arrow_tpc_exercise_mod);
-            holder.button_delete = (ImageView) convertView.findViewById(R.id.button_tpc_delete_sets) ;
+            holder.button_delete = (ImageView) convertView.findViewById(R.id.button_tpc_delete_sets);
+            holder.in_choose_exercise = convertView.findViewById(R.id.in_choose_exercise);
             convertView.setTag(holder);
         }else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        sets.addExercise("卧推");
-        sets.addExercise("硬拉");
-        sets.addExercise("深蹲");
         //有动作则显示
         if(sets.getExerciseList().size()!=0){
             holder.text_exercise.setText(sets.getExercise(0).getName());
         }
-
-        //单击下箭头弹出菜单，选择替换动作
-        holder.arrow.setOnClickListener(new View.OnClickListener() {
+        //设置选择动作活动的入口
+        holder.in_choose_exercise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu popup = new PopupMenu(mContext, v);
-                Menu menu = popup.getMenu();
-                menu.add("请选择替换的动作：");
-                if(sets.getExerciseList().size()>1){
-                    for(int i = 1; i<sets.getExerciseList().size(); i++){
-                        menu.add(Menu.NONE,Menu.NONE,i,sets.getExercise(i).getName());
-                    }
-                }else {
-                    menu.add("无");
+                Intent intent = new Intent(mContext, ChooseExerciseActivity.class);
+                String names = "";
+                for(Exercise exercise: sets.getExerciseList()){
+                    names += exercise.getName() + ",";
                 }
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        int i = item.getOrder();
-                        if(i>0) {
-                            sets.exchangeExercise(0, i);
-                            tpdbOpenHelper.updateExercise(id, dayIndex + 1, pos + 1, sets);
-                            notifyDataSetChanged();
-                            Toast.makeText(mContext, "你选择了："+item.getTitle(), Toast.LENGTH_SHORT).show();
-                        }
-                        return true;
-                    }
-                });
-                popup.show();
+                intent.putExtra("names", names);
+                tdmActivity.startActivityForResult(intent,pos);
             }
         });
 
@@ -349,9 +335,9 @@ public class TrainingDayModifyAdapter extends BaseAdapter {
         EditText edit_sets;
         EditText edit_min;
         EditText edit_sec;
-        ImageView arrow;
         ImageView button_delete;
         TextView text_exercise;
+        View in_choose_exercise;
     }
 
     //保存修改

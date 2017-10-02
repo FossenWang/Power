@@ -35,7 +35,6 @@ public class ExerciseLibraryActivity extends AppCompatActivity {
 
         //从数据库导入动作分类数据
         ELDBOpenHelper eldbOpenHelper = new ELDBOpenHelper(this);
-        eldbOpenHelper.getWritableDatabase().close();
         final ArrayList<ArrayList<Exercise>> exerLists = eldbOpenHelper.inputExercises();
 
         //设置配适器
