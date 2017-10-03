@@ -43,7 +43,6 @@
                     android:gravity="center"
                     android:paddingEnd="8dp"
                     android:paddingStart="8dp"
-                    android:text="选择训练动作"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
             </FrameLayout>

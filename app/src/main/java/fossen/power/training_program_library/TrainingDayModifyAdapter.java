@@ -76,6 +76,7 @@ public class TrainingDayModifyAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
+        //导入数据
         final int pos = position;
         final Sets sets = trainingDay.getSets(pos);
         final String rapmax[] = new String[]{"0","0"};
@@ -114,6 +115,8 @@ public class TrainingDayModifyAdapter extends BaseAdapter {
         //有动作则显示
         if(sets.getExerciseList().size()!=0){
             holder.text_exercise.setText(sets.getExercise(0).getName());
+        }else {
+            holder.text_exercise.setText("选择训练动作");
         }
         //设置选择动作活动的入口
         holder.in_choose_exercise.setOnClickListener(new View.OnClickListener() {
@@ -150,6 +153,7 @@ public class TrainingDayModifyAdapter extends BaseAdapter {
         //如果EditText注册过监听器就注销
         if (holder.edit_sec.getTag() instanceof TextWatcher){
             holder.edit_rm1.removeTextChangedListener((TextWatcher) holder.edit_rm1.getTag());
+            holder.edit_rm2.removeTextChangedListener((TextWatcher) holder.edit_rm2.getTag());
             holder.edit_sets.removeTextChangedListener((TextWatcher) holder.edit_sets.getTag());
             holder.edit_min.removeTextChangedListener((TextWatcher) holder.edit_min.getTag());
             holder.edit_sec.removeTextChangedListener((TextWatcher) holder.edit_sec.getTag());
