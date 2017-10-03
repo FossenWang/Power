@@ -1,12 +1,13 @@
 package fossen.power;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2017/9/12.
  */
 
-public class Sets {
+public class Sets implements Serializable {
 
     private ArrayList<SingleSet> setList = new ArrayList<SingleSet>();
     //组的列表，训练记录中使用

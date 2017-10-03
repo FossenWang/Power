@@ -30,10 +30,10 @@
             android:text="取消" />
 
         <Button
-            android:id="@+id/button_tdm_save"
+            android:id="@+id/button_tdm_yes"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:text="保存" />
+            android:text="确定" />
 
     </LinearLayout>
 </FrameLayout>

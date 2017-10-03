@@ -143,7 +143,8 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         SQLiteDatabase tpdb = this.getWritableDatabase();
         String name = trainingProgram.getName();
         String goal = trainingProgram.getGoal();
-        String note= trainingProgram.getNote();
+        String note = trainingProgram.getNote();
+        String start = Integer.toString(trainingProgram.getStart());
         String id = trainingProgram.getId();
         String dayNames = "";
         for(int i = 0; i < trainingProgram.circleDays(); i++){
@@ -153,61 +154,65 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
 
         //更新program_list
         tpdb.execSQL("UPDATE program_list " +
-                        "SET name = ?, goal = ?, note = ?, day_name = ? " +
+                        "SET name = ?, goal = ?, note = ?, day_name = ?, start = ? " +
                         "WHERE id = ?",
-                new String[]{name, goal, note, dayNames, id});
+                new String[]{name, goal, note, dayNames, start, id});
 
-        //更新id表单，先删除所有记录，再写入所有记录
+        //更新训练日id表单，先删除所有记录，再写入所有记录
         tpdb.execSQL("DELETE FROM " + id);
         for(int day = 1; day<=trainingProgram.circleDays();day++){
             TrainingDay trainingDay = trainingProgram.getTrainingDay(day-1);
             if(!trainingDay.isRestDay()){
                 for(int i = 0; i<trainingDay.numberOfSets(); i++) {
                     Sets sets = trainingDay.getSets(i);
-                    String names = "";
-                    for(Exercise exercise : sets.getExerciseList()){
-                        names += (exercise.getName() + ",");
+                    if (sets.getExerciseList().size() != 0) {//有动作才保存
+                        String names = "";
+                        for (Exercise exercise : sets.getExerciseList()) {
+                            names += (exercise.getName() + ",");
+                        }
+                        names = names.substring(0, names.length() - 1);
+                        String[] values = {
+                                Integer.toString(day),
+                                Integer.toString(i + 1),
+                                names,
+                                Integer.toString(sets.numberOfSingleSets()),
+                                sets.getRepmax(),
+                                Integer.toString(sets.getRest())
+                        };
+                        tpdb.execSQL("INSERT INTO " + id + " VALUES (?,?,?,?,?,?,'')", values);
                     }
-                    names = names.substring(0,names.length()-1);
-                    String[] values = {
-                            Integer.toString(day),
-                            Integer.toString(i+1),
-                            names,
-                            Integer.toString(sets.numberOfSingleSets()),
-                            sets.getRepmax(),
-                            Integer.toString(sets.getRest())
-                    };
-                    tpdb.execSQL("INSERT INTO " + id + " VALUES (?,?,?,?,?,?,'')",values);
                 }
             }
         }
     }
 
     //更新训练日
-    public void updateTrainingDay(String id, int day, TrainingDay trainingDay){
+    /*public void updateTrainingDay(String id, int day, TrainingDay trainingDay){
         SQLiteDatabase tpdb = this.getWritableDatabase();
         Sets sets;
         tpdb.execSQL("DELETE FROM " + id + " WHERE day = ?",new String[]{Integer.toString(day)});
         if(trainingDay.numberOfSets()>0){
             for(int i = 0; i<trainingDay.numberOfSets(); i++) {
                 sets = trainingDay.getSets(i);
-                String names = "";
-                for(Exercise exercise : sets.getExerciseList()){
-                    names += (exercise.getName() + ",");
+                if (sets.getExerciseList().size() != 0) {//有动作才保存
+                    String names = "";
+                    for (Exercise exercise : sets.getExerciseList()) {
+                        names += (exercise.getName() + ",");
+                    }
+                    names = names.substring(0, names.length() - 1);
+                    String[] values = {
+                            Integer.toString(day),
+                            Integer.toString(i + 1),
+                            names,
+                            Integer.toString(sets.numberOfSingleSets()),
+                            sets.getRepmax(),
+                            Integer.toString(sets.getRest())
+                    };
+                    tpdb.execSQL("INSERT INTO " + id + " VALUES (?,?,?,?,?,?,'')", values);
                 }
-                names = names.substring(0,names.length()-1);
-                String[] values = {
-                        Integer.toString(day),
-                        Integer.toString(i+1),
-                        names,
-                        Integer.toString(sets.numberOfSingleSets()),
-                        sets.getRepmax(),
-                        Integer.toString(sets.getRest())
-                };
-                tpdb.execSQL("INSERT INTO " + id + " VALUES (?,?,?,?,?,?,'')",values);
             }
         }
-    }
+    }*/
 
     //创建新的训练计划
     public String createTrainingProgram(TrainingProgram trainingProgram){

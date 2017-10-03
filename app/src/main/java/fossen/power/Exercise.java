@@ -1,11 +1,13 @@
 package fossen.power;
 
 
+import java.io.Serializable;
+
 /**
  * Created by WXY on 2017/8/12.
  */
 
-public class Exercise {
+public class Exercise implements Serializable {
     private String id = "";//动作编号
     private String name = "";//动作名称
     private String type = "";//动作类别：自重，器械，力量举等

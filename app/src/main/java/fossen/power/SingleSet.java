@@ -1,10 +1,12 @@
 package fossen.power;
 
+import java.io.Serializable;
+
 /**
  * Created by Administrator on 2017/8/13.
  */
 
-public class SingleSet {
+public class SingleSet implements Serializable {
     private Double load = 0.0;//负重，单位为公斤
     private int reps = 0;//次数
     private int duration = 0;//持续时间，单位为s

@@ -90,6 +90,7 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
             }
         });
 
+        //长按删除训练方案
         holder.in_tpc.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {

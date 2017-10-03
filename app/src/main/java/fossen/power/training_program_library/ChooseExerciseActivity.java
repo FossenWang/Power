@@ -18,7 +18,7 @@ public class ChooseExerciseActivity extends AppCompatActivity {
 
     private ExpandableListView explist_ce;
     private Button button_cancel;
-    private Button button_save;
+    private Button button_yes;
     private String names;
     private ArrayList<String> checkedExercises = new ArrayList<>();
     private ELDBOpenHelper eldbOpenHelper;
@@ -29,7 +29,7 @@ public class ChooseExerciseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_exercise);
         button_cancel = (Button) findViewById(R.id.button_ce_cancel);
-        button_save = (Button) findViewById(R.id.button_ce_save);
+        button_yes = (Button) findViewById(R.id.button_ce_yes);
         explist_ce = (ExpandableListView) findViewById(R.id.explist_ce);
 
         //准备数据
@@ -52,8 +52,8 @@ public class ChooseExerciseActivity extends AppCompatActivity {
         ChooseExerciseAdapter ceAdapter = new ChooseExerciseAdapter(sort,exerciseList,checkedExercises,this);
         explist_ce.setAdapter(ceAdapter);
 
-        //保存修改后的数据
-        button_save.setOnClickListener(new View.OnClickListener() {
+        //确认修改后的数据，传回上一个Activity
+        button_yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 result = new Intent();
@@ -77,8 +77,8 @@ public class ChooseExerciseActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop(){
-        super.onStop();
+    protected void onDestroy(){
+        super.onDestroy();
         eldbOpenHelper.close();
     }
 }

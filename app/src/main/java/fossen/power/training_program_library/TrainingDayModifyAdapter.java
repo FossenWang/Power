@@ -32,10 +32,8 @@ import fossen.power.TrainingProgram;
 
 public class TrainingDayModifyAdapter extends BaseAdapter {
 
-    private String id;
     private int dayIndex;
     private TrainingDay trainingDay;
-    private TPDBOpenHelper tpdbOpenHelper;
     private TextView text_day;
     private TextView text_count;
     private Activity tdmActivity;
@@ -44,18 +42,15 @@ public class TrainingDayModifyAdapter extends BaseAdapter {
     private int mTouchItemPosition = -1;
     private int mTouchItemEdit = -1;
 
-    public TrainingDayModifyAdapter(String id, int dayIndex, TrainingDay trainingDay,
-                                    TPDBOpenHelper tpdbOpenHelper, TextView text_day,
-                                    TextView text_count,
-                                    Activity activity, Context mContext){
-        this.id = id;
+    public TrainingDayModifyAdapter(int dayIndex, TrainingDay trainingDay,
+                                    TextView text_day, TextView text_count,
+                                    Activity activity){
         this.dayIndex = dayIndex;
         this.trainingDay = trainingDay;
-        this.tpdbOpenHelper = tpdbOpenHelper;
         this.text_day = text_day;
         this.text_count = text_count;
         tdmActivity = activity;
-        this.mContext = mContext;
+        this.mContext = activity;
     }
 
     @Override
@@ -79,12 +74,12 @@ public class TrainingDayModifyAdapter extends BaseAdapter {
         //导入数据
         final int pos = position;
         final Sets sets = trainingDay.getSets(pos);
-        final String rapmax[] = new String[]{"0","0"};
+        final String rapmax[] = new String[]{"8","12"};
         if(!sets.getRepmax().equals("")){
             rapmax[0] = sets.getRepmax().split("~")[0];
             rapmax[1] = sets.getRepmax().split("~")[1];
         }
-        final int[] rest = {0,0};//前一个是min后一个是s
+        final int[] rest = {1,0};//前一个是min后一个是s
         if (sets.getRest()<60){
             rest[1] = sets.getRest();
         }else if(sets.getRest()%60==0){
@@ -329,7 +324,6 @@ public class TrainingDayModifyAdapter extends BaseAdapter {
                     break;
             }
         }
-
         return convertView;
     }
 
@@ -342,10 +336,5 @@ public class TrainingDayModifyAdapter extends BaseAdapter {
         ImageView button_delete;
         TextView text_exercise;
         View in_choose_exercise;
-    }
-
-    //保存修改
-    public void saveModification(){
-        tpdbOpenHelper.updateTrainingDay(id, dayIndex + 1, trainingDay);
     }
 }

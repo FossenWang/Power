@@ -1,5 +1,6 @@
 package fossen.power.training_program_library;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.Editable;
@@ -24,19 +25,19 @@ import fossen.power.TrainingProgram;
 
 public class TrainingProgramModifyAdapter extends BaseAdapter {
     private TrainingProgram trainingProgram;
-    private TPDBOpenHelper tpdbOpenHelper;
     private TextView text_circle;
     private Context mContext;
+    private Activity tpmActivity;
     //定义成员变量mTouchItemPosition,用来记录手指触摸的EditText的位置
     private int mTouchItemPosition = -1;
 
     public TrainingProgramModifyAdapter(TrainingProgram trainingProgram,
-                                        TPDBOpenHelper tpdbOpenHelper,
-                                        TextView text_circle, Context mContext) {
+                                        TextView text_circle,
+                                        Activity activity) {
         this.trainingProgram = trainingProgram;
-        this.tpdbOpenHelper = tpdbOpenHelper;
         this.text_circle = text_circle;
-        this.mContext = mContext;
+        this.mContext = activity;
+        tpmActivity = activity;
     }
 
     @Override
@@ -58,7 +59,6 @@ public class TrainingProgramModifyAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         final int pos = position;
-
         if(convertView == null) {
             convertView =
                     LayoutInflater.from(mContext).inflate(
@@ -85,15 +85,14 @@ public class TrainingProgramModifyAdapter extends BaseAdapter {
                     + "组");
         }
 
+        //进入训练日修改Activity
         holder.in_tdm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //进入训练日修改Activity
-                saveModification();
                 Intent intent = new Intent(mContext,TrainingDayModifyActivity.class);
-                intent.putExtra("id",trainingProgram.getId());
                 intent.putExtra("dayIndex", pos);
-                mContext.startActivity(intent);
+                intent.putExtra("trainingDay", trainingProgram.getTrainingDay(pos));
+                tpmActivity.startActivityForResult(intent, pos);
             }
         });
 
@@ -155,10 +154,5 @@ public class TrainingProgramModifyAdapter extends BaseAdapter {
         View in_tdm;
         TextView text_day;
         TextView text_count;
-    }
-
-    //保存修改
-    public void saveModification(){
-        tpdbOpenHelper.updateTrainingProgram(trainingProgram);
     }
 }

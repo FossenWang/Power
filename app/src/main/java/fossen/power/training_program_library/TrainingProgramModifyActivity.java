@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import fossen.power.R;
 import fossen.power.TPDBOpenHelper;
+import fossen.power.TrainingDay;
 import fossen.power.TrainingProgram;
 
 public class TrainingProgramModifyActivity extends AppCompatActivity {
@@ -45,6 +46,13 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
         Intent intent = getIntent();
         id = intent.getStringExtra("id");
 
+        //加载训练方案
+        if(tpdbOpenHelper == null){
+            tpdbOpenHelper = new TPDBOpenHelper(this);
+            backUpTp = tpdbOpenHelper.inputTrainingProgram(id);
+        }
+        tp = tpdbOpenHelper.inputTrainingProgram(id);
+
         // 给listView添加headerView，用于显示训练方案的基本信息
         list_tpm = (ListView) findViewById(R.id.list_tpm);
         header = getLayoutInflater().inflate(R.layout.header_tpc_modification,null);
@@ -56,6 +64,16 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
         text_circle = (TextView) findViewById(R.id.text_tpcm_circle);
         button_save = (Button) findViewById(R.id.button_tpm_save);
         button_cancel = (Button) findViewById(R.id.button_tpm_cancel);
+
+        //设置列表头视图的内容
+        editTitle.setText(tp.getName());
+        editGoal.setText(tp.getGoal() );
+        editNote.setText(tp.getNote().replace("\\n","\n"));
+        text_circle.setText("周期: " + tp.circleDays() + "天");
+
+        //绑定配适器
+        tpmAdapter = new TrainingProgramModifyAdapter(tp, text_circle, this);
+        list_tpm.setAdapter(tpmAdapter);
 
         //添加新训练日
         button_add.setOnClickListener(new View.OnClickListener() {
@@ -71,7 +89,8 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
         button_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tpmAdapter.saveModification();
+                tp.setStart(0);
+                tpdbOpenHelper.updateTrainingProgram(tp);
                 TrainingProgramModifyActivity.this.finish();
             }
         });
@@ -82,7 +101,6 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
                 .setPositiveButton("不保存", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        tpdbOpenHelper.updateTrainingProgram(backUpTp);
                         TrainingProgramModifyActivity.this.finish();
                     }})
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -136,28 +154,23 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        //加载训练方案
-        if(tpdbOpenHelper == null){
-            tpdbOpenHelper = new TPDBOpenHelper(this);
-            backUpTp = tpdbOpenHelper.inputTrainingProgram(id);
-        }
-        tp = tpdbOpenHelper.inputTrainingProgram(id);
-
-        //设置列表头视图的内容
-        editTitle.setText(tp.getName());
-        editGoal.setText(tp.getGoal() );
-        editNote.setText(tp.getNote().replace("\\n","\n"));
-        text_circle.setText("周期: " + tp.circleDays() + "天");
-
-        //绑定配适器
-        tpmAdapter = new TrainingProgramModifyAdapter(tp, tpdbOpenHelper, text_circle, this);
-        list_tpm.setAdapter(tpmAdapter);
+        tpmAdapter.notifyDataSetChanged();
     }
 
     @Override
-    protected void onStop(){
-        super.onStop();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (resultCode){
+            case RESULT_OK :
+                tp.replaceTrainingDay(requestCode, (TrainingDay) data.getSerializableExtra("trainingDay"));
+                break;
+            case RESULT_CANCELED : default:
+        }
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
         tpdbOpenHelper.close();
     }
 }
