@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import fossen.power.ELDBOpenHelper;
 import fossen.power.Exercise;
 import fossen.power.R;
-import fossen.power.exercise_library.ExerciseLibraryAdapter;
 
 public class ChooseExerciseActivity extends AppCompatActivity {
 
@@ -40,7 +39,6 @@ public class ChooseExerciseActivity extends AppCompatActivity {
         if(!names.equals("")) {
             for(String name: names.split(",")) {
                 checkedExercises.add(name);
-                Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
             }
         }
         ArrayList<String> sort = new ArrayList<String>();

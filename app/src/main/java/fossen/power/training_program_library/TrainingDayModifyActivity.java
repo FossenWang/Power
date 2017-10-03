@@ -54,6 +54,16 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
         button_save = (Button) findViewById(R.id.button_tdm_save);
         button_cancel = (Button) findViewById(R.id.button_tdm_cancel);
 
+        //设置列表头视图的内容
+        if(td.isRestDay()){
+            text_day.setText((index+1) + "  休息: " + td.getTitle());
+            text_count.setText("");
+        }else{
+            text_day.setText((index+1) + "  训练: " + td.getTitle());
+            text_count.setText(td.numberOfExercise() + "个动作  "
+                    + td.numberOfSingleSets() + "组");
+        }
+
         //绑定配适器
         tdmAdapter = new TrainingDayModifyAdapter(id, index, td, tpdbOpenHelper, text_day, text_count, this, this);
         list_tdm.setAdapter(tdmAdapter);
@@ -96,16 +106,7 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        //设置列表头视图的内容
-        if(td.isRestDay()){
-            text_day.setText((index+1) + "  休息: " + td.getTitle());
-            text_count.setText("");
-        }else{
-            text_day.setText((index+1) + "  训练: " + td.getTitle());
-            text_count.setText(td.numberOfExercise() + "个动作  "
-                    + td.numberOfSingleSets() + "组");
-        }
+        tdmAdapter.notifyDataSetChanged();
     }
 
     @Override

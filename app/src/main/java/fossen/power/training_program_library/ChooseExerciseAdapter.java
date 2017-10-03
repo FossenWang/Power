@@ -8,7 +8,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -37,14 +36,14 @@ public class ChooseExerciseAdapter extends BaseExpandableListAdapter implements 
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        TextView text = (TextView) buttonView.getTag();
         if(buttonView.isChecked()){
-            checkedExercises.add((String) buttonView.getText());
-            text.setText(Integer.toString(checkedExercises.size()));
-            Toast.makeText(mContext, checkedExercises.get(0) + checkedExercises.get(1), Toast.LENGTH_SHORT).show();
+            if(!checkedExercises.contains( buttonView.getText().toString())) {
+                checkedExercises.add(buttonView.getText().toString());
+            }
         }else {
-            checkedExercises.remove(Integer.parseInt(text.getText().toString())-1);
-            text.setText("");
+            if(checkedExercises.contains( buttonView.getText().toString())) {
+                checkedExercises.remove(buttonView.getText().toString());
+            }
         }
     }
 
@@ -105,7 +104,6 @@ public class ChooseExerciseAdapter extends BaseExpandableListAdapter implements 
                     R.layout.item_exercise_check, parent, false);
             childHolder = new ChildViewHolder();
             childHolder.check_exercise = (CheckBox) convertView.findViewById(R.id.check_cei_exercise);
-            childHolder.text_order = (TextView) convertView.findViewById(R.id.text_cei_order);
             childHolder.text_muscle = (TextView) convertView.findViewById(R.id.text_cei_muscle);
             convertView.setTag(childHolder);
         }else{
@@ -114,11 +112,12 @@ public class ChooseExerciseAdapter extends BaseExpandableListAdapter implements 
         Exercise exercise = exerciseList.get(groupPosition).get(childPosition);
         childHolder.text_muscle.setText(exercise.getMuscle());
         childHolder.check_exercise.setText(exercise.getName());
-        //childHolder.check_exercise.setTag(exercise);
-        childHolder.check_exercise.setTag(childHolder.text_order);
         childHolder.check_exercise.setOnCheckedChangeListener(this);
-        if(checkedExercises.contains(exercise.getName()))
+        if(checkedExercises.contains(exercise.getName())){
             childHolder.check_exercise.setChecked(true);
+        }else {
+            childHolder.check_exercise.setChecked(false);
+        }
         return convertView;
     }
 
@@ -127,7 +126,6 @@ public class ChooseExerciseAdapter extends BaseExpandableListAdapter implements 
     }
     private static class ChildViewHolder{
         CheckBox check_exercise;
-        TextView text_order;
         TextView text_muscle;
     }
 }

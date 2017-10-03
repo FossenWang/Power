@@ -16,20 +16,8 @@
         android:id="@+id/check_cei_exercise"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:button="@drawable/checkbox_notick"
-        android:paddingStart="16dp"
+        android:layout_marginStart="8dp"
+        android:paddingStart="8dp"
         android:text="CheckBox" />
-
-    <TextView
-        android:id="@+id/text_cei_order"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginStart="17dp"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="13sp"
-        android:textStyle="bold" />
 
 </FrameLayout>

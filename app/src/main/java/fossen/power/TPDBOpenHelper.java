@@ -23,10 +23,6 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         super(context, "training_program.db", null, 1);
         tpContext = context;
     }
-    /*public TPDBOpenHelper(boolean buffer, Context context){
-        super(context, "training_program_buffer.db", null, 1);
-        tpContext = context;
-    }*/
 
     @Override
     //数据库第一次创建时被调用
@@ -137,6 +133,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         for(Exercise exercise : sets.getExerciseList()){
             names += (exercise.getName() + ",");
         }
+        names = names.substring(0,names.length()-1);
         tpdb.execSQL("UPDATE " + programId + " SET exercise = ?"
                         + " WHERE day = ? AND number = ?", new String[]{names,day+"",number+""});
     }
@@ -167,10 +164,15 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
             if(!trainingDay.isRestDay()){
                 for(int i = 0; i<trainingDay.numberOfSets(); i++) {
                     Sets sets = trainingDay.getSets(i);
+                    String names = "";
+                    for(Exercise exercise : sets.getExerciseList()){
+                        names += (exercise.getName() + ",");
+                    }
+                    names = names.substring(0,names.length()-1);
                     String[] values = {
                             Integer.toString(day),
                             Integer.toString(i+1),
-                            sets.getExercise(0).getName(),
+                            names,
                             Integer.toString(sets.numberOfSingleSets()),
                             sets.getRepmax(),
                             Integer.toString(sets.getRest())
@@ -189,15 +191,15 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         if(trainingDay.numberOfSets()>0){
             for(int i = 0; i<trainingDay.numberOfSets(); i++) {
                 sets = trainingDay.getSets(i);
-                String exerciseNames = "";
-                for(int j = 0; j < sets.getExerciseList().size(); j++){
-                    exerciseNames += (sets.getExercise(j).getName()+ ",");
+                String names = "";
+                for(Exercise exercise : sets.getExerciseList()){
+                    names += (exercise.getName() + ",");
                 }
-                exerciseNames = exerciseNames.substring(0,exerciseNames.length()-1);
+                names = names.substring(0,names.length()-1);
                 String[] values = {
                         Integer.toString(day),
                         Integer.toString(i+1),
-                        exerciseNames,
+                        names,
                         Integer.toString(sets.numberOfSingleSets()),
                         sets.getRepmax(),
                         Integer.toString(sets.getRest())
