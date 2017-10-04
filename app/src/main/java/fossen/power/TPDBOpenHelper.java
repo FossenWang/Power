@@ -112,6 +112,27 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         return tp;
     }
 
+    //从数据库导入某个方案的某个训练日的数据
+    public TrainingDay inputTrainingDay(String id, String dayName, int day){
+        TrainingDay td;
+        Sets sets;
+        SQLiteDatabase tpdb = this.getReadableDatabase();
+
+        Cursor cursor = tpdb.rawQuery("SELECT * FROM "+id+" WHERE day = ? ORDER BY number",new String[]{Integer.toString(day)});
+        td = new TrainingDay(dayName);
+        while (cursor.moveToNext()) {//有组集Sets记录则为训练日，无则为休息日
+            sets = new Sets();
+            sets.addSet(cursor.getInt(cursor.getColumnIndex("sets")));
+            sets.setExerciseList(cursor.getString(cursor.getColumnIndex("exercise")).split(","));
+            sets.setRest(cursor.getInt(cursor.getColumnIndex("rest")));
+            sets.setRepmax(cursor.getString(cursor.getColumnIndex("reps")));
+            sets.setStructure(cursor.getString(cursor.getColumnIndex("structure")));
+            td.addSets(sets);
+        }
+        cursor.close();
+        return td;
+    }
+
     //更新训练方案的使用状态
     public void updateStartDate(TrainingProgram trainingProgram){
         SQLiteDatabase tpdb = this.getWritableDatabase();

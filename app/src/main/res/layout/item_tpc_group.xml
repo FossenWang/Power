@@ -31,7 +31,8 @@
             android:layout_height="48dp"
             android:gravity="center|end"
             android:paddingEnd="16dp"
-            android:text="n个动作  m组" />
+            android:text="n个动作  m组"
+            android:textSize="13sp" />
     </LinearLayout>
 
 </LinearLayout>

@@ -22,7 +22,6 @@ import fossen.power.TrainingProgram;
 public class TrainingProgramModifyActivity extends AppCompatActivity {
     private TPDBOpenHelper tpdbOpenHelper;
     private TrainingProgram tp;
-    private TrainingProgram backUpTp;
     private TrainingProgramModifyAdapter tpmAdapter;
     private String id;
 
@@ -45,12 +44,7 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
         //获取训练方案id
         Intent intent = getIntent();
         id = intent.getStringExtra("id");
-
-        //加载训练方案
-        if(tpdbOpenHelper == null){
-            tpdbOpenHelper = new TPDBOpenHelper(this);
-            backUpTp = tpdbOpenHelper.inputTrainingProgram(id);
-        }
+        tpdbOpenHelper = new TPDBOpenHelper(this);
         tp = tpdbOpenHelper.inputTrainingProgram(id);
 
         // 给listView添加headerView，用于显示训练方案的基本信息

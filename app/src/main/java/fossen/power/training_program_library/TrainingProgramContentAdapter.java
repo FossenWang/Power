@@ -94,6 +94,7 @@ public class TrainingProgramContentAdapter extends BaseExpandableListAdapter {
         }else {
             groupHolder = (GroupViewHolder) convertView.getTag();
         }
+
         if(trainingDay.isRestDay()){
             groupHolder.textDay.setText((groupPosition+1) + "  休息: " + trainingDay.getTitle());
             groupHolder.textCount.setText("");
