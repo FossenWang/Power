@@ -16,10 +16,7 @@ import fossen.power.training_today.TrainingTodayActivity;
 
 public class MainActivity extends AppCompatActivity {
     private TPDBOpenHelper tpdbOpenHelper;
-    private TextView text_itt_title;
-    private TextView text_itt_circle;
-    private TextView text_itt_day;
-    private TextView text_itt_count;
+    private ViewGroup layoutTT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,23 +43,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //设置TrainingTodayActivity的入口
-        View inTrainingToday = findViewById(R.id.in_training_today);
-        inTrainingToday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), TrainingTodayActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        //动态添加视图，待完善~~~~~~~~~~~~~~~~~~~！！！！！！！！！！！！！！！！！！！！！！！！！
-        ViewGroup layoutTT = (ViewGroup) findViewById(R.id.layout_tt);
-        View trainingItem = getLayoutInflater().inflate(R.layout.item_training_today, layoutTT);
-        text_itt_title = (TextView) findViewById(R.id.text_itt_title);
-        text_itt_circle = (TextView) findViewById(R.id.text_itt_circle_goal);
-        text_itt_day = (TextView) findViewById(R.id.text_itt_day);
-        text_itt_count = (TextView) findViewById(R.id.text_itt_count);
+        layoutTT = (ViewGroup) findViewById(R.id.layout_tt);
 
     }
 
@@ -73,23 +54,59 @@ public class MainActivity extends AppCompatActivity {
             tpdbOpenHelper = new TPDBOpenHelper(this);
         }
         ArrayList<TrainingProgram> tpList = tpdbOpenHelper.inputTrainingProgramList();
+        layoutTT.removeAllViews();
+        boolean training = false;
         for(int i = 0; i < tpList.size(); i++){
             if(tpList.get(i).getStart()>0){
-                text_itt_title.setText(tpList.get(i).getName());
-                text_itt_circle.setText(tpList.get(i).getCircleGoal());
-                TrainingDay today = tpdbOpenHelper.inputTrainingDay(tpList.get(i).getId(),
-                        tpList.get(i).getTrainingDay(tpList.get(i).countTodayInCircle() - 1).getTitle(),
-                        tpList.get(i).countTodayInCircle());
-                if(today.isRestDay()){
-                    text_itt_day.setText("休息: " + today.getTitle());
-                    text_itt_count.setText("");
-                }else {
-                    text_itt_day.setText("训练: " + today.getTitle());
-                    text_itt_count.setText(today.numberOfExercise() + "个动作  "
-                            + today.numberOfSingleSets() + "组");
-                }
+                addTrainingItem(tpList.get(i));
+                training = true;
             }
         }
+        if(!training){
+            addTrainingItem();
+        }
+    }
+
+    protected void addTrainingItem(TrainingProgram trainingProgram){
+        View trainingItem = getLayoutInflater().inflate(R.layout.item_training_today, null);
+        layoutTT.addView(trainingItem);
+        TextView text_itt_title = (TextView) trainingItem.findViewById(R.id.text_itt_title);
+        TextView text_itt_circle = (TextView) trainingItem.findViewById(R.id.text_itt_circle_goal);
+        TextView text_itt_day = (TextView) trainingItem.findViewById(R.id.text_itt_day);
+        TextView text_itt_count = (TextView) trainingItem.findViewById(R.id.text_itt_count);
+        text_itt_title.setText(trainingProgram.getName());
+        text_itt_circle.setText(trainingProgram.getCircleGoal());
+        TrainingDay today = tpdbOpenHelper.inputTrainingDay(trainingProgram.getId(),
+                trainingProgram.getTrainingDay(trainingProgram.countTodayInCircle() - 1).getTitle(),
+                trainingProgram.countTodayInCircle());
+        if(today.isRestDay()){
+            text_itt_day.setText("休息: " + today.getTitle());
+            text_itt_count.setText("");
+        }else {
+            text_itt_day.setText("训练: " + today.getTitle());
+            text_itt_count.setText(today.numberOfExercise() + "个动作  "
+                    + today.numberOfSingleSets() + "组");
+        }
+
+        trainingItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), TrainingTodayActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+    //无训练计划时添加进入训练方案库的视图
+    protected void addTrainingItem() {
+        View trainingItem = getLayoutInflater().inflate(R.layout.item_training_today, null);
+        layoutTT.addView(trainingItem);
+        trainingItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), TrainingProgramLibraryActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

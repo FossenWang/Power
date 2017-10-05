@@ -16,7 +16,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:maxLines="1"
-            android:text="推拉腿式训练"
+            android:text="暂无训练"
             android:textColor="@color/black"
             android:textSize="17sp" />
 
@@ -28,7 +28,6 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
             android:maxLines="1"
-            android:text="目标: 增肌    循环: 1/7天"
             android:textSize="13sp" />
 
     </FrameLayout>
@@ -44,7 +43,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginStart="16dp"
             android:maxLines="1"
-            android:text="训练: 练胸日"
+            android:text="点此选择并开始你的训练吧！"
             android:textColor="@color/black"
             android:textSize="17sp" />
 
@@ -55,8 +54,6 @@
             android:layout_gravity="bottom|end"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
-            android:paddingEnd="16dp"
-            android:text="n个动作  m组"
             android:textSize="13sp" />
     </FrameLayout>
 
