@@ -24,8 +24,7 @@
             android:id="@+id/list_tt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:divider="@drawable/divider_1dp"
-            android:dividerHeight="0dp"
+            android:divider="?android:attr/windowBackground"
             android:paddingBottom="48dp" />
 
         <TextView

@@ -109,7 +109,7 @@ public class TrainingProgramContentAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final ChildViewHolder childHolder;
+        ChildViewHolder childHolder;
         if(convertView == null){
             convertView = LayoutInflater.from(mContext).inflate(
                     R.layout.item_tpc_item, parent, false);

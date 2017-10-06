@@ -74,11 +74,13 @@ public class MainActivity extends AppCompatActivity {
         TextView text_itt_circle = (TextView) trainingItem.findViewById(R.id.text_itt_circle_goal);
         TextView text_itt_day = (TextView) trainingItem.findViewById(R.id.text_itt_day);
         TextView text_itt_count = (TextView) trainingItem.findViewById(R.id.text_itt_count);
+
         text_itt_title.setText(trainingProgram.getName());
         text_itt_circle.setText(trainingProgram.getCircleGoal());
+        final TrainingProgram tp = trainingProgram;
+        int day = trainingProgram.countTodayInCircle();
         TrainingDay today = tpdbOpenHelper.inputTrainingDay(trainingProgram.getId(),
-                trainingProgram.getTrainingDay(trainingProgram.countTodayInCircle() - 1).getTitle(),
-                trainingProgram.countTodayInCircle());
+                trainingProgram.getTrainingDay(day - 1).getTitle(), day);
         if(today.isRestDay()){
             text_itt_day.setText("休息: " + today.getTitle());
             text_itt_count.setText("");
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), TrainingTodayActivity.class);
+                intent.putExtra("trainingProgram", tp);
                 startActivity(intent);
             }
         });

@@ -17,7 +17,7 @@ import fossen.power.R;
  */
 
 public class TrainingRecordAdapter extends BaseAdapter {
-    private TrainingDay trainingDay;//自建类TrainingDay包含一个训练日的训练内容
+    private TrainingDay trainingDay;
     private Context mContext;
 
     public TrainingRecordAdapter(TrainingDay trainingDay , Context mContext) {

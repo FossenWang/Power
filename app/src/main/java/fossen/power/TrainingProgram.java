@@ -1,5 +1,6 @@
 package fossen.power;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -7,7 +8,7 @@ import java.util.Calendar;
  * Created by Administrator on 2017/8/18.
  */
 
-public class TrainingProgram {
+public class TrainingProgram implements Serializable {
     //训练日列表
     private ArrayList<TrainingDay> tList = new ArrayList<TrainingDay>();
     private String id = "";
