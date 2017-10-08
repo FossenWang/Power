@@ -3,6 +3,6 @@
     android:color="@color/statusBarToolBar">
 
     <item
-        android:drawable="@drawable/item_itpc_sets" />
+        android:drawable="@drawable/item_white_corners" />
 
 </ripple>

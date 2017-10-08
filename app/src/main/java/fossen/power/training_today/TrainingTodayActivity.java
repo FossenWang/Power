@@ -5,27 +5,25 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.Calendar;
-
 import fossen.power.ComponentCreator;
-import fossen.power.Exercise;
-import fossen.power.SingleSet;
-import fossen.power.Sets;
 import fossen.power.TPDBOpenHelper;
 import fossen.power.TrainingDay;
 import fossen.power.R;
 import fossen.power.TrainingProgram;
-import fossen.power.training_log.TrainingRecordAdapter;
 
 public class TrainingTodayActivity extends AppCompatActivity {
     private TPDBOpenHelper tpdbOpenHelper;
     private TrainingProgram trainingProgram;
     private TrainingDay trainingToday;
+    private TrainingTodayAdapter ttAdapter;
     private ListView trainingList;
+
     private View header;
     private View header2;
     private ViewGroup headerLayout;
@@ -35,6 +33,12 @@ public class TrainingTodayActivity extends AppCompatActivity {
     private ImageView arrow;
     private TextView textDay;
     private TextView textCount;
+    private TextView startTraining;
+    private ViewGroup actionLayout;
+    private View actionView;
+    private ImageButton buttonPrevious;
+    private ImageButton buttonNext;
+    private Button buttonDone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,8 +102,36 @@ public class TrainingTodayActivity extends AppCompatActivity {
         });
 
         //绑定配适器
-        TrainingTodayAdapter ttAdapter = new TrainingTodayAdapter(tpdbOpenHelper, trainingProgram, trainingToday, this);
+        ttAdapter = new TrainingTodayAdapter(tpdbOpenHelper, trainingProgram, trainingToday, this);
         trainingList.setAdapter(ttAdapter);
+
+        //设置底部操作栏
+        actionLayout = (ViewGroup) findViewById(R.id.action_tt);
+        actionView = getLayoutInflater().inflate(R.layout.item_tt_action, null);
+        buttonPrevious = (ImageButton) actionView.findViewById(R.id.button_tt_previous);
+        buttonNext = (ImageButton) actionView.findViewById(R.id.button_tt_next);
+        buttonDone = (Button) actionView.findViewById(R.id.button_tt_done);
+        startTraining = (TextView) findViewById(R.id.text_tt_start);
+        startTraining.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ttAdapter.setWritingItem(0);
+                ttAdapter.notifyDataSetChanged();
+                trainingList.smoothScrollToPosition(2);
+                actionLayout.removeAllViews();
+                actionLayout.addView(actionView);
+            }
+        });
+        buttonDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
+                ttAdapter.setWritingItem(-1);
+                ttAdapter.notifyDataSetChanged();
+                actionLayout.removeAllViews();
+                actionLayout.addView(startTraining);
+            }
+        });
     }
 
     @Override

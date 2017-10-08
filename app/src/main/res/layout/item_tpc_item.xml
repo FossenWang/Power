@@ -13,49 +13,39 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
-        android:background="@drawable/ripple_itpc_sets"
+        android:background="@drawable/ripple_white_corners"
         android:elevation="2dp"
         android:orientation="vertical">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp">
-
-            <ImageView
-                android:id="@+id/arrow_tpc_exercise"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="8dp"
-                android:padding="4dp"
-                app:srcCompat="@drawable/ic_arrow_down_24dp" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/text_tpc_exercise"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:layout_marginStart="40dp"
+                android:layout_marginStart="8dp"
                 android:gravity="center"
                 android:paddingEnd="8dp"
                 android:paddingStart="8dp"
                 android:text="动作名动作名"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
-        </FrameLayout>
+
+            <ImageView
+                android:id="@+id/arrow_tpc_exercise"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center_vertical"
+                android:padding="4dp"
+                app:srcCompat="@drawable/ic_arrow_down_24dp" />
+        </LinearLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="48dp">
-
-            <TextView
-                android:id="@+id/text_tpc_sets"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginStart="40dp"
-                android:gravity="center"
-                android:text="10~12 RM × 10 组"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/text_tpc_rest"
@@ -65,6 +55,17 @@
                 android:layout_marginEnd="16dp"
                 android:gravity="center"
                 android:text="休息: 60s" />
+
+            <TextView
+                android:id="@+id/text_tpc_sets"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:gravity="center"
+                android:text="10~12 RM × 10 组"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
         </FrameLayout>
 
     </LinearLayout>

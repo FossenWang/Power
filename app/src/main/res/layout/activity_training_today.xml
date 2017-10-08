@@ -27,15 +27,22 @@
             android:divider="?android:attr/windowBackground"
             android:paddingBottom="48dp" />
 
-        <TextView
-            android:id="@+id/start_training"
+        <FrameLayout
+            android:id="@+id/action_tt"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_gravity="bottom"
-            android:elevation="8dp"
-            android:gravity="center"
-            android:text="@string/text_start_training"
-            android:textSize="24sp" />
+            android:layout_gravity="bottom">
+
+            <TextView
+                android:id="@+id/text_tt_start"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/ripple_white_corners"
+                android:elevation="8dp"
+                android:gravity="center"
+                android:text="@string/text_start_training"
+                android:textSize="24sp" />
+        </FrameLayout>
 
     </FrameLayout>
 
