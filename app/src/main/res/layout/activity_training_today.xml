@@ -31,7 +31,8 @@
             android:id="@+id/action_tt"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_gravity="bottom">
+            android:layout_gravity="bottom"
+            android:background="@color/white">
 
             <TextView
                 android:id="@+id/text_tt_start"

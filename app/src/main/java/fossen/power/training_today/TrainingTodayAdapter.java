@@ -30,7 +30,8 @@ public class TrainingTodayAdapter extends BaseAdapter {
     private TrainingProgram trainingProgram;
     private TrainingDay trainingDay;
     private Context mContext;
-    private int writingItem = -1;
+    private int writingItem = -1;//启用修改模式的组集序号
+    private int recordingSets = 0;//表示第一个待记录的组集
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_WRITE = 1;
 
@@ -39,6 +40,26 @@ public class TrainingTodayAdapter extends BaseAdapter {
         this.trainingProgram = trainingProgram;
         this.trainingDay = trainingDay;
         this.mContext = mContext;
+        recordingSets = setRecordingSets(trainingDay);
+    }
+
+    public void setWritingItem(int position){
+        writingItem = position;
+    }
+    public int getWritingItem(){
+        return writingItem;
+    }
+    public int getRecordingSets(){
+        return recordingSets;
+    }
+    private int setRecordingSets(TrainingDay trainingDay) {
+        for(int i = 0; i < trainingDay.numberOfSets(); i++){
+            for(int j = 0; j < trainingDay.getSets(i).numberOfSingleSets(); j++)
+            if(trainingDay.getSets(i).getSet(j).getReps() == 0){
+                return i;
+            }
+        }
+        return -1;//第一个有空SingleSet的Sets记为recordingSets，没有则是-1，表示全部完成
     }
 
     @Override
@@ -166,13 +187,6 @@ public class TrainingTodayAdapter extends BaseAdapter {
                 break;
         }
         return convertView;
-    }
-
-    public void setWritingItem(int position){
-        writingItem = position;
-    }
-    public int getWritingItem(){
-        return writingItem;
     }
 
     private static class ViewHolder0 {

@@ -115,21 +115,43 @@ public class TrainingTodayActivity extends AppCompatActivity {
         startTraining.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ttAdapter.setWritingItem(0);
+                ttAdapter.setWritingItem(ttAdapter.getRecordingSets());
                 ttAdapter.notifyDataSetChanged();
-                trainingList.smoothScrollToPosition(2);
                 actionLayout.removeAllViews();
                 actionLayout.addView(actionView);
+                trainingList.smoothScrollToPosition(2);
             }
         });
         buttonDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
                 ttAdapter.setWritingItem(-1);
                 ttAdapter.notifyDataSetChanged();
                 actionLayout.removeAllViews();
                 actionLayout.addView(startTraining);
+                trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
+            }
+        });
+        buttonPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int item = ttAdapter.getWritingItem();
+                if(item > 0){
+                    ttAdapter.setWritingItem(item-1);
+                    ttAdapter.notifyDataSetChanged();
+                    trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
+                }
+            }
+        });
+        buttonNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int item = ttAdapter.getWritingItem();
+                if (item < (trainingToday.numberOfSets() - 1)){
+                    ttAdapter.setWritingItem(item+1);
+                    ttAdapter.notifyDataSetChanged();
+                    trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
+                }
             }
         });
     }
