@@ -96,7 +96,7 @@ public class TrainingProgramContentAdapter extends BaseExpandableListAdapter {
         }
 
         if(trainingDay.isRestDay()){
-            groupHolder.textDay.setText((groupPosition+1) + "  休息: " + trainingDay.getTitle());
+            groupHolder.textDay.setText((groupPosition+1) + "  休息: " + trainingDay.getTitle() + "组");
             groupHolder.textCount.setText("");
         }else{
             groupHolder.textDay.setText((groupPosition+1) + "  训练: " + trainingDay.getTitle());

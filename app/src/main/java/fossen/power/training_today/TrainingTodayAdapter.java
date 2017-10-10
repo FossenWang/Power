@@ -10,10 +10,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import fossen.power.ComponentCreator;
 import fossen.power.R;
 import fossen.power.Sets;
 import fossen.power.TPDBOpenHelper;
@@ -31,7 +33,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
     private TrainingDay trainingDay;
     private Context mContext;
     private int writingItem = -1;//启用修改模式的组集序号
-    private int recordingSets = 0;//表示第一个待记录的组集
+    private int recordingSets = 0;//表示第一个未记录的组集
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_WRITE = 1;
 
@@ -40,11 +42,13 @@ public class TrainingTodayAdapter extends BaseAdapter {
         this.trainingProgram = trainingProgram;
         this.trainingDay = trainingDay;
         this.mContext = mContext;
-        recordingSets = setRecordingSets(trainingDay);
+        recordingSets = setRecordingSets();
     }
 
     public void setWritingItem(int position){
         writingItem = position;
+        recordingSets = setRecordingSets();//每次切换在编辑的组集时都要重新计算未完成组
+        notifyDataSetChanged();
     }
     public int getWritingItem(){
         return writingItem;
@@ -52,7 +56,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
     public int getRecordingSets(){
         return recordingSets;
     }
-    private int setRecordingSets(TrainingDay trainingDay) {
+    public int setRecordingSets() {
         for(int i = 0; i < trainingDay.numberOfSets(); i++){
             for(int j = 0; j < trainingDay.getSets(i).numberOfSingleSets(); j++)
             if(trainingDay.getSets(i).getSet(j).getReps() == 0){
@@ -94,8 +98,8 @@ public class TrainingTodayAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         int type = getItemViewType(position);
-        ViewHolder0 holder0 = null;
-        ViewHolder1 holder1 = null;
+        ViewHolder0 holder0;
+        ViewHolder1 holder1;
         final int pos = position;
         final Sets sets = trainingDay.getSets(position);
 
@@ -116,7 +120,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
                 }
 
                 holder0.text_exercise.setText(sets.getExercise(0).getName());
-                holder0.text_sets.setText(sets.getRepmax() + " RM × " + sets.numberOfSingleSets());
+                holder0.text_sets.setText(sets.getRepmax() + " RM × " + sets.numberOfSingleSets() + "组");
                 holder0.text_rest.setText("休息: " + sets.getRestSting());
 
                 //单击进入动作形式Activity
@@ -168,12 +172,10 @@ public class TrainingTodayAdapter extends BaseAdapter {
                     convertView = LayoutInflater.from(mContext).inflate(
                             R.layout.item_tt_write, parent, false);
                     holder1 = new ViewHolder1();
-                    holder1.layout_volume = (ViewGroup) convertView.findViewById(R.id.layout_ttw_volume);
+                    holder1.layout_record = (ViewGroup) convertView.findViewById(R.id.layout_ttw_record);
                     holder1.text_exercise = (TextView) convertView.findViewById(R.id.text_ttw_exercise);
                     holder1.text_sets = (TextView) convertView.findViewById(R.id.text_ttw_sets);
                     holder1.text_rest = (TextView) convertView.findViewById(R.id.text_ttw_rest);
-                    holder1.delete = (Button) convertView.findViewById(R.id.button_ttw_delete);
-                    holder1.add = (Button) convertView.findViewById(R.id.button_ttw_add);
                     convertView.setTag(holder1);
                 } else {
                     holder1 = (ViewHolder1) convertView.getTag();
@@ -183,6 +185,11 @@ public class TrainingTodayAdapter extends BaseAdapter {
                 holder1.text_exercise.setText(sets.getExercise(0).getName());
                 holder1.text_sets.setText(sets.getRepmax() + " RM × " + sets.numberOfSingleSets());
                 holder1.text_rest.setText("休息: " + sets.getRestSting());
+
+                holder1.layout_record.removeAllViews();
+                for(int i = 0; i < sets.numberOfSingleSets(); i++){
+                    holder1.layout_record.addView(ComponentCreator.createLoadRepsPickers(mContext, i + 1, sets.getSet(i)));
+                }
 
                 break;
         }
@@ -197,11 +204,9 @@ public class TrainingTodayAdapter extends BaseAdapter {
         TextView text_rest;
     }
     private static class ViewHolder1{
-        ViewGroup layout_volume;
+        ViewGroup layout_record;
         TextView text_exercise;
         TextView text_sets;
         TextView text_rest;
-        Button delete;
-        Button add;
     }
 }

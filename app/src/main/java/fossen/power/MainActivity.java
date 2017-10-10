@@ -45,29 +45,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         layoutTT = (ViewGroup) findViewById(R.id.layout_tt);
-        NumberPicker picker1 = (NumberPicker) findViewById(R.id.numberPicker);
-        NumberPicker picker2 = (NumberPicker) findViewById(R.id.numberPicker2);
-        picker1.setFormatter(new NumberPicker.Formatter() {
-            @Override
-            public String format(int value) {
-                double kg = value * 2.5;
-                String display;
-                if(kg - (int) kg ==0){
-                    display = Integer.toString((int) kg);
-                }else {
-                    display = Integer.toString((int) kg) + ".5";
-                }
-                return display;
-            }
-        });
-        picker1.setMinValue(0);
-        picker1.setMaxValue(200);
-        picker1.setValue(0);
-        picker1.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);//关闭编辑模式
-        picker2.setMinValue(0);
-        picker2.setMaxValue(30);
-        picker2.setValue(12);
-        picker2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);//关闭编辑模式
     }
 
     @Override

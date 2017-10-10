@@ -112,24 +112,27 @@ public class TrainingTodayActivity extends AppCompatActivity {
         buttonNext = (ImageButton) actionView.findViewById(R.id.button_tt_next);
         buttonDone = (Button) actionView.findViewById(R.id.button_tt_done);
         startTraining = (TextView) findViewById(R.id.text_tt_start);
+        setStartTrainingText();
+        setButtonDoneText();
         startTraining.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ttAdapter.setWritingItem(ttAdapter.getRecordingSets());
-                ttAdapter.notifyDataSetChanged();
                 actionLayout.removeAllViews();
                 actionLayout.addView(actionView);
-                trainingList.smoothScrollToPosition(2);
+                setButtonDoneText();
+                trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
             }
         });
         buttonDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int item = ttAdapter.getWritingItem();
                 ttAdapter.setWritingItem(-1);
-                ttAdapter.notifyDataSetChanged();
                 actionLayout.removeAllViews();
+                setStartTrainingText();
                 actionLayout.addView(startTraining);
-                trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
+                trainingList.smoothScrollToPosition( item + 2);
             }
         });
         buttonPrevious.setOnClickListener(new View.OnClickListener() {
@@ -138,7 +141,6 @@ public class TrainingTodayActivity extends AppCompatActivity {
                 int item = ttAdapter.getWritingItem();
                 if(item > 0){
                     ttAdapter.setWritingItem(item-1);
-                    ttAdapter.notifyDataSetChanged();
                     trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
                 }
             }
@@ -149,7 +151,6 @@ public class TrainingTodayActivity extends AppCompatActivity {
                 int item = ttAdapter.getWritingItem();
                 if (item < (trainingToday.numberOfSets() - 1)){
                     ttAdapter.setWritingItem(item+1);
-                    ttAdapter.notifyDataSetChanged();
                     trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
                 }
             }
@@ -160,5 +161,25 @@ public class TrainingTodayActivity extends AppCompatActivity {
     protected void onDestroy(){
         super.onDestroy();
         tpdbOpenHelper.close();
+    }
+
+    private void setStartTrainingText(){
+        switch (ttAdapter.getRecordingSets()){
+            case 0 :
+                startTraining.setText("开始今日的训练");
+                break;
+            case -1 :
+                startTraining.setText("修改已完成训练");
+                break;
+            default:
+                startTraining.setText("继续今日的训练");
+        }
+    }
+    private void setButtonDoneText(){
+        if(ttAdapter.getRecordingSets() == -1){
+            buttonDone.setText("完成");
+        }else {
+            buttonDone.setText("暂停记录");
+        }
     }
 }
