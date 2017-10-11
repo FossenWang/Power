@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content">
+
+    <CheckBox
+        android:id="@+id/check_ttw"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_margin="4dp"
+        android:background="@drawable/item_blue_edge" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_margin="4dp"
-        android:background="@drawable/item_blue_edge"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -47,4 +53,4 @@
             android:textColor="@color/black" />
     </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>

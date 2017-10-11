@@ -8,9 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +32,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
     private Context mContext;
     private int writingItem = -1;//启用修改模式的组集序号
     private int recordingSets = 0;//表示第一个未记录的组集
-    private static final int TYPE_ITEM = 0;
+    private static final int TYPE_DISPLAY = 0;
     private static final int TYPE_WRITE = 1;
 
     public TrainingTodayAdapter(TPDBOpenHelper tpdbOpenHelper, TrainingProgram trainingProgram, TrainingDay trainingDay , Context mContext) {
@@ -86,7 +84,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
         if(position == writingItem){
             return TYPE_WRITE;
         }else {
-            return TYPE_ITEM;
+            return TYPE_DISPLAY;
         }
     }
 
@@ -104,16 +102,15 @@ public class TrainingTodayAdapter extends BaseAdapter {
         final Sets sets = trainingDay.getSets(position);
 
         switch (type) {
-            case TYPE_ITEM://加载显示模式的训练组集
+            case TYPE_DISPLAY://加载显示模式的训练组集
                 if (convertView == null) {
                     convertView = LayoutInflater.from(mContext).inflate(
-                            R.layout.item_tpc_item, parent, false);
+                            R.layout.item_tt_display, parent, false);
                     holder0 = new ViewHolder0();
-                    holder0.layout_sets = convertView.findViewById(R.id.layout_tpc_sets);
-                    holder0.arrow = (ImageView) convertView.findViewById(R.id.arrow_tpc_exercise);
-                    holder0.text_exercise = (TextView) convertView.findViewById(R.id.text_tpc_exercise);
-                    holder0.text_sets = (TextView) convertView.findViewById(R.id.text_tpc_sets);
-                    holder0.text_rest = (TextView) convertView.findViewById(R.id.text_tpc_rest);
+                    holder0.layout_sets = convertView.findViewById(R.id.layout_ttd_sets);
+                    holder0.text_exercise = (TextView) convertView.findViewById(R.id.text_ttd_exercise);
+                    holder0.text_sets = (TextView) convertView.findViewById(R.id.text_ttd_sets);
+                    holder0.text_rest = (TextView) convertView.findViewById(R.id.text_ttd_rest);
                     convertView.setTag(holder0);
                 } else {
                     holder0 = (ViewHolder0) convertView.getTag();
@@ -133,9 +130,35 @@ public class TrainingTodayAdapter extends BaseAdapter {
                         mContext.startActivity(intent);
                     }
                 });
+                break;
+
+            case TYPE_WRITE://加载可编辑模式的训练组集
+                if (convertView == null) {
+                    convertView = LayoutInflater.from(mContext).inflate(
+                            R.layout.item_tt_write, parent, false);
+                    holder1 = new ViewHolder1();
+                    holder1.layout_record = (ViewGroup) convertView.findViewById(R.id.layout_ttw_record);
+                    holder1.arrow = (ImageView) convertView.findViewById(R.id.arrow_ttw_exercise);
+                    holder1.text_exercise = (TextView) convertView.findViewById(R.id.text_ttw_exercise);
+                    holder1.text_sets = (TextView) convertView.findViewById(R.id.text_ttw_sets);
+                    holder1.text_rest = (TextView) convertView.findViewById(R.id.text_ttw_rest);
+                    convertView.setTag(holder1);
+                } else {
+                    holder1 = (ViewHolder1) convertView.getTag();
+                }
+
+                //加载组集数据
+                holder1.text_exercise.setText(sets.getExercise(0).getName());
+                holder1.text_sets.setText(sets.getRepmax() + " RM × " + sets.numberOfSingleSets());
+                holder1.text_rest.setText("休息: " + sets.getRestSting());
+
+                holder1.layout_record.removeAllViews();
+                for(int i = 0; i < sets.numberOfSingleSets(); i++){
+                    holder1.layout_record.addView(ComponentCreator.createLoadRepsPickers(mContext, i + 1, sets.getSet(i)));
+                }
 
                 //单击下箭头弹出菜单，选择替换动作
-                holder0.arrow.setOnClickListener(new View.OnClickListener() {
+                holder1.arrow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         PopupMenu popup = new PopupMenu(mContext, v);
@@ -166,45 +189,19 @@ public class TrainingTodayAdapter extends BaseAdapter {
                     }
                 });
                 break;
-
-            case TYPE_WRITE://加载可编辑模式的训练组集
-                if (convertView == null) {
-                    convertView = LayoutInflater.from(mContext).inflate(
-                            R.layout.item_tt_write, parent, false);
-                    holder1 = new ViewHolder1();
-                    holder1.layout_record = (ViewGroup) convertView.findViewById(R.id.layout_ttw_record);
-                    holder1.text_exercise = (TextView) convertView.findViewById(R.id.text_ttw_exercise);
-                    holder1.text_sets = (TextView) convertView.findViewById(R.id.text_ttw_sets);
-                    holder1.text_rest = (TextView) convertView.findViewById(R.id.text_ttw_rest);
-                    convertView.setTag(holder1);
-                } else {
-                    holder1 = (ViewHolder1) convertView.getTag();
-                }
-
-                //加载组集数据
-                holder1.text_exercise.setText(sets.getExercise(0).getName());
-                holder1.text_sets.setText(sets.getRepmax() + " RM × " + sets.numberOfSingleSets());
-                holder1.text_rest.setText("休息: " + sets.getRestSting());
-
-                holder1.layout_record.removeAllViews();
-                for(int i = 0; i < sets.numberOfSingleSets(); i++){
-                    holder1.layout_record.addView(ComponentCreator.createLoadRepsPickers(mContext, i + 1, sets.getSet(i)));
-                }
-
-                break;
         }
         return convertView;
     }
 
     private static class ViewHolder0 {
         View layout_sets;
-        ImageView arrow;
         TextView text_exercise;
         TextView text_sets;
         TextView text_rest;
     }
     private static class ViewHolder1{
         ViewGroup layout_record;
+        ImageView arrow;
         TextView text_exercise;
         TextView text_sets;
         TextView text_rest;
