@@ -30,16 +30,27 @@ public class TrainingTodayAdapter extends BaseAdapter {
     private TrainingProgram trainingProgram;
     private TrainingDay trainingDay;
     private Context mContext;
-    private int writingItem = -1;//启用修改模式的组集序号
+    private ViewGroup actionLayout;
+    private View actionView;
+
+    private int writingItem = -1;//-1表示无编辑中的组集，>-1时表示启用修改模式的组集序号,
     private int recordingSets = 0;//表示第一个未记录的组集
     private static final int TYPE_DISPLAY = 0;
     private static final int TYPE_WRITE = 1;
 
-    public TrainingTodayAdapter(TPDBOpenHelper tpdbOpenHelper, TrainingProgram trainingProgram, TrainingDay trainingDay , Context mContext) {
+    public TrainingTodayAdapter(TPDBOpenHelper tpdbOpenHelper,
+                                TrainingProgram trainingProgram,
+                                TrainingDay trainingDay ,
+                                Context mContext,
+                                ViewGroup actionLayout,
+                                View actionView
+                                ) {
         this.tpdbOpenHelper = tpdbOpenHelper;
         this.trainingProgram = trainingProgram;
         this.trainingDay = trainingDay;
         this.mContext = mContext;
+        this.actionLayout = actionLayout;
+        this.actionView = actionView;
         recordingSets = setRecordingSets();
     }
 
@@ -56,9 +67,10 @@ public class TrainingTodayAdapter extends BaseAdapter {
     }
     public int setRecordingSets() {
         for(int i = 0; i < trainingDay.numberOfSets(); i++){
-            for(int j = 0; j < trainingDay.getSets(i).numberOfSingleSets(); j++)
-            if(trainingDay.getSets(i).getSet(j).getReps() == 0){
-                return i;
+            for(int j = 0; j < trainingDay.getSets(i).numberOfSingleSets(); j++){
+                if(trainingDay.getSets(i).getSet(j).getReps() == 0){
+                    return i;
+                }
             }
         }
         return -1;//第一个有空SingleSet的Sets记为recordingSets，没有则是-1，表示全部完成
@@ -111,6 +123,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
                     holder0.text_exercise = (TextView) convertView.findViewById(R.id.text_ttd_exercise);
                     holder0.text_sets = (TextView) convertView.findViewById(R.id.text_ttd_sets);
                     holder0.text_rest = (TextView) convertView.findViewById(R.id.text_ttd_rest);
+                    holder0.text_record = (TextView) convertView.findViewById(R.id.text_ttd_load_reps);
                     convertView.setTag(holder0);
                 } else {
                     holder0 = (ViewHolder0) convertView.getTag();
@@ -119,15 +132,15 @@ public class TrainingTodayAdapter extends BaseAdapter {
                 holder0.text_exercise.setText(sets.getExercise(0).getName());
                 holder0.text_sets.setText(sets.getRepmax() + " RM × " + sets.numberOfSingleSets() + "组");
                 holder0.text_rest.setText("休息: " + sets.getRestSting());
+                holder0.text_record.setText(sets.getAllSetsToFormat("kg"));
 
-                //单击进入动作形式Activity
+                //单击进入组集修改模式
                 holder0.layout_sets.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //进入动作形式Activity
-                        Intent intent = new Intent(mContext,ExerciseFormActivity.class);
-                        intent.putExtra("name",sets.getExercise(0).getName());
-                        mContext.startActivity(intent);
+                        setWritingItem(pos);
+                        actionLayout.removeAllViews();
+                        actionLayout.addView(actionView);
                     }
                 });
                 break;
@@ -138,6 +151,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
                             R.layout.item_tt_write, parent, false);
                     holder1 = new ViewHolder1();
                     holder1.layout_record = (ViewGroup) convertView.findViewById(R.id.layout_ttw_record);
+                    holder1.image_form = (ImageView) convertView.findViewById(R.id.image_ttw_form);
                     holder1.arrow = (ImageView) convertView.findViewById(R.id.arrow_ttw_exercise);
                     holder1.text_exercise = (TextView) convertView.findViewById(R.id.text_ttw_exercise);
                     holder1.text_sets = (TextView) convertView.findViewById(R.id.text_ttw_sets);
@@ -147,14 +161,25 @@ public class TrainingTodayAdapter extends BaseAdapter {
                     holder1 = (ViewHolder1) convertView.getTag();
                 }
 
+                //单击进入动作形式Activity
+                holder1.image_form.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mContext,ExerciseFormActivity.class);
+                        intent.putExtra("name",sets.getExercise(0).getName());
+                        mContext.startActivity(intent);
+                    }
+                });
+
                 //加载组集数据
                 holder1.text_exercise.setText(sets.getExercise(0).getName());
                 holder1.text_sets.setText(sets.getRepmax() + " RM × " + sets.numberOfSingleSets());
                 holder1.text_rest.setText("休息: " + sets.getRestSting());
 
+                //创建可编辑的训练记录
                 holder1.layout_record.removeAllViews();
                 for(int i = 0; i < sets.numberOfSingleSets(); i++){
-                    holder1.layout_record.addView(ComponentCreator.createLoadRepsPickers(mContext, i + 1, sets.getSet(i)));
+                    holder1.layout_record.addView(ComponentCreator.createLoadRepsPickers(mContext, i+1, sets));
                 }
 
                 //单击下箭头弹出菜单，选择替换动作
@@ -198,9 +223,11 @@ public class TrainingTodayAdapter extends BaseAdapter {
         TextView text_exercise;
         TextView text_sets;
         TextView text_rest;
+        TextView text_record;
     }
     private static class ViewHolder1{
         ViewGroup layout_record;
+        ImageView image_form;
         ImageView arrow;
         TextView text_exercise;
         TextView text_sets;

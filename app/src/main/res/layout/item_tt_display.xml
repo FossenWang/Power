@@ -60,13 +60,35 @@
 
         </FrameLayout>
 
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="4dp"
+            android:paddingTop="8dp"
+            android:text="训练记录"
+            android:textColor="@color/black"
+            android:textSize="17sp" />
+
         <LinearLayout
             android:id="@+id/layout_ttd_record"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/text_ttd_load_reps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.5"
+                android:padding="4dp"
+                android:text="暂无\n第n组  50kg × 12次\n第n组  50kg × 12次\n第n组  50kg × 12次"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
         </LinearLayout>
 
     </LinearLayout>
+
 </LinearLayout>

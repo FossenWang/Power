@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_gravity="center"
-        android:text="完成" />
+        android:text="确认" />
 
     <ImageButton
         android:id="@+id/button_tt_next"

@@ -11,6 +11,8 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 /**
  * Created by Administrator on 2017/9/20.
  */
@@ -32,7 +34,7 @@ public class ComponentCreator {
     }
 
     //创建一行带有负重，次数选择器的视图
-    public static View createLoadRepsPickers(final Context mContext, int order, final SingleSet set){
+    public static View createLoadRepsPickers(final Context mContext, int order, Sets sets){
         View loadRepsView = LayoutInflater.from(mContext).inflate(R.layout.item_ttw_load_reps, null);
         TextView textOrder = (TextView) loadRepsView.findViewById(R.id.text_ttw_order);
         //TextView textUnit = (TextView) loadRepsView.findViewById(R.id.text_ttw_unit);
@@ -40,23 +42,26 @@ public class ComponentCreator {
         NumberPicker repsPicker = (NumberPicker) loadRepsView.findViewById(R.id.picker_ttw_reps);
         final CheckBox checkBox = (CheckBox) loadRepsView.findViewById(R.id.check_ttw);
 
+        final SingleSet set = sets.getSet(order - 1);
         int loadValue, reps;
-        loadValue = (int) (set.getLoad()/2.5);
-        reps = set.getReps();
-        textOrder.setText("第" + order + "组");
-        if(set.getReps()!=0){
+        if(set.getReps()==0){
+            reps = Integer.parseInt(sets.getRepmax().split("~")[1]);
+        }else {
+            reps = set.getReps();
             checkBox.setChecked(true);
         }
-        final SingleSet bufferSet = new SingleSet(set.getLoad(), set.getReps());
-        final SingleSet initialSet = new SingleSet(set.getLoad(), set.getReps());
+        loadValue = (int) (set.getLoad()/2.5);
+        final SingleSet bufferSet = new SingleSet(set.getLoad(), reps);
+
+        textOrder.setText("第" + order + "组");
 
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    if(bufferSet.getReps() == 0){
+                    if(bufferSet.getReps() == 0 || bufferSet.getLoad() == 0){
                         buttonView.setChecked(false);
-                        Toast.makeText(mContext, "完成次数不能为0", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "完成次数或重量不能为0", Toast.LENGTH_SHORT).show();
                     }else {
                         set.setLoad(bufferSet.getLoad());
                         set.setReps(bufferSet.getReps());

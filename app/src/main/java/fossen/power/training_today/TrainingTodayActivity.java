@@ -62,7 +62,6 @@ public class TrainingTodayActivity extends AppCompatActivity {
         trainingList.addHeaderView(header);
         header2 = getLayoutInflater().inflate(R.layout.item_tpc_group, null);
         trainingList.addHeaderView(header2);
-
         headerLayout = (ViewGroup) findViewById(R.id.layout_tpc_header);
         textTitle = (TextView) findViewById(R.id.text_tpc_title);
         textCircleGoal = (TextView) findViewById(R.id.text_tpc_circle_goal);
@@ -70,6 +69,14 @@ public class TrainingTodayActivity extends AppCompatActivity {
         arrow = (ImageView) findViewById(R.id.arrow_tpc_note);
         textDay = (TextView) findViewById(R.id.text_tpc_day);
         textCount = (TextView) findViewById(R.id.text_tpc_count);
+
+        //添加底部操作栏
+        actionLayout = (ViewGroup) findViewById(R.id.action_tt);
+        actionView = getLayoutInflater().inflate(R.layout.item_tt_action, null);
+        buttonPrevious = (ImageButton) actionView.findViewById(R.id.button_tt_previous);
+        buttonNext = (ImageButton) actionView.findViewById(R.id.button_tt_next);
+        buttonDone = (Button) actionView.findViewById(R.id.button_tt_done);
+        startTraining = (TextView) findViewById(R.id.text_tt_start);
 
         //设置列表头视图的内容
         textTitle.setText(trainingProgram.getName());
@@ -102,28 +109,25 @@ public class TrainingTodayActivity extends AppCompatActivity {
         });
 
         //绑定配适器
-        ttAdapter = new TrainingTodayAdapter(tpdbOpenHelper, trainingProgram, trainingToday, this);
+        ttAdapter = new TrainingTodayAdapter(tpdbOpenHelper, trainingProgram, trainingToday, this, actionLayout, actionView);
         trainingList.setAdapter(ttAdapter);
 
         //设置底部操作栏
-        actionLayout = (ViewGroup) findViewById(R.id.action_tt);
-        actionView = getLayoutInflater().inflate(R.layout.item_tt_action, null);
-        buttonPrevious = (ImageButton) actionView.findViewById(R.id.button_tt_previous);
-        buttonNext = (ImageButton) actionView.findViewById(R.id.button_tt_next);
-        buttonDone = (Button) actionView.findViewById(R.id.button_tt_done);
-        startTraining = (TextView) findViewById(R.id.text_tt_start);
         setStartTrainingText();
-        setButtonDoneText();
         startTraining.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ttAdapter.setWritingItem(ttAdapter.getRecordingSets());
+                if(ttAdapter.getRecordingSets() < 0){
+                    ttAdapter.setWritingItem(0);
+                }else {
+                    ttAdapter.setWritingItem(ttAdapter.getRecordingSets());
+                }
                 actionLayout.removeAllViews();
                 actionLayout.addView(actionView);
-                setButtonDoneText();
                 trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
             }
         });
+        actionView.setClickable(true);//拦截点击事件，否则会点中后面的View
         buttonDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,7 +168,16 @@ public class TrainingTodayActivity extends AppCompatActivity {
     }
 
     private void setStartTrainingText(){
-        switch (ttAdapter.getRecordingSets()){
+        int flag = ttAdapter.getRecordingSets();
+        if(flag == 0) {
+            for (int i = 0; i < trainingToday.getSets(0).numberOfSingleSets(); i++) {
+                if (trainingToday.getSets(0).getSet(i).getReps() != 0) {
+                    flag++;
+                    break;
+                }
+            }
+        }
+        switch (flag){
             case 0 :
                 startTraining.setText("开始今日的训练");
                 break;
@@ -173,13 +186,6 @@ public class TrainingTodayActivity extends AppCompatActivity {
                 break;
             default:
                 startTraining.setText("继续今日的训练");
-        }
-    }
-    private void setButtonDoneText(){
-        if(ttAdapter.getRecordingSets() == -1){
-            buttonDone.setText("完成");
-        }else {
-            buttonDone.setText("暂停记录");
         }
     }
 }

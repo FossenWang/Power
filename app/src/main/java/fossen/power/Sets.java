@@ -47,27 +47,32 @@ public class Sets implements Serializable {
     public int numberOfSingleSets(){
         return setList.size();
     }
-    //返回所有组数，重量，次数，参数为重量单位
-    public String getAllSets(String unit){
-        String allSets = "";
+    //按格式输出有效组的重量与次数，参数为重量单位
+    public String getAllSetsToFormat(String unit){
+        String formatSets = "";
         int i = 0;
-        if (unit == "kg"){    //以kg为单位输出
+        if (unit.equals("kg")){    //以kg为单位输出
             for (SingleSet set : setList) {
-                i+=1;
-                //判断重量是否为整数，是则输出整数，否则保留一位小数输出
-                if(set.getLoad()==set.getLoad().intValue()){
-                    allSets+="#"+i+":  "+Math.round(set.getLoad())+" kg × "+set.getReps()+"\n";
-                }else {
-                    allSets+="#"+i+":  "+Math.round(set.getLoad()*10)/10.0+" kg × "+set.getReps()+"\n";
+                if(set.getReps() != 0) {
+                    i++;//判断重量是否为整数，是则输出整数，否则保留一位小数输出
+                    if (set.getLoad() == set.getLoad().intValue()) {
+                        formatSets += "第" + i + "组  " + Math.round(set.getLoad()) + " kg × " + set.getReps() + "次\n";
+                    } else {
+                        formatSets += "第" + i + "组  " + Math.round(set.getLoad() * 10) / 10.0 + " kg × " + set.getReps() + "次\n";
+                    }
                 }
             }
         }else {    //以lb为单位输出
             for (SingleSet set : setList) {
-                i+=1;
-                allSets+="#"+i+":  "+set.getLoadToPound()+" lb × "+set.getReps()+"\n";
+                if (set.getReps() != 0) {
+                    formatSets += "第" + (++i) + "组  " + set.getLoadToPound() + " lb × " + set.getReps() + "次\n";
+                }
             }
         }
-        return allSets.substring(0,allSets.length()-1);
+        if (formatSets.isEmpty()){
+            formatSets += "暂无 ";
+        }
+        return formatSets.substring(0,formatSets.length()-1);
     }
     public void clearSets(){
         setList.clear();

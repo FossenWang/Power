@@ -58,7 +58,7 @@ public class TrainingRecordAdapter extends BaseAdapter {
 
         holder.img_exercise.setBackgroundResource(trainingDay.getSets(position).getExercise(0).getIcon());
         holder.txt_exercise.setText(trainingDay.getSets(position).getExercise(0).getName());
-        holder.txt_setLoadRep.setText(trainingDay.getSets(position).getAllSets("kg"));
+        holder.txt_setLoadRep.setText(trainingDay.getSets(position).getAllSetsToFormat("kg"));
         return convertView;
     }
     private static class ViewHolder{
