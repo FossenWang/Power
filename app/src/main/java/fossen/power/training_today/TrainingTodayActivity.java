@@ -131,6 +131,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
         buttonDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tpdbOpenHelper.saveTrainingRecord("20171012", trainingProgram.getId(), trainingProgram.getName(), trainingToday);
                 int item = ttAdapter.getWritingItem();
                 ttAdapter.setWritingItem(-1);
                 actionLayout.removeAllViews();
@@ -179,13 +180,13 @@ public class TrainingTodayActivity extends AppCompatActivity {
         }
         switch (flag){
             case 0 :
-                startTraining.setText("开始今日的训练");
+                startTraining.setText("开始训练");
                 break;
             case -1 :
-                startTraining.setText("修改已完成训练");
+                startTraining.setText("已完成");
                 break;
             default:
-                startTraining.setText("继续今日的训练");
+                startTraining.setText("继续训练");
         }
     }
 }

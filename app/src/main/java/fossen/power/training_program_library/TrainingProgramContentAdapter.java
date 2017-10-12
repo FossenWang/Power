@@ -96,7 +96,7 @@ public class TrainingProgramContentAdapter extends BaseExpandableListAdapter {
         }
 
         if(trainingDay.isRestDay()){
-            groupHolder.textDay.setText((groupPosition+1) + "  休息: " + trainingDay.getTitle() + "组");
+            groupHolder.textDay.setText((groupPosition+1) + "  休息: " + trainingDay.getTitle());
             groupHolder.textCount.setText("");
         }else{
             groupHolder.textDay.setText((groupPosition+1) + "  训练: " + trainingDay.getTitle());
@@ -125,7 +125,7 @@ public class TrainingProgramContentAdapter extends BaseExpandableListAdapter {
         }
         final Sets sets = trainingProgram.getTrainingDay(groupPosition).getSets(childPosition);
         childHolder.text_exercise.setText(sets.getExercise(0).getName());
-        childHolder.text_sets.setText(sets.getRepmax() + " RM × " + sets.numberOfSingleSets());
+        childHolder.text_sets.setText(sets.getRepmax() + " RM × " + sets.numberOfSingleSets() + "组");
         childHolder.text_rest.setText("休息: " + sets.getRestSting());
 
         //单击进入动作形式Activity

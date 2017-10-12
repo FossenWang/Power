@@ -183,7 +183,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         tpdb.execSQL("DELETE FROM " + id);
         for(int day = 1; day<=trainingProgram.circleDays();day++){
             TrainingDay trainingDay = trainingProgram.getTrainingDay(day-1);
-            if(!trainingDay.isRestDay()){
+            if(!trainingDay.isRestDay()){  //不保存休息日
                 for(int i = 0; i<trainingDay.numberOfSets(); i++) {
                     Sets sets = trainingDay.getSets(i);
                     if (sets.getExerciseList().size() != 0) {//有动作才保存
@@ -206,34 +206,6 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
             }
         }
     }
-
-    //更新训练日
-    /*public void updateTrainingDay(String id, int day, TrainingDay trainingDay){
-        SQLiteDatabase tpdb = this.getWritableDatabase();
-        Sets sets;
-        tpdb.execSQL("DELETE FROM " + id + " WHERE day = ?",new String[]{Integer.toString(day)});
-        if(trainingDay.numberOfSets()>0){
-            for(int i = 0; i<trainingDay.numberOfSets(); i++) {
-                sets = trainingDay.getSets(i);
-                if (sets.getExerciseList().size() != 0) {//有动作才保存
-                    String names = "";
-                    for (Exercise exercise : sets.getExerciseList()) {
-                        names += (exercise.getName() + ",");
-                    }
-                    names = names.substring(0, names.length() - 1);
-                    String[] values = {
-                            Integer.toString(day),
-                            Integer.toString(i + 1),
-                            names,
-                            Integer.toString(sets.numberOfSingleSets()),
-                            sets.getRepmax(),
-                            Integer.toString(sets.getRest())
-                    };
-                    tpdb.execSQL("INSERT INTO " + id + " VALUES (?,?,?,?,?,?,'')", values);
-                }
-            }
-        }
-    }*/
 
     //创建新的训练计划
     public String createTrainingProgram(TrainingProgram trainingProgram){
@@ -258,5 +230,35 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         SQLiteDatabase tpdb = this.getWritableDatabase();
         tpdb.execSQL("DROP TABLE " + id);
         tpdb.execSQL("DELETE FROM program_list WHERE id = ?", new String[]{id});
+    }
+
+    //保存训练记录
+    public void saveTrainingRecord(String date, String id, String program, TrainingDay trainingDay){
+        SQLiteDatabase tpdb = this.getWritableDatabase();
+        tpdb.execSQL("DELETE FROM training_log WHERE date = ? AND program_id = ?",new String[]{date, id});
+        if(!trainingDay.isRestDay()){  //不保存休息日
+            for(int i = 0; i<trainingDay.numberOfSets(); i++) {
+                Sets sets = trainingDay.getSets(i);
+                if (sets.getAllSetsToFormat("kg").equals("暂无")) {//有记录才保存
+                    String record = "";
+                    for(int j = 0; j < sets.numberOfSingleSets(); j++){
+                        if(sets.getSet(j).getReps() != 0) {
+                            record += sets.getSet(j).getLoad() +"×"+ sets.getSet(j).getReps() + ",";
+                        }
+                    }
+                    String[] values = {
+                            date,
+                            id,
+                            program,
+                            trainingDay.getTitle(),
+                            Integer.toString(i + 1),
+                            sets.getExercise(0).getName(),
+                            record,
+                            sets.getStructure()
+                    };
+                    tpdb.execSQL("INSERT INTO training_log VALUES (?,?,?,?,?,?,?,?)", values);
+                }
+            }
+        }
     }
 }
