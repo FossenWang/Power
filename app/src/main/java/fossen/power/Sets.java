@@ -23,7 +23,7 @@ public class Sets implements Serializable {
     }
     //添加n个空组
     public void addSet(int n) {
-        for (int i = 0;i<n;i+=1) {
+        for (int i = 0;i<n;i++) {
             setList.add(new SingleSet());
         }
     }

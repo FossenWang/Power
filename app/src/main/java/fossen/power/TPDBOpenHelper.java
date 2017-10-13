@@ -61,10 +61,9 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
             tp.setGoal(cursor.getString(cursor.getColumnIndex("goal")));
             tp.addTrainingDay(cursor.getString(cursor.getColumnIndex("day_name")).split(",",-1));
             tp.setStart(cursor.getInt(cursor.getColumnIndex("start")));
-            tp.setDate(cursor.getInt(cursor.getColumnIndex("year")),
-                    cursor.getInt(cursor.getColumnIndex("month")),
-                    cursor.getInt(cursor.getColumnIndex("day")));
+            tp.setDate(cursor.getString(cursor.getColumnIndex("date")));
             tp.setNote(cursor.getString(cursor.getColumnIndex("note")));
+            tp.setVersion(cursor.getInt(cursor.getColumnIndex("version")));
             programs.add(tp);
         }
         cursor.close();
@@ -87,10 +86,9 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
             tp.setGoal(cursor.getString(cursor.getColumnIndex("goal")));
             tp.addTrainingDay(cursor.getString(cursor.getColumnIndex("day_name")).split(",",-1));
             tp.setStart(cursor.getInt(cursor.getColumnIndex("start")));
-            tp.setDate(cursor.getInt(cursor.getColumnIndex("year")),
-                    cursor.getInt(cursor.getColumnIndex("month")),
-                    cursor.getInt(cursor.getColumnIndex("day")));
+            tp.setDate(cursor.getString(cursor.getColumnIndex("date")));
             tp.setNote(cursor.getString(cursor.getColumnIndex("note")));
+            tp.setVersion(cursor.getInt(cursor.getColumnIndex("version")));
         }
         cursor.close();
 
@@ -137,14 +135,11 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
     public void updateStartDate(TrainingProgram trainingProgram){
         SQLiteDatabase tpdb = this.getWritableDatabase();
         String start = Integer.toString(trainingProgram.getStart());
-        String year = Integer.toString(trainingProgram.getYear());
-        String month = Integer.toString(trainingProgram.getMonth());
-        String day = Integer.toString(trainingProgram.getDay());
+        String date = trainingProgram.getDate();
         String id = trainingProgram.getId();
         tpdb.execSQL("UPDATE program_list " +
-                        "SET start = ?, year = ?, month = ?, day = ? " +
-                        "WHERE id = ?",
-                new String[]{start,year,month,day,id});
+                        "SET start = ?, date = ? WHERE id = ?",
+                new String[]{start,date,id});
     }
 
     //更新组集中的动作
@@ -172,12 +167,13 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
             dayNames += (trainingProgram.getTrainingDay(i).getTitle() + ",");
         }
         dayNames = dayNames.substring(0,dayNames.length()-1);
+        String version = Integer.toString(trainingProgram.getVersion());
 
         //更新program_list
         tpdb.execSQL("UPDATE program_list " +
-                        "SET name = ?, goal = ?, note = ?, day_name = ?, start = ? " +
+                        "SET name = ?, goal = ?, note = ?, day_name = ?, start = ?, version = ? " +
                         "WHERE id = ?",
-                new String[]{name, goal, note, dayNames, start, id});
+                new String[]{name, goal, note, dayNames, start, version, id});
 
         //更新训练日id表单，先删除所有记录，再写入所有记录
         tpdb.execSQL("DELETE FROM " + id);
@@ -213,7 +209,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         String name = trainingProgram.getName();
         String id = "tp" + Calendar.getInstance().getTimeInMillis();
 
-        tpdb.execSQL("INSERT INTO program_list VALUES (?,?,'','',0,0,0,0,'')",
+        tpdb.execSQL("INSERT INTO program_list VALUES (?,?,'','',0,0,'',0)",
                 new String[]{id, name});
         tpdb.execSQL("CREATE TABLE " + id + "(day INTEGER, " +
                 "number INTEGER, " +
@@ -232,10 +228,68 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         tpdb.execSQL("DELETE FROM program_list WHERE id = ?", new String[]{id});
     }
 
-    //保存训练记录
-    public void saveTrainingRecord(String date, String id, String program, TrainingDay trainingDay){
+    //读取某天某个方案的训练记录
+    public TrainingProgram inputTrainingRecord(String date, TrainingProgram program){
         SQLiteDatabase tpdb = this.getWritableDatabase();
-        tpdb.execSQL("DELETE FROM training_log WHERE date = ? AND program_id = ?",new String[]{date, id});
+        String id = program.getId();
+        String version = Integer.toString(program.getVersion());
+        Cursor cursor = tpdb.rawQuery(
+                "SELECT * FROM log_catalog WHERE date = ? AND program_id = ? AND version = ?",
+                new String[]{date,id,version});
+        if(cursor.getCount()==0){
+            return program;
+        }else {
+            TrainingProgram record = new TrainingProgram();
+            cursor.moveToNext();
+            record.setId(cursor.getString(cursor.getColumnIndex("program_id")));
+            record.setName(cursor.getString(cursor.getColumnIndex("program_name")));
+            record.setVersion(cursor.getInt(cursor.getColumnIndex("version")));
+            record.addTrainingDay(new TrainingDay(cursor.getString(cursor.getColumnIndex("day_name"))));
+            cursor.close();
+
+            cursor = tpdb.rawQuery("SELECT * FROM tl" +date+ " WHERE program_id = ? ORDER BY number", new String[]{id});
+            Sets sets;
+            while (cursor.moveToNext()) {
+                sets = new Sets();
+                sets.setExerciseList(cursor.getString(cursor.getColumnIndex("exercise")).split(","));
+                sets.setStructure(cursor.getString(cursor.getColumnIndex("structure")));
+                String[] detail = cursor.getString(cursor.getColumnIndex("record")).split(",");
+                for (String str : detail){
+                    double load = Double.parseDouble(str.split("×")[0]);
+                    int reps = Integer.parseInt(str.split("×")[1]);
+                    sets.addSet(new SingleSet(load,reps));
+                }
+                record.getTrainingDay(0).addSets(sets);
+            }
+            cursor.close();
+            return record;
+        }
+    }
+
+    //保存训练记录
+    public void saveTrainingRecord(String date, TrainingProgram program){
+        SQLiteDatabase tpdb = this.getWritableDatabase();
+        TrainingDay trainingDay = program.getTrainingDay(0);
+        String id = program.getId();
+        String version = Integer.toString(program.getVersion());
+        Cursor cursor = tpdb.rawQuery(
+                "SELECT * FROM log_catalog WHERE data = ? AND id = ? AND version = ?",
+                new String[]{date,id,version});
+        //判断有无该日的记录无则创建记录及表单
+        if (cursor.getCount()==0){
+            tpdb.execSQL("INSERT INTO log_catalog VALUES (?,?,?,?,?)",
+                    new String[]{date, id, program.getName(), trainingDay.getTitle(), version});
+            tpdb.execSQL("CREATE TABLE tl" + date +
+                    " (program_id TEXT, " +
+                    "number INTEGER, " +
+                    "exercise TEXT, " +
+                    "record TEXT, " +
+                    "structure INTEGER)");
+        }
+        cursor.close();
+
+        //更新该日的记录
+        tpdb.execSQL("DELETE FROM tl" + date + " WHERE program_id = ?",new String[]{id});
         if(!trainingDay.isRestDay()){  //不保存休息日
             for(int i = 0; i<trainingDay.numberOfSets(); i++) {
                 Sets sets = trainingDay.getSets(i);
@@ -247,16 +301,13 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
                         }
                     }
                     String[] values = {
-                            date,
                             id,
-                            program,
-                            trainingDay.getTitle(),
                             Integer.toString(i + 1),
                             sets.getExercise(0).getName(),
                             record,
                             sets.getStructure()
                     };
-                    tpdb.execSQL("INSERT INTO training_log VALUES (?,?,?,?,?,?,?,?)", values);
+                    tpdb.execSQL("INSERT INTO " + date + " VALUES (?,?,?,?,?)", values);
                 }
             }
         }

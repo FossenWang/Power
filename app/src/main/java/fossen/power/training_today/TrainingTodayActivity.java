@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.Calendar;
+
 import fossen.power.ComponentCreator;
 import fossen.power.TPDBOpenHelper;
 import fossen.power.TrainingDay;
@@ -22,8 +24,10 @@ public class TrainingTodayActivity extends AppCompatActivity {
     private TrainingProgram trainingProgram;
     private TrainingDay trainingToday;
     private TrainingTodayAdapter ttAdapter;
-    private ListView trainingList;
+    private TrainingProgram trainingRecord;
+    private String date;
 
+    private ListView trainingList;
     private View header;
     private View header2;
     private ViewGroup headerLayout;
@@ -49,12 +53,17 @@ public class TrainingTodayActivity extends AppCompatActivity {
         ComponentCreator.createBackToolbar(this,R.id.toolbar_tt);
 
         //加载训练日数据
+        Calendar today = Calendar.getInstance();
+        date = Integer.toString(today.get(Calendar.YEAR))
+                + Integer.toString(today.get(Calendar.MONTH) + 1)
+                + Integer.toString(today.get(Calendar.DAY_OF_MONTH));
         Intent intent = getIntent();
         trainingProgram = (TrainingProgram) intent.getSerializableExtra("trainingProgram");
         int day = trainingProgram.countTodayInCircle();
         tpdbOpenHelper = new TPDBOpenHelper(this);
         trainingToday = tpdbOpenHelper.inputTrainingDay(trainingProgram.getId(),
                 trainingProgram.getTrainingDay(day - 1).getTitle(), day);
+        trainingRecord = tpdbOpenHelper.inputTrainingRecord(date,trainingProgram);
 
         //给listView添加headerView，用于显示训练的基本信息
         trainingList = (ListView) findViewById(R.id.list_tt);
@@ -109,7 +118,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
         });
 
         //绑定配适器
-        ttAdapter = new TrainingTodayAdapter(tpdbOpenHelper, trainingProgram, trainingToday, this, actionLayout, actionView);
+        ttAdapter = new TrainingTodayAdapter(tpdbOpenHelper, trainingRecord, trainingProgram, trainingToday, this, actionLayout, actionView);
         trainingList.setAdapter(ttAdapter);
 
         //设置底部操作栏
@@ -131,7 +140,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
         buttonDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tpdbOpenHelper.saveTrainingRecord("20171012", trainingProgram.getId(), trainingProgram.getName(), trainingToday);
+                tpdbOpenHelper.saveTrainingRecord(date, trainingRecord);
                 int item = ttAdapter.getWritingItem();
                 ttAdapter.setWritingItem(-1);
                 actionLayout.removeAllViews();

@@ -28,6 +28,7 @@ import fossen.power.exercise_library.ExerciseFormActivity;
 public class TrainingTodayAdapter extends BaseAdapter {
     private TPDBOpenHelper tpdbOpenHelper;
     private TrainingProgram trainingProgram;
+    private TrainingProgram trainingRecord;
     private TrainingDay trainingDay;
     private Context mContext;
     private ViewGroup actionLayout;
@@ -39,6 +40,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
     private static final int TYPE_WRITE = 1;
 
     public TrainingTodayAdapter(TPDBOpenHelper tpdbOpenHelper,
+                                TrainingProgram trainingRecord,
                                 TrainingProgram trainingProgram,
                                 TrainingDay trainingDay ,
                                 Context mContext,
@@ -46,6 +48,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
                                 View actionView
                                 ) {
         this.tpdbOpenHelper = tpdbOpenHelper;
+        this.trainingRecord = trainingRecord;
         this.trainingProgram = trainingProgram;
         this.trainingDay = trainingDay;
         this.mContext = mContext;
@@ -112,6 +115,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
         ViewHolder1 holder1;
         final int pos = position;
         final Sets sets = trainingDay.getSets(position);
+        final Sets setRecords = trainingRecord.getTrainingDay(0).getSets(pos);
 
         switch (type) {
             case TYPE_DISPLAY://加载显示模式的训练组集
@@ -132,7 +136,8 @@ public class TrainingTodayAdapter extends BaseAdapter {
                 holder0.text_exercise.setText(sets.getExercise(0).getName());
                 holder0.text_sets.setText(sets.getRepmax() + " RM × " + sets.numberOfSingleSets() + "组");
                 holder0.text_rest.setText("休息: " + sets.getRestSting());
-                holder0.text_record.setText(sets.getAllSetsToFormat("kg"));
+
+                holder0.text_record.setText(setRecords.getAllSetsToFormat("kg"));
 
                 //单击进入组集修改模式
                 holder0.layout_sets.setOnClickListener(new View.OnClickListener() {
@@ -179,7 +184,12 @@ public class TrainingTodayAdapter extends BaseAdapter {
                 //创建可编辑的训练记录
                 holder1.layout_record.removeAllViews();
                 for(int i = 0; i < sets.numberOfSingleSets(); i++){
-                    holder1.layout_record.addView(ComponentCreator.createLoadRepsPickers(mContext, i+1, sets));
+                    if(i < setRecords.numberOfSingleSets()) {
+                        holder1.layout_record.addView(ComponentCreator.createLoadRepsPickers(mContext, i, setRecords));
+                    }else {
+                        setRecords.addSet(1);
+                        holder1.layout_record.addView(ComponentCreator.createLoadRepsPickers(mContext, i, setRecords));
+                    }
                 }
 
                 //单击下箭头弹出菜单，选择替换动作

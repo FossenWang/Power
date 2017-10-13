@@ -15,10 +15,11 @@ public class TrainingProgram implements Serializable {
     private String name = "" ;//方案名
     private String note = "";//说明
     private String goal = "";//训练目的
+    private int version = 0;//方案版本
     //方案启用时的日期
-    private int year = 0;
-    private int month = 0;
-    private int day = 0;
+    private int year = 2017;
+    private int month = 1;
+    private int day = 1;
     //start为0时表示方案未使用，非零时表示方案使用中，数字表示从周期中的第几天开始方案
     private int start = 0;
 
@@ -88,22 +89,24 @@ public class TrainingProgram implements Serializable {
         month = d.get(Calendar.MONTH)+1;
         day = d.get(Calendar.DAY_OF_MONTH);
     }
-    public void setDate(int year,int month,int day){
-        this.year = year;
-        this.month = month;
-        this.day = day;
+    public void setDate(String date){
+        year = Integer.parseInt(date.substring(0,4));
+        month = Integer.parseInt(date.substring(4,6));
+        day = Integer.parseInt(date.substring(6,8));
     }
     public String getDate(){
-        return year+"/"+month+"/"+day;
-    }
-    public int getYear(){
-        return year;
-    }
-    public int getMonth(){
-        return month;
-    }
-    public int getDay(){
-        return day;
+        String m,d;
+        if(month<10){
+            m = "0"+month;
+        }else{
+            m = Integer.toString(month);
+        }
+        if (day<10){
+            d = "0"+day;
+        }else{
+            d = Integer.toString(day);
+        }
+        return Integer.toString(year)+m+d;
     }
     public int countTodayInCircle(){
         Calendar begin = Calendar.getInstance();
@@ -131,5 +134,11 @@ public class TrainingProgram implements Serializable {
     }
     public int getStart() {
         return start;
+    }
+    public void setVersion(int version) {
+        this.version = version;
+    }
+    public int getVersion() {
+        return version;
     }
 }

@@ -34,7 +34,7 @@ public class ComponentCreator {
     }
 
     //创建一行带有负重，次数选择器的视图
-    public static View createLoadRepsPickers(final Context mContext, int order, Sets sets){
+    public static View createLoadRepsPickers(final Context mContext, int index, Sets sets){
         View loadRepsView = LayoutInflater.from(mContext).inflate(R.layout.item_ttw_load_reps, null);
         TextView textOrder = (TextView) loadRepsView.findViewById(R.id.text_ttw_order);
         //TextView textUnit = (TextView) loadRepsView.findViewById(R.id.text_ttw_unit);
@@ -42,7 +42,7 @@ public class ComponentCreator {
         NumberPicker repsPicker = (NumberPicker) loadRepsView.findViewById(R.id.picker_ttw_reps);
         final CheckBox checkBox = (CheckBox) loadRepsView.findViewById(R.id.check_ttw);
 
-        final SingleSet set = sets.getSet(order - 1);
+        final SingleSet set = sets.getSet(index);
         int loadValue, reps;
         if(set.getReps()==0){
             reps = Integer.parseInt(sets.getRepmax().split("~")[1]);
@@ -53,7 +53,7 @@ public class ComponentCreator {
         loadValue = (int) (set.getLoad()/2.5);
         final SingleSet bufferSet = new SingleSet(set.getLoad(), reps);
 
-        textOrder.setText("第" + order + "组");
+        textOrder.setText("第" + (index+1) + "组");
 
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
