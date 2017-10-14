@@ -24,7 +24,6 @@ public class TrainingTodayActivity extends AppCompatActivity {
     private TrainingProgram trainingProgram;
     private TrainingDay trainingToday;
     private TrainingTodayAdapter ttAdapter;
-    private TrainingProgram trainingRecord;
     private String date;
 
     private ListView trainingList;
@@ -63,7 +62,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
         tpdbOpenHelper = new TPDBOpenHelper(this);
         trainingToday = tpdbOpenHelper.inputTrainingDay(trainingProgram.getId(),
                 trainingProgram.getTrainingDay(day - 1).getTitle(), day);
-        trainingRecord = tpdbOpenHelper.inputTrainingRecord(date,trainingProgram);
+        tpdbOpenHelper.inputTrainingRecord(date,trainingProgram,trainingToday);
 
         //给listView添加headerView，用于显示训练的基本信息
         trainingList = (ListView) findViewById(R.id.list_tt);
@@ -118,7 +117,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
         });
 
         //绑定配适器
-        ttAdapter = new TrainingTodayAdapter(tpdbOpenHelper, trainingRecord, trainingProgram, trainingToday, this, actionLayout, actionView);
+        ttAdapter = new TrainingTodayAdapter(tpdbOpenHelper, trainingProgram, trainingToday, this, actionLayout, actionView);
         trainingList.setAdapter(ttAdapter);
 
         //设置底部操作栏
@@ -140,7 +139,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
         buttonDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tpdbOpenHelper.saveTrainingRecord(date, trainingRecord);
+                tpdbOpenHelper.saveTrainingRecord(date, trainingProgram, trainingToday);
                 int item = ttAdapter.getWritingItem();
                 ttAdapter.setWritingItem(-1);
                 actionLayout.removeAllViews();
@@ -180,10 +179,11 @@ public class TrainingTodayActivity extends AppCompatActivity {
     private void setStartTrainingText(){
         int flag = ttAdapter.getRecordingSets();
         if(flag == 0) {
-            for (int i = 0; i < trainingToday.getSets(0).numberOfSingleSets(); i++) {
-                if (trainingToday.getSets(0).getSet(i).getReps() != 0) {
+            out: for (int i = 0; i < trainingToday.numberOfSets(); i++) {
+                for(int j = 0; j < trainingToday.getSets(i).numberOfSingleSets(); j++)
+                if (trainingToday.getSets(i).getSet(j).getReps() != 0) {
                     flag++;
-                    break;
+                    break out;
                 }
             }
         }

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -31,6 +32,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), TrainingProgramLibraryActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        //设置TrainingLogActivity的入口
+        View inTrainingLog = findViewById(R.id.in_training_log);
+        inTrainingLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int a = Integer.parseInt("00000000002");
+                Toast.makeText(MainActivity.this,a+"",Toast.LENGTH_SHORT).show();
             }
         });
 

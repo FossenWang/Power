@@ -41,13 +41,10 @@ public class TrainingProgramLibraryActivity extends AppCompatActivity {
 
         //设置添加训练方案的按钮，弹出对话框
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            private TrainingProgram tp = new TrainingProgram();
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                tp.setName("新建训练方案");
-                tp.setId(tpdbOpenHelper.createTrainingProgram(tp));
                 Intent intent = new Intent(TrainingProgramLibraryActivity.this,TrainingProgramModifyActivity.class);
-                intent.putExtra("id",tp.getId());
+                intent.putExtra("id",tpdbOpenHelper.createTrainingProgram());
                 TrainingProgramLibraryActivity.this.startActivity(intent);
                 return true;
             }

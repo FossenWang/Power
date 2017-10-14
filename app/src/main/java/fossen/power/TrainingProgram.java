@@ -90,6 +90,7 @@ public class TrainingProgram implements Serializable {
         day = d.get(Calendar.DAY_OF_MONTH);
     }
     public void setDate(String date){
+        //参数date格式应为yyyymmdd,如20170101,parseInt可以识别开头的0
         year = Integer.parseInt(date.substring(0,4));
         month = Integer.parseInt(date.substring(4,6));
         day = Integer.parseInt(date.substring(6,8));

@@ -2,7 +2,6 @@ package fossen.power;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * Created by WXY on 2017/8/11.
@@ -12,9 +11,6 @@ public class TrainingDay implements Serializable{
     //声明组集列表,空列表即为休息日
     private ArrayList<Sets> sList = new ArrayList<Sets>();
     private String title = "";//训练日标题
-    private int year = 0;
-    private int month = 0;
-    private int day = 0;
 
     public TrainingDay(){}
     public TrainingDay(String title){
@@ -66,23 +62,6 @@ public class TrainingDay implements Serializable{
     }
     public String getTitle(){
         return title;
-    }
-    public void setDate(Calendar d){
-        year = d.get(Calendar.YEAR);
-        month = d.get(Calendar.MONTH)+1;
-        day = d.get(Calendar.DAY_OF_MONTH);
-    }
-    public String getDate(){
-        return year+"/"+month+"/"+day;
-    }
-    public int getYear(){
-        return year;
-    }
-    public int getMonth(){
-        return month;
-    }
-    public int getDay(){
-        return day;
     }
     public boolean isRestDay() {
         return sList.size()==0;
