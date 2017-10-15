@@ -63,7 +63,6 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
             tp.setStart(cursor.getInt(cursor.getColumnIndex("start")));
             tp.setDate(cursor.getString(cursor.getColumnIndex("date")));
             tp.setNote(cursor.getString(cursor.getColumnIndex("note")));
-            tp.setVersion(cursor.getInt(cursor.getColumnIndex("version")));
             programs.add(tp);
         }
         cursor.close();
@@ -88,7 +87,6 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
             tp.setStart(cursor.getInt(cursor.getColumnIndex("start")));
             tp.setDate(cursor.getString(cursor.getColumnIndex("date")));
             tp.setNote(cursor.getString(cursor.getColumnIndex("note")));
-            tp.setVersion(cursor.getInt(cursor.getColumnIndex("version")));
         }
         cursor.close();
 
@@ -167,13 +165,12 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
             dayNames += (trainingProgram.getTrainingDay(i).getTitle() + ",");
         }
         dayNames = dayNames.substring(0,dayNames.length()-1);
-        String version = Integer.toString(trainingProgram.getVersion());
 
         //更新program_list
         tpdb.execSQL("UPDATE program_list " +
-                        "SET name = ?, goal = ?, note = ?, day_name = ?, start = ?, version = ? " +
+                        "SET name = ?, goal = ?, note = ?, day_name = ?, start = ? " +
                         "WHERE id = ?",
-                new String[]{name, goal, note, dayNames, start, version, id});
+                new String[]{name, goal, note, dayNames, start,id});
 
         //更新训练日id表单，先删除所有记录，再写入所有记录
         tpdb.execSQL("DELETE FROM " + id);
@@ -208,7 +205,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         SQLiteDatabase tpdb = this.getWritableDatabase();
         String name = "新建训练计划";
         String id = "tp" + Calendar.getInstance().getTimeInMillis();
-        tpdb.execSQL("INSERT INTO program_list VALUES (?,?,'','',0,20170101,'',0)",
+        tpdb.execSQL("INSERT INTO program_list VALUES (?,?,'','',0,20170101,'')",
                 new String[]{id, name});
         tpdb.execSQL("CREATE TABLE " + id + "(day INTEGER, " +
                 "number INTEGER, " +
@@ -227,14 +224,29 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         tpdb.execSQL("DELETE FROM program_list WHERE id = ?", new String[]{id});
     }
 
+    //导入某日的训练日志目录
+    public ArrayList<TrainingProgram> inputTrainingLog(String date){
+        SQLiteDatabase tpdb = this.getWritableDatabase();
+        ArrayList<TrainingProgram> catalog = new ArrayList<>();
+        Cursor cursor = tpdb.rawQuery(
+                "SELECT * FROM log_catalog WHERE date = ?", new String[]{date});
+        while (cursor.moveToNext()){
+            TrainingProgram program = new TrainingProgram();
+            program.setId(cursor.getString(cursor.getColumnIndex("program_id")));
+            program.setName(cursor.getString(cursor.getColumnIndex("program_name")));
+            program.addTrainingDay(new TrainingDay(cursor.getString(cursor.getColumnIndex("day_name"))));
+            catalog.add(program);
+        }
+        return catalog;
+    }
+
     //读取某天某个方案的训练记录,该方法新建一个训练日，用于训练日志部分
     public void inputTrainingRecord(String date, TrainingProgram program){
         SQLiteDatabase tpdb = this.getWritableDatabase();
         String id = program.getId();
-        String version = Integer.toString(program.getVersion());
         Cursor cursor = tpdb.rawQuery(
-                "SELECT * FROM log_catalog WHERE date = ? AND program_id = ? AND version = ?",
-                new String[]{date,id,version});
+                "SELECT * FROM log_catalog WHERE date = ? AND program_id = ?",
+                new String[]{date,id});
         if(cursor.moveToNext()) {
             /*program.setId(cursor.getString(cursor.getColumnIndex("program_id")));
             program.setName(cursor.getString(cursor.getColumnIndex("program_name")));
@@ -262,10 +274,9 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
     public void inputTrainingRecord(String date, TrainingProgram program, TrainingDay trainingDay){
         SQLiteDatabase tpdb = this.getWritableDatabase();
         String id = program.getId();
-        String version = Integer.toString(program.getVersion());
         Cursor cursor = tpdb.rawQuery(
-                "SELECT * FROM log_catalog WHERE date = ? AND program_id = ? AND version = ?",
-                new String[]{date,id,version});
+                "SELECT * FROM log_catalog WHERE date = ? AND program_id = ?",
+                new String[]{date,id});
         if(cursor.moveToNext()){
             cursor.close();
             cursor = tpdb.rawQuery("SELECT * FROM tl" +date+ " WHERE program_id = ? ORDER BY number", new String[]{id});
@@ -290,34 +301,27 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
     public void saveTrainingRecord(String date, TrainingProgram program, TrainingDay trainingDay){
         SQLiteDatabase tpdb = this.getWritableDatabase();
         String id = program.getId();
-        String version = Integer.toString(program.getVersion());
         Cursor cursor = tpdb.rawQuery(
                 "SELECT * FROM log_catalog WHERE date = ?",
                 new String[]{date});
-        //判断有无该日的记录无则创建记录及表单
-        if (cursor.getCount() == 0){
-            tpdb.execSQL("INSERT INTO log_catalog VALUES (?,?,?,?,?)",
-                    new String[]{date, id, program.getName(), trainingDay.getTitle(), version});
-            tpdb.execSQL("CREATE TABLE tl" + date +
+        boolean have = false;//判断有无该日的记录无则创建记录及表单
+        while (cursor.moveToNext()){
+            if (id.equals(cursor.getString(cursor.getColumnIndex("program_id")))){
+                have = true;
+                break;
+            }
+        }
+        if (!have){
+            tpdb.execSQL("INSERT INTO log_catalog VALUES (?,?,?,?)",
+                    new String[]{date, id, program.getName(), trainingDay.getTitle()});
+            tpdb.execSQL("CREATE TABLE IF NOT EXISTS tl" + date +
                     " (program_id TEXT, " +
                     "number INTEGER, " +
                     "exercise TEXT, " +
                     "record TEXT, " +
                     "structure TEXT)");
-        }else{
-            boolean have = false;
-            while (cursor.moveToNext()){
-                if (id.equals(cursor.getString(cursor.getColumnIndex("program_id")))){
-                    have = true;
-                }
-            }
-            if (!have){
-                tpdb.execSQL("INSERT INTO log_catalog VALUES (?,?,?,?,?)",
-                        new String[]{date, id, program.getName(), trainingDay.getTitle(), version});
-            }
         }
         cursor.close();
-
         //更新该日的记录
         tpdb.execSQL("DELETE FROM tl" + date + " WHERE program_id = ?",new String[]{id});
         if(!trainingDay.isRestDay()){  //不保存休息日
@@ -341,5 +345,12 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
                 }
             }
         }
+    }
+
+    //删除一条训练记录
+    public void deleteTrainingRecord(String date, String id){
+        SQLiteDatabase tpdb = this.getWritableDatabase();
+        tpdb.execSQL("DELETE FROM tl" + date + " WHERE program_id = ?", new String[]{id});
+        tpdb.execSQL("DELETE FROM log_catalog WHERE date = ? AND program_id = ?", new String[]{date,id});
     }
 }

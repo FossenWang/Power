@@ -3,14 +3,18 @@ package fossen.power;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import fossen.power.exercise_library.ExerciseLibraryActivity;
 import fossen.power.training_program_library.TrainingProgramLibraryActivity;
@@ -19,6 +23,9 @@ import fossen.power.training_today.TrainingTodayActivity;
 public class MainActivity extends AppCompatActivity {
     private TPDBOpenHelper tpdbOpenHelper;
     private ViewGroup layoutTT;
+    private String date;
+    private ArrayList<TrainingProgram> tpList;
+    private ArrayList<TrainingProgram> logList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +71,28 @@ public class MainActivity extends AppCompatActivity {
         if (tpdbOpenHelper == null) {
             tpdbOpenHelper = new TPDBOpenHelper(this);
         }
-        ArrayList<TrainingProgram> tpList = tpdbOpenHelper.inputTrainingProgramList();
+        Calendar today = Calendar.getInstance();
+        date = Integer.toString(today.get(Calendar.YEAR))
+                + Integer.toString(today.get(Calendar.MONTH) + 1)
+                + Integer.toString(today.get(Calendar.DAY_OF_MONTH));
+        tpList = tpdbOpenHelper.inputTrainingProgramList();
+        logList = tpdbOpenHelper.inputTrainingLog(date);
         layoutTT.removeAllViews();
         boolean training = false;
-        for(int i = 0; i < tpList.size(); i++){
+        out : for(int i = 0; i < tpList.size(); i++){
             if(tpList.get(i).getStart()>0){
+                for (TrainingProgram log : logList){
+                    if(log.getId().equals(tpList.get(i).getId())){
+                        continue out;
+                    }//判断训练方案是否有今日的记录，有就跳过
+                }
                 addTrainingItem(tpList.get(i));
                 training = true;
             }
+        }
+        for (TrainingProgram log : logList){
+            addRecordItem(log);
+            training = true;
         }
         if(!training){
             addTrainingItem();
@@ -108,6 +129,40 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(v.getContext(), TrainingTodayActivity.class);
                 intent.putExtra("trainingProgram", tp);
                 startActivity(intent);
+            }
+        });
+    }
+    //动态添加今日记录的项目
+    protected void addRecordItem(TrainingProgram trainingRecord){
+        final View trainingItem = getLayoutInflater().inflate(R.layout.item_training_today, null);
+        layoutTT.addView(trainingItem);
+        TextView text_itt_title = (TextView) trainingItem.findViewById(R.id.text_itt_title);
+        TextView text_itt_circle = (TextView) trainingItem.findViewById(R.id.text_itt_circle_goal);
+        TextView text_itt_day = (TextView) trainingItem.findViewById(R.id.text_itt_day);
+        //TextView text_itt_count = (TextView) trainingItem.findViewById(R.id.text_itt_count);
+
+        text_itt_title.setText(trainingRecord.getName());
+        text_itt_circle.setText("已完成");
+        text_itt_day.setText("训练: " + trainingRecord.getTrainingDay(0).getTitle());
+
+        final String id = trainingRecord.getId();
+        //长按删除记录
+        trainingItem.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                PopupMenu popup = new PopupMenu(MainActivity.this, v);
+                Menu menu = popup.getMenu();
+                menu.add("删除");
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        tpdbOpenHelper.deleteTrainingRecord(date, id);
+                        onStart();
+                        return true;
+                    }
+                });
+                popup.show();
+                return true;
             }
         });
     }

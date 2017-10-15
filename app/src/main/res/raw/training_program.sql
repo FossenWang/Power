@@ -35,16 +35,14 @@ CREATE TABLE IF NOT EXISTS `program_list` (
 	`day_name`	TEXT,
 	`start`	INTEGER,
 	`date`	INTEGER,
-	`note`	TEXT,
-	`version`	INTEGER
+	`note`	TEXT
 );
-INSERT INTO `program_list` VALUES ('tp3','全身式训练','保持','休息,休息,休息,休息,全身,休息,全身',0,'20171013','“全身式”训练设计，是针对忙碌健身者，最为高效省时间的训练方案。它的设计原理，是每天锻炼全身所有主要肌肉群 - 多动作，少组数。\n“全身式”训练设计，1天就是一个训练周期，之后需要休息1-2天。因此，对于忙碌的学生或白领，如果只有周末有空，参考方案为：\n- 周一：学校/工作\n- 周二：学校/工作\n- 周三：学校/工作\n- 周四：学校/工作\n- 周五：全身\n- 周六：休息\n- 周日：全身',0);
+INSERT INTO `program_list` VALUES ('tp3','全身式训练','保持','休息,休息,休息,休息,全身,休息,全身',0,'20171013','“全身式”训练设计，是针对忙碌健身者，最为高效省时间的训练方案。它的设计原理，是每天锻炼全身所有主要肌肉群 - 多动作，少组数。\n“全身式”训练设计，1天就是一个训练周期，之后需要休息1-2天。因此，对于忙碌的学生或白领，如果只有周末有空，参考方案为：\n- 周一：学校/工作\n- 周二：学校/工作\n- 周三：学校/工作\n- 周四：学校/工作\n- 周五：全身\n- 周六：休息\n- 周日：全身');
 DROP TABLE IF EXISTS `log_catalog`;
 CREATE TABLE IF NOT EXISTS `log_catalog` (
 	`date`	INTEGER,
 	`program_id`	TEXT,
 	`program_name`	TEXT,
-	`day_name`	TEXT,
-	`version`	INTEGER
+	`day_name`	TEXT
 );
 COMMIT;

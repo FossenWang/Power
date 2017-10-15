@@ -15,7 +15,6 @@ public class TrainingProgram implements Serializable {
     private String name = "" ;//方案名
     private String note = "";//说明
     private String goal = "";//训练目的
-    private int version = 0;//方案版本
     //方案启用时的日期
     private int year = 2017;
     private int month = 1;
@@ -135,11 +134,5 @@ public class TrainingProgram implements Serializable {
     }
     public int getStart() {
         return start;
-    }
-    public void setVersion(int version) {
-        this.version = version;
-    }
-    public int getVersion() {
-        return version;
     }
 }

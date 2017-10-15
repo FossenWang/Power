@@ -121,53 +121,57 @@ public class TrainingTodayActivity extends AppCompatActivity {
         trainingList.setAdapter(ttAdapter);
 
         //设置底部操作栏
-        setStartTrainingText();
-        startTraining.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(ttAdapter.getRecordingSets() < 0){
-                    ttAdapter.setWritingItem(0);
-                }else {
-                    ttAdapter.setWritingItem(ttAdapter.getRecordingSets());
-                }
-                actionLayout.removeAllViews();
-                actionLayout.addView(actionView);
-                trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
-            }
-        });
-        actionView.setClickable(true);//拦截点击事件，否则会点中后面的View
-        buttonDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tpdbOpenHelper.saveTrainingRecord(date, trainingProgram, trainingToday);
-                int item = ttAdapter.getWritingItem();
-                ttAdapter.setWritingItem(-1);
-                actionLayout.removeAllViews();
-                setStartTrainingText();
-                actionLayout.addView(startTraining);
-                trainingList.smoothScrollToPosition( item + 2);
-            }
-        });
-        buttonPrevious.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int item = ttAdapter.getWritingItem();
-                if(item > 0){
-                    ttAdapter.setWritingItem(item-1);
+        if (trainingToday.isRestDay()){
+            startTraining.setText("今日休息");
+        }else {
+            setStartTrainingText();
+            startTraining.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (ttAdapter.getRecordingSets() < 0) {
+                        ttAdapter.setWritingItem(0);
+                    } else {
+                        ttAdapter.setWritingItem(ttAdapter.getRecordingSets());
+                    }
+                    actionLayout.removeAllViews();
+                    actionLayout.addView(actionView);
                     trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
                 }
-            }
-        });
-        buttonNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int item = ttAdapter.getWritingItem();
-                if (item < (trainingToday.numberOfSets() - 1)){
-                    ttAdapter.setWritingItem(item+1);
-                    trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
+            });
+            actionView.setClickable(true);//拦截点击事件，否则会点中后面的View
+            buttonDone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tpdbOpenHelper.saveTrainingRecord(date, trainingProgram, trainingToday);
+                    int item = ttAdapter.getWritingItem();
+                    ttAdapter.setWritingItem(-1);
+                    actionLayout.removeAllViews();
+                    setStartTrainingText();
+                    actionLayout.addView(startTraining);
+                    trainingList.smoothScrollToPosition(item + 2);
                 }
-            }
-        });
+            });
+            buttonPrevious.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int item = ttAdapter.getWritingItem();
+                    if (item > 0) {
+                        ttAdapter.setWritingItem(item - 1);
+                        trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
+                    }
+                }
+            });
+            buttonNext.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int item = ttAdapter.getWritingItem();
+                    if (item < (trainingToday.numberOfSets() - 1)) {
+                        ttAdapter.setWritingItem(item + 1);
+                        trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
+                    }
+                }
+            });
+        }
     }
 
     @Override
