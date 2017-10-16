@@ -142,7 +142,15 @@ public class TrainingTodayActivity extends AppCompatActivity {
             buttonDone.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    tpdbOpenHelper.saveTrainingRecord(date, trainingProgram, trainingToday);
+                    boolean have = false;
+                    out: for (int i = 0; i < trainingToday.numberOfSets(); i++) {
+                        for(int j = 0; j < trainingToday.getSets(i).numberOfSingleSets(); j++) {
+                            if (trainingToday.getSets(i).getSet(j).getReps() != 0) {
+                                have = true;
+                                break out;}}}
+                    if (have){//判断是否有记录
+                        tpdbOpenHelper.saveTrainingRecord(date, trainingProgram, trainingToday);
+                    }
                     int item = ttAdapter.getWritingItem();
                     ttAdapter.setWritingItem(-1);
                     actionLayout.removeAllViews();
@@ -184,13 +192,11 @@ public class TrainingTodayActivity extends AppCompatActivity {
         int flag = ttAdapter.getRecordingSets();
         if(flag == 0) {
             out: for (int i = 0; i < trainingToday.numberOfSets(); i++) {
-                for(int j = 0; j < trainingToday.getSets(i).numberOfSingleSets(); j++)
-                if (trainingToday.getSets(i).getSet(j).getReps() != 0) {
-                    flag++;
-                    break out;
-                }
-            }
-        }
+                for(int j = 0; j < trainingToday.getSets(i).numberOfSingleSets(); j++) {
+                    if (trainingToday.getSets(i).getSet(j).getReps() != 0) {
+                        flag++;
+                        break out;}}}}
+
         switch (flag){
             case 0 :
                 startTraining.setText("开始训练");

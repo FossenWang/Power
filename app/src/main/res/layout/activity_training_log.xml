@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_tl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="fossen.power.training_log.TrainingLogActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_tl"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/Toolbar"
+        app:title="@string/title_training_log" />
+
+    <ListView
+        android:id="@+id/list_tl"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:divider="?android:attr/windowBackground"
+        android:paddingBottom="48dp" />
+</LinearLayout>

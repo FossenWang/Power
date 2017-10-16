@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import fossen.power.exercise_library.ExerciseLibraryActivity;
+import fossen.power.training_log.TrainingLogActivity;
 import fossen.power.training_program_library.TrainingProgramLibraryActivity;
 import fossen.power.training_today.TrainingTodayActivity;
 
@@ -47,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
         inTrainingLog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int a = Integer.parseInt("00000000002");
-                Toast.makeText(MainActivity.this,a+"",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(v.getContext(), TrainingLogActivity.class);
+                startActivity(intent);
             }
         });
 
