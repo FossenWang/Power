@@ -4,11 +4,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 
 import fossen.power.ComponentCreator;
 import fossen.power.R;
+import fossen.power.TPDBOpenHelper;
 
 public class TrainingLogActivity extends AppCompatActivity {
+    private ExpandableListView expList;
+    private TrainingLogAdapter tlAdapter;
+    private TPDBOpenHelper tpdbOpenHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,12 +22,22 @@ public class TrainingLogActivity extends AppCompatActivity {
 
         ComponentCreator.createBackToolbar(this, R.id.toolbar_tl);
 
-        ViewGroup layout = (ViewGroup) findViewById(R.id.layout_tl);
-        View view = getLayoutInflater().inflate(R.layout.item_tl_day,null);
-        View view1 = getLayoutInflater().inflate(R.layout.item_tl_day,null);
-        View view2 = getLayoutInflater().inflate(R.layout.item_tl_day,null);
-        layout.addView(view);
-        layout.addView(view1);
-        layout.addView(view2);
+        tpdbOpenHelper = new TPDBOpenHelper(this);
+        expList = (ExpandableListView) findViewById(R.id.explist_tl);
+        tlAdapter = new TrainingLogAdapter(this, expList, tpdbOpenHelper);
+        expList.setAdapter(tlAdapter);
+        expList.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                return true;
+            }
+        });
+        expList.expandGroup(0);
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        tpdbOpenHelper.close();
     }
 }

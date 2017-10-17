@@ -224,6 +224,22 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         tpdb.execSQL("DELETE FROM program_list WHERE id = ?", new String[]{id});
     }
 
+    //取出所有有训练记录的日期
+    public ArrayList<String> inputTrainingCalendar(){
+        SQLiteDatabase tpdb = this.getWritableDatabase();
+        ArrayList<String> calendar = new ArrayList<>();
+        Cursor cursor = tpdb.rawQuery("SELECT date FROM log_catalog ORDER BY date DESC", null);
+        int i = -1;
+        while (cursor.moveToNext()){
+            if(i==-1||!calendar.get(i).equals(cursor.getString(cursor.getColumnIndex("date")))){
+                calendar.add(cursor.getString(cursor.getColumnIndex("date")));
+                i++;
+            }
+        }
+        cursor.close();
+        return calendar;
+    }
+
     //导入某日的训练日志目录
     public ArrayList<TrainingProgram> inputTrainingLog(String date){
         SQLiteDatabase tpdb = this.getWritableDatabase();
@@ -231,12 +247,14 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         Cursor cursor = tpdb.rawQuery(
                 "SELECT * FROM log_catalog WHERE date = ?", new String[]{date});
         while (cursor.moveToNext()){
-            TrainingProgram program = new TrainingProgram();
-            program.setId(cursor.getString(cursor.getColumnIndex("program_id")));
-            program.setName(cursor.getString(cursor.getColumnIndex("program_name")));
-            program.addTrainingDay(new TrainingDay(cursor.getString(cursor.getColumnIndex("day_name"))));
-            catalog.add(program);
+            TrainingProgram record = new TrainingProgram();
+            record.setId(cursor.getString(cursor.getColumnIndex("program_id")));
+            record.setName(cursor.getString(cursor.getColumnIndex("program_name")));
+            record.addTrainingDay(new TrainingDay(cursor.getString(cursor.getColumnIndex("day_name"))));
+            record.setDate(date);
+            catalog.add(record);
         }
+        cursor.close();
         return catalog;
     }
 
@@ -248,10 +266,6 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
                 "SELECT * FROM log_catalog WHERE date = ? AND program_id = ?",
                 new String[]{date,id});
         if(cursor.moveToNext()) {
-            /*program.setId(cursor.getString(cursor.getColumnIndex("program_id")));
-            program.setName(cursor.getString(cursor.getColumnIndex("program_name")));
-            program.setVersion(cursor.getInt(cursor.getColumnIndex("version")));
-            program.addTrainingDay(new TrainingDay(cursor.getString(cursor.getColumnIndex("day_name"))));*/
             cursor.close();
             cursor = tpdb.rawQuery("SELECT * FROM tl" +date+ " WHERE program_id = ? ORDER BY number", new String[]{id});
             Sets sets;
@@ -267,6 +281,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
                 }
                 program.getTrainingDay(0).addSets(sets);
             }
+            cursor.close();
         }
     }
 

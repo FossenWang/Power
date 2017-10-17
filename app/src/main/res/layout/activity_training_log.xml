@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_tl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -17,10 +16,11 @@
         android:theme="@style/Toolbar"
         app:title="@string/title_training_log" />
 
-    <ListView
-        android:id="@+id/list_tl"
+    <ExpandableListView
+        android:id="@+id/explist_tl"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="match_parent"
+        android:background="@color/white"
         android:divider="?android:attr/windowBackground"
-        android:paddingBottom="48dp" />
+        android:groupIndicator="@null" />
 </LinearLayout>
