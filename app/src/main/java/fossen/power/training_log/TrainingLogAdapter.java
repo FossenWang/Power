@@ -28,23 +28,24 @@ public class TrainingLogAdapter extends BaseExpandableListAdapter {
     private TPDBOpenHelper tpdbOpenHelper;
     private ArrayList<ArrayList<TrainingProgram>> trainingLog = new ArrayList<>();
     private ArrayList<String> trainingCalendar;
-    private int endGroup;
 
     public TrainingLogAdapter(Context mContext, ExpandableListView expList, TPDBOpenHelper tpdbOpenHelper) {
         this.mContext = mContext;
         this.expList = expList;
         this.tpdbOpenHelper = tpdbOpenHelper;
         trainingCalendar = tpdbOpenHelper.inputTrainingCalendar();
-        endGroup = -1;
         inputNextRecordDay();
     }
 
+    //当trainingLog的最后一个成员调用getView()时，检查训练日是否全部导出
+    //未全部导出则从数据库中读取下一个训练日的记录，更新trainingLog
+    //若所有训练日都读取完毕，则向二维列表末尾添加一个空列表，表示没有更多记录
+    //以此实现动态加载训练日，没有浏览到的训练日就不用加载
     private void inputNextRecordDay(){
         if(getGroupCount()<trainingCalendar.size()){
             trainingLog.add(tpdbOpenHelper.inputTrainingLog(trainingCalendar.get(getGroupCount())));
         }else {
             trainingLog.add(new ArrayList<TrainingProgram>());
-            endGroup = getGroupCount() - 1;
         }
         notifyDataSetChanged();
     }
@@ -94,13 +95,15 @@ public class TrainingLogAdapter extends BaseExpandableListAdapter {
         }else {
             groupHolder = (GroupViewHolder) convertView.getTag();
         }
-        if(groupPosition == endGroup){
+        if(trainingLog.get(groupPosition).isEmpty()){
             groupHolder.text_group.setText("没有更多记录了");
         }else {
             String date = getGroup(groupPosition);
             String str = Integer.parseInt(date.substring(4,6)) + "月" + Integer.parseInt(date.substring(6,8)) + "日";
             groupHolder.text_group.setText(str);
-            inputNextRecordDay();
+            if(groupPosition==trainingLog.size()-1){
+                inputNextRecordDay();
+            }//判断当前记录是否是最后一条且非空，如果是，则意味着记录未导入完全，故再导入一条新纪录
         }
         expList.expandGroup(groupPosition);
         return convertView;
@@ -127,9 +130,11 @@ public class TrainingLogAdapter extends BaseExpandableListAdapter {
                 Toast.makeText(mContext, "点击查看记录"+record.getName()+record.getId(), Toast.LENGTH_SHORT).show();
             }
         });
-        /*/长按删除记录
+        //长按删除记录
         final String id = record.getId();
         final String date = record.getDate();
+        final int gPos = groupPosition;
+        final int cPos = childPosition;
         convertView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -139,7 +144,13 @@ public class TrainingLogAdapter extends BaseExpandableListAdapter {
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
+                        trainingLog.get(gPos).remove(cPos);
+                        if (trainingLog.get(gPos).isEmpty()){
+                            trainingLog.remove(gPos);
+                            trainingCalendar.remove(gPos);
+                        }
                         tpdbOpenHelper.deleteTrainingRecord(date, id);
+                        Toast.makeText(mContext, trainingLog.size()+""+trainingCalendar.size(), Toast.LENGTH_SHORT).show();
                         notifyDataSetChanged();
                         return true;
                     }
@@ -147,7 +158,7 @@ public class TrainingLogAdapter extends BaseExpandableListAdapter {
                 popup.show();
                 return true;
             }
-        });*/
+        });
         return convertView;
     }
 
