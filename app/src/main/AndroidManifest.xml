@@ -28,7 +28,8 @@
         <activity android:name=".training_program_library.TrainingProgramModifyActivity" />
         <activity android:name=".training_program_library.TrainingDayModifyActivity" />
         <activity android:name=".training_program_library.ChooseExerciseActivity" />
-        <activity android:name=".training_log.TrainingLogActivity"></activity>
+        <activity android:name=".training_log.TrainingLogActivity" />
+        <activity android:name=".training_log.TrainingRecordActivity"></activity>
     </application>
 
 </manifest>

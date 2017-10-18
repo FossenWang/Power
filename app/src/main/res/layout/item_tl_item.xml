@@ -16,7 +16,7 @@
         android:maxLines="1"
         android:text="训练计划:  训练日"
         android:textColor="@color/black"
-        android:textSize="15sp" />
+        android:textSize="17sp" />
 
     <TextView
         android:id="@+id/text_tl_count"

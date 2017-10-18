@@ -241,6 +241,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
     }
 
     //导入某日的训练日志目录
+    //训练记录保存在TrainingProgram内，有且只有一个TrainingDay
     public ArrayList<TrainingProgram> inputTrainingLog(String date){
         SQLiteDatabase tpdb = this.getWritableDatabase();
         ArrayList<TrainingProgram> catalog = new ArrayList<>();
@@ -258,31 +259,27 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         return catalog;
     }
 
-    //读取某天某个方案的训练记录,该方法新建一个训练日，用于训练日志部分
-    public void inputTrainingRecord(String date, TrainingProgram program){
+    //读取某天某个方案的训练记录,该方法新建一个训练日，用于训练日志部分训练
+    //训练记录保存在TrainingProgram内，有且只有一个TrainingDay
+    public void inputTrainingRecord(TrainingProgram record){
         SQLiteDatabase tpdb = this.getWritableDatabase();
-        String id = program.getId();
-        Cursor cursor = tpdb.rawQuery(
-                "SELECT * FROM log_catalog WHERE date = ? AND program_id = ?",
-                new String[]{date,id});
-        if(cursor.moveToNext()) {
-            cursor.close();
-            cursor = tpdb.rawQuery("SELECT * FROM tl" +date+ " WHERE program_id = ? ORDER BY number", new String[]{id});
-            Sets sets;
-            while (cursor.moveToNext()) {
-                sets = new Sets();
-                sets.setExerciseList(cursor.getString(cursor.getColumnIndex("exercise")).split(","));
-                sets.setStructure(cursor.getString(cursor.getColumnIndex("structure")));
-                String[] detail = cursor.getString(cursor.getColumnIndex("record")).split(",");
-                for (String str : detail){
-                    double load = Double.parseDouble(str.split("×")[0]);
-                    int reps = Integer.parseInt(str.split("×")[1]);
-                    sets.addSet(new SingleSet(load, reps));
-                }
-                program.getTrainingDay(0).addSets(sets);
+        String id = record.getId();
+        String date = record.getDate();
+        Cursor cursor = tpdb.rawQuery("SELECT * FROM tl" +date+ " WHERE program_id = ? ORDER BY number", new String[]{id});
+        Sets sets;
+        while (cursor.moveToNext()) {
+            sets = new Sets();
+            sets.setExerciseList(cursor.getString(cursor.getColumnIndex("exercise")).split(","));
+            sets.setStructure(cursor.getString(cursor.getColumnIndex("structure")));
+            String[] detail = cursor.getString(cursor.getColumnIndex("record")).split(",");
+            for (String str : detail){
+                double load = Double.parseDouble(str.split("×")[0]);
+                int reps = Integer.parseInt(str.split("×")[1]);
+                sets.addSet(new SingleSet(load, reps));
             }
-            cursor.close();
+            record.getTrainingDay(0).addSets(sets);
         }
+        cursor.close();
     }
 
     //读取某天某个方案的训练记录，该方法将记录合并至训练日，用于今日训练部分

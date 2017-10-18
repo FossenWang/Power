@@ -18,6 +18,7 @@ import java.util.Calendar;
 
 import fossen.power.exercise_library.ExerciseLibraryActivity;
 import fossen.power.training_log.TrainingLogActivity;
+import fossen.power.training_log.TrainingRecordActivity;
 import fossen.power.training_program_library.TrainingProgramLibraryActivity;
 import fossen.power.training_today.TrainingTodayActivity;
 
@@ -140,13 +141,30 @@ public class MainActivity extends AppCompatActivity {
         TextView text_itt_title = (TextView) trainingItem.findViewById(R.id.text_itt_title);
         TextView text_itt_circle = (TextView) trainingItem.findViewById(R.id.text_itt_circle_goal);
         TextView text_itt_day = (TextView) trainingItem.findViewById(R.id.text_itt_day);
-        //TextView text_itt_count = (TextView) trainingItem.findViewById(R.id.text_itt_count);
+        TextView text_itt_count = (TextView) trainingItem.findViewById(R.id.text_itt_count);
 
+        final String id = trainingRecord.getId();
+        final TrainingProgram record = trainingRecord;
+        if(record.getTrainingDay(0).numberOfSets()==0){
+            tpdbOpenHelper.inputTrainingRecord(record);
+        }//防止重复导入
+
+        //设置内容
         text_itt_title.setText(trainingRecord.getName());
         text_itt_circle.setText("已完成");
         text_itt_day.setText("训练: " + trainingRecord.getTrainingDay(0).getTitle());
+        text_itt_count.setText(trainingRecord.getTrainingDay(0).numberOfExercise() + "个动作  "
+                + trainingRecord.getTrainingDay(0).numberOfSingleSets() + "组");
 
-        final String id = trainingRecord.getId();
+        //单击查看记录详情
+        trainingItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, TrainingRecordActivity.class);
+                intent.putExtra("record", record);
+                MainActivity.this.startActivity(intent);
+            }
+        });
         //长按删除记录
         trainingItem.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

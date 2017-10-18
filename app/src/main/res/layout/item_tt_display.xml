@@ -61,11 +61,12 @@
         </FrameLayout>
 
         <TextView
+            android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="8dp"
             android:gravity="center"
-            android:paddingBottom="4dp"
-            android:paddingTop="8dp"
             android:text="训练记录"
             android:textColor="@color/black"
             android:textSize="17sp" />
@@ -79,9 +80,10 @@
                 android:id="@+id/text_ttd_load_reps"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="4dp"
                 android:gravity="center"
                 android:lineSpacingMultiplier="1.5"
-                android:padding="4dp"
                 android:text="暂无"
                 android:textColor="@color/black"
                 android:textSize="15sp" />

@@ -39,7 +39,7 @@ public class TrainingProgramLibraryActivity extends AppCompatActivity {
         //设置toolbar和返回键
         toolbar = ComponentCreator.createBackToolbar(this,R.id.toolbar_tpl);
 
-        //设置添加训练方案的按钮，弹出对话框
+        //设置添加训练方案的按钮
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {

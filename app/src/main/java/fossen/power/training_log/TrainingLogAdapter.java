@@ -1,6 +1,7 @@
 package fossen.power.training_log;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -117,24 +118,34 @@ public class TrainingLogAdapter extends BaseExpandableListAdapter {
                     R.layout.item_tl_item, parent, false);
             childHolder = new ChildViewHolder();
             childHolder.text_title = (TextView) convertView.findViewById(R.id.text_tl_title);
-            //childHolder.text_count = (TextView) convertView.findViewById(R.id.text_tl_count);
+            childHolder.text_count = (TextView) convertView.findViewById(R.id.text_tl_count);
             convertView.setTag(childHolder);
         }else{
             childHolder = (ChildViewHolder) convertView.getTag();
         }
+
         final TrainingProgram record = trainingLog.get(groupPosition).get(childPosition);
-        childHolder.text_title.setText(record.getName());
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(mContext, "点击查看记录"+record.getName()+record.getId(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        //长按删除记录
         final String id = record.getId();
         final String date = record.getDate();
         final int gPos = groupPosition;
         final int cPos = childPosition;
+        if(record.getTrainingDay(0).numberOfSets()==0){
+            tpdbOpenHelper.inputTrainingRecord(record);
+        }//防止重复导入
+        childHolder.text_title.setText(record.getName()+"  "+record.getTrainingDay(0).getTitle());
+        childHolder.text_count.setText(record.getTrainingDay(0).numberOfExercise() + "个动作  "
+                + record.getTrainingDay(0).numberOfSingleSets() + "组");
+
+        //单击查看训练记录详情
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, TrainingRecordActivity.class);
+                intent.putExtra("record", record);
+                mContext.startActivity(intent);
+            }
+        });
+        //长按删除记录
         convertView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -150,7 +161,6 @@ public class TrainingLogAdapter extends BaseExpandableListAdapter {
                             trainingCalendar.remove(gPos);
                         }
                         tpdbOpenHelper.deleteTrainingRecord(date, id);
-                        Toast.makeText(mContext, trainingLog.size()+""+trainingCalendar.size(), Toast.LENGTH_SHORT).show();
                         notifyDataSetChanged();
                         return true;
                     }

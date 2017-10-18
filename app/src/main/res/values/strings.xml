@@ -1,9 +1,8 @@
 <resources>
     <string name="app_name">Power</string>
-    <string name="title_home">主页</string>
-    <string name="title_training">训练</string>
-    <string name="title_diet">饮食</string>
+
     <string name="title_training_log">训练日志</string>
+    <string name="title_training_record">训练记录</string>
 
     <string name="title_training_program">训练方案</string>
     <string name="title_modify_tp">修改训练方案</string>

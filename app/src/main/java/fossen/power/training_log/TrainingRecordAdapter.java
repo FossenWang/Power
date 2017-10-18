@@ -5,10 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import fossen.power.Sets;
 import fossen.power.TrainingDay;
 import fossen.power.R;
 
@@ -31,8 +31,8 @@ public class TrainingRecordAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
-        return null;
+    public Sets getItem(int position) {
+        return trainingDay.getSets(position);
     }
 
     @Override
@@ -48,22 +48,18 @@ public class TrainingRecordAdapter extends BaseAdapter {
                     LayoutInflater.from(mContext).inflate(
                             R.layout.item_training_record, parent, false);
             holder = new ViewHolder();
-            holder.img_exercise = (ImageButton) convertView.findViewById(R.id.imageExercise);
-            holder.txt_exercise = (TextView) convertView.findViewById(R.id.textExercise);
-            holder.txt_setLoadRep = (TextView) convertView.findViewById(R.id.textSetLoadRep);
+            holder.text_exercise = (TextView) convertView.findViewById(R.id.text_tr_exercise);
+            holder.text_sets = (TextView) convertView.findViewById(R.id.text_tr_sets);
             convertView.setTag(holder);
         }else {
             holder = (ViewHolder) convertView.getTag();
         }
-
-        holder.img_exercise.setBackgroundResource(trainingDay.getSets(position).getExercise(0).getIcon());
-        holder.txt_exercise.setText(trainingDay.getSets(position).getExercise(0).getName());
-        holder.txt_setLoadRep.setText(trainingDay.getSets(position).getAllSetsToFormat("kg"));
+        holder.text_exercise.setText(trainingDay.getSets(position).getExercise(0).getName());
+        holder.text_sets.setText(trainingDay.getSets(position).getAllSetsToFormat("kg"));
         return convertView;
     }
     private static class ViewHolder{
-        ImageButton img_exercise;
-        TextView txt_exercise;
-        TextView txt_setLoadRep;
+        TextView text_exercise;
+        TextView text_sets;
     }
 }

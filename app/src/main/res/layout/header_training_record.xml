@@ -4,56 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
-    android:divider="@drawable/divider_1dp"
-    android:orientation="vertical"
-    android:showDividers="end">
+    android:orientation="vertical">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/item_white_corners"
+        android:elevation="2dp"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/text_htr_title"
-            android:layout_width="wrap_content"
+            android:id="@+id/text_tr_title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
-            android:text="推拉腿式训练: 练胸日"
+            android:text="推拉腿式训练  练胸日"
             android:textColor="@color/black"
             android:textSize="21sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp">
 
         <TextView
-            android:id="@+id/text_htr_note"
+            android:id="@+id/text_tr_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:paddingBottom="8dp"
-            android:paddingEnd="32dp"
-            android:paddingStart="16dp"
-            android:text="今天训练胸今天训练胸今天训练胸今天训练胸今天训练胸今天训练胸今天训练胸今天训练胸今天训练胸今天训练胸今天训练胸今天训练胸今天训练胸今天训练胸今天训练胸今天训练胸今天训练胸"
-            android:textSize="13sp" />
-
-        <ImageView
-            android:id="@+id/arrow_htr_note"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_gravity="end"
+            android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginTop="2dp"
-            app:srcCompat="@drawable/ic_arrow_down_24dp" />
-    </FrameLayout>
+            android:layout_marginStart="16dp"
+            android:text="n个动作 m组" />
+    </LinearLayout>
 
 </LinearLayout>
