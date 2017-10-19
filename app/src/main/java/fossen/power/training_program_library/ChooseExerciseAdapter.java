@@ -10,6 +10,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import fossen.power.Exercise;
 import fossen.power.R;
@@ -19,12 +20,12 @@ import fossen.power.R;
  */
 
 public class ChooseExerciseAdapter extends BaseExpandableListAdapter implements CompoundButton.OnCheckedChangeListener {
-    private ArrayList<String> sort;
+    private ArrayList<HashMap<String,String>> sort;
     private ArrayList<ArrayList<Exercise>> exerciseList;
     private ArrayList<String> checkedExercises;
     private Context mContext;
 
-    public ChooseExerciseAdapter(ArrayList<String> sort,
+    public ChooseExerciseAdapter(ArrayList<HashMap<String,String>> sort,
                                  ArrayList<ArrayList<Exercise>> exerciseList,
                                  ArrayList<String> checkedExercises,
                                  Context mContext){
@@ -57,7 +58,7 @@ public class ChooseExerciseAdapter extends BaseExpandableListAdapter implements 
     }
     @Override
     public String getGroup(int groupPosition) {
-        return sort.get(groupPosition);
+        return sort.get(groupPosition).get("sort_chinese");
     }
     @Override
     public Exercise getChild(int groupPosition, int childPosition) {
@@ -92,7 +93,7 @@ public class ChooseExerciseAdapter extends BaseExpandableListAdapter implements 
         }else {
             groupHolder = (GroupViewHolder) convertView.getTag();
         }
-        groupHolder.group_text.setText(sort.get(groupPosition));
+        groupHolder.group_text.setText(sort.get(groupPosition).get("sort_chinese"));
         return convertView;
     }
 

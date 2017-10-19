@@ -8,6 +8,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import fossen.power.Exercise;
 import fossen.power.R;
@@ -17,11 +18,11 @@ import fossen.power.R;
  */
 
 public class ExerciseLibraryAdapter extends BaseExpandableListAdapter {
-    private ArrayList<String> sort;
+    private ArrayList<HashMap<String,String>> sort;
     private ArrayList<ArrayList<Exercise>> exerciseList;
     private Context mContext;
 
-    public ExerciseLibraryAdapter(ArrayList<String> sort,
+    public ExerciseLibraryAdapter(ArrayList<HashMap<String,String>> sort,
                                   ArrayList<ArrayList<Exercise>> exerciseList,
                                   Context mContext){
         this.sort = sort;
@@ -41,7 +42,7 @@ public class ExerciseLibraryAdapter extends BaseExpandableListAdapter {
 
     @Override
     public String getGroup(int groupPosition) {
-        return sort.get(groupPosition);
+        return sort.get(groupPosition).get("sort_chinese");
     }
 
     @Override
@@ -82,7 +83,7 @@ public class ExerciseLibraryAdapter extends BaseExpandableListAdapter {
         }else {
             groupHolder = (GroupViewHolder) convertView.getTag();
         }
-        groupHolder.group_text.setText(sort.get(groupPosition));
+        groupHolder.group_text.setText(sort.get(groupPosition).get("sort_chinese"));
         return convertView;
     }
 

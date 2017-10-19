@@ -10,18 +10,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Administrator on 2017/9/15.
  */
 
 public class ELDBOpenHelper extends SQLiteOpenHelper {
-
     private Context elContext;
-    private static String eldbName="exercise_library.db";//动作数据库的名字
+    private final static String ELDB_Name = "exercise_library.db";//动作数据库的名字
 
     public ELDBOpenHelper(Context context){
-        super(context, eldbName, null, 1);
+        super(context, ELDB_Name, null, 1);
         elContext = context;
     }
 
@@ -31,10 +31,15 @@ public class ELDBOpenHelper extends SQLiteOpenHelper {
         //导入SQL文件中的语句，直接生成数据库
         InputStream input = elContext.getResources().openRawResource(R.raw.exercise_library);
         BufferedReader buffer = new BufferedReader(new InputStreamReader(input));
-        String sql;
+        String sql ="";
+        String line;
         try{
-            while((sql = buffer.readLine())!=null){
-                db.execSQL(sql);
+            while((line = buffer.readLine())!=null){
+                sql += line;
+                if(sql.endsWith(";")){
+                    db.execSQL(sql);
+                    sql = "";
+                }
             }
             input.close();
         }catch(IOException e){}
@@ -44,22 +49,40 @@ public class ELDBOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
 
-    //从数据库导入动作分类数据
-    public ArrayList<ArrayList<Exercise>> inputExercises(){
+    //从数据库导入所有动作类别
+    public ArrayList<HashMap<String,String>> inputExerciseSort(){
         SQLiteDatabase eldb = this.getReadableDatabase();
-        ArrayList<ArrayList<Exercise>> exerLists = new ArrayList<>();
-        ArrayList<Exercise> exerList;
-        for(String table : new String[]{"bodyweight","equipment","stretching"}){
-            exerList = new ArrayList<Exercise>();
+        ArrayList<HashMap<String,String>> sort = new ArrayList<>();
+        HashMap<String,String> map;
+        Cursor cursor = eldb.rawQuery("SELECT * FROM sort ORDER BY number",null);
+        while (cursor.moveToNext()){
+            map = new HashMap<>();
+            map.put("sort_name", cursor.getString(cursor.getColumnIndex("sort_name")));
+            map.put("sort_chinese", cursor.getString(cursor.getColumnIndex("sort_chinese")));
+            sort.add(map);
+        }
+        cursor.close();
+        return sort;
+    }
+
+    //从数据库导入某类动作的数据
+    public ArrayList<ArrayList<Exercise>> inputExercises(ArrayList<HashMap<String,String>> sort){
+        SQLiteDatabase eldb = this.getReadableDatabase();
+        ArrayList<ArrayList<Exercise>> sortedExercises = new ArrayList<>();
+        ArrayList<Exercise> exercises;
+        String table;
+        for(HashMap<String,String> map : sort){
+            table = map.get("sort_name");
+            exercises = new ArrayList<Exercise>();
             Cursor cursor = eldb.rawQuery("SELECT * FROM "+table+" ORDER BY id",null);
             while (cursor.moveToNext()){
                 String name = cursor.getString(cursor.getColumnIndex("name"));
                 String muscle = cursor.getString(cursor.getColumnIndex("muscle"));
-                exerList.add(new Exercise(name, muscle));
+                exercises.add(new Exercise(name, muscle));
             }
-            exerLists.add(exerList);
+            sortedExercises.add(exercises);
             cursor.close();
         }
-        return exerLists;
+        return sortedExercises;
     }
 }

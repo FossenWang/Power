@@ -11,6 +11,7 @@ import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import fossen.power.ComponentCreator;
 import fossen.power.ELDBOpenHelper;
@@ -27,19 +28,14 @@ public class ExerciseLibraryActivity extends AppCompatActivity {
         //设置toolbar和返回键
         ComponentCreator.createBackToolbar(this,R.id.toolbar_el);
 
-        //准备数据
-        ArrayList<String> sort = new ArrayList<String>();
-        sort.add("自重");
-        sort.add("器械");
-        sort.add("拉伸");
-
         //从数据库导入动作分类数据
         ELDBOpenHelper eldbOpenHelper = new ELDBOpenHelper(this);
-        final ArrayList<ArrayList<Exercise>> exerLists = eldbOpenHelper.inputExercises();
+        ArrayList<HashMap<String,String>> sort = eldbOpenHelper.inputExerciseSort();
+        final ArrayList<ArrayList<Exercise>> sortedExercises = eldbOpenHelper.inputExercises(sort);
 
         //设置配适器
         ExpandableListView expListView = (ExpandableListView) findViewById(R.id.explist_el);
-        ExerciseLibraryAdapter elAdapter = new ExerciseLibraryAdapter(sort,exerLists,this);
+        ExerciseLibraryAdapter elAdapter = new ExerciseLibraryAdapter(sort,sortedExercises,this);
         expListView.setAdapter(elAdapter);
 
         //为列表设置点击事件
@@ -48,7 +44,7 @@ public class ExerciseLibraryActivity extends AppCompatActivity {
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 //进入动作形式Activity
                 Intent intent = new Intent(ExerciseLibraryActivity.this,ExerciseFormActivity.class);
-                intent.putExtra("name",exerLists.get(groupPosition).get(childPosition).getName());
+                intent.putExtra("name",sortedExercises.get(groupPosition).get(childPosition).getName());
                 startActivity(intent);
                 return true;
             }

@@ -9,6 +9,7 @@ import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import fossen.power.ELDBOpenHelper;
 import fossen.power.Exercise;
@@ -41,12 +42,10 @@ public class ChooseExerciseActivity extends AppCompatActivity {
                 checkedExercises.add(name);
             }
         }
-        ArrayList<String> sort = new ArrayList<String>();
-        sort.add("自重");
-        sort.add("器械");
-        sort.add("拉伸");
+
         eldbOpenHelper = new ELDBOpenHelper(this);
-        ArrayList<ArrayList<Exercise>> exerciseList = eldbOpenHelper.inputExercises();
+        ArrayList<HashMap<String,String>> sort = eldbOpenHelper.inputExerciseSort();
+        ArrayList<ArrayList<Exercise>> exerciseList = eldbOpenHelper.inputExercises(sort);
 
         //绑定配适器
         ChooseExerciseAdapter ceAdapter = new ChooseExerciseAdapter(sort,exerciseList,checkedExercises,this);

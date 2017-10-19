@@ -152,7 +152,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
                         + " WHERE day = ? AND number = ?", new String[]{names,day+"",number+""});
     }
 
-    //更新训练计划
+    //保存更新的训练计划
     public void updateTrainingProgram(TrainingProgram trainingProgram){
         SQLiteDatabase tpdb = this.getWritableDatabase();
         String name = trainingProgram.getName();
