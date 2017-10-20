@@ -16,7 +16,7 @@ INSERT INTO `tp1508060008889` VALUES (1,4,'绳索下压,直杆下压',5,'8~12',6
 INSERT INTO `tp1508060008889` VALUES (1,5,'俯身臂屈伸,仰卧臂屈伸',3,'10~15',60,'normal');
 INSERT INTO `tp1508060008889` VALUES (1,6,'哑铃侧平举,拉力器侧平举',3,'10~15',60,'normal');
 INSERT INTO `tp1508060008889` VALUES (2,1,'硬拉',5,'8~12',120,'normal');
-INSERT INTO `tp1508060008889` VALUES (2,2,'阔背下拉',3,'8~12',120,'normal');
+INSERT INTO `tp1508060008889` VALUES (2,2,'杠铃划船',3,'8~12',120,'normal');
 INSERT INTO `tp1508060008889` VALUES (2,3,'单臂哑铃划船,杠铃划船',3,'10~15',60,'normal');
 INSERT INTO `tp1508060008889` VALUES (2,4,'哑铃弯举,杠铃弯举,拉力器弯举',3,'8~12',120,'normal');
 INSERT INTO `tp1508060008889` VALUES (2,5,'绳索锤式弯举,锤式弯举',3,'10~15',60,'normal');
@@ -35,8 +35,8 @@ INSERT INTO `tp1508060008889` VALUES (4,5,'绳索下压,直杆下压',3,'10~15',
 INSERT INTO `tp1508060008889` VALUES (4,6,'哑铃侧平举,拉力器侧平举',3,'10~15',60,'normal');
 INSERT INTO `tp1508060008889` VALUES (5,1,'硬拉',5,'8~12',120,'normal');
 INSERT INTO `tp1508060008889` VALUES (5,2,'阔背下拉',3,'8~12',120,'normal');
-INSERT INTO `tp1508060008889` VALUES (5,3,'直臂下压，单手直臂下拉',3,'10~15',60,'normal');
-INSERT INTO `tp1508060008889` VALUES (5,4,'杠铃弯举,哑铃弯举,拉力器弯举',3,'8~12',120,'normal');
+INSERT INTO `tp1508060008889` VALUES (5,3,'直臂下压,单手直臂下拉',3,'10~15',60,'normal');
+INSERT INTO `tp1508060008889` VALUES (5,4,'杠铃弯举,哑铃弯举,拉力器弯举',5,'8~12',120,'normal');
 INSERT INTO `tp1508060008889` VALUES (5,5,'锤式弯举,绳索锤式弯举',3,'10~15',60,'normal');
 INSERT INTO `tp1508060008889` VALUES (5,6,'绳索面拉,开肘哑铃划船',3,'10~15',60,'normal');
 INSERT INTO `tp1508060008889` VALUES (6,1,'深蹲',5,'8~12',120,'normal');

@@ -67,6 +67,7 @@
                 android:layout_height="48dp"
                 android:layout_marginStart="16dp"
                 android:gravity="center"
+                android:maxWidth="200dp"
                 android:text="10~12 RM × 10 组"
                 android:textColor="@color/black"
                 android:textSize="15sp" />

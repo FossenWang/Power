@@ -91,10 +91,10 @@ public class TrainingTodayActivity extends AppCompatActivity {
         textCircleGoal.setText(trainingProgram.getCircleGoal() );
         textNote.setText(trainingProgram.getNote().replace("\\n","\n"));
         if(trainingToday.isRestDay()){
-            textDay.setText((day) + "  休息: " + trainingToday.getTitle());
+            textDay.setText("休息");
             textCount.setText("");
         }else{
-            textDay.setText((day) + "  训练: " + trainingToday.getTitle());
+            textDay.setText("训练  " + trainingToday.getTitle());
             textCount.setText(trainingToday.numberOfExercise() + "个动作  "
                     + trainingToday.numberOfSingleSets() + "组");
         }

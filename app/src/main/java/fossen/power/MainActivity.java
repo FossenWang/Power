@@ -7,10 +7,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.NumberPicker;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -106,21 +104,21 @@ public class MainActivity extends AppCompatActivity {
         View trainingItem = getLayoutInflater().inflate(R.layout.item_training_today, null);
         layoutTT.addView(trainingItem);
         TextView text_itt_title = (TextView) trainingItem.findViewById(R.id.text_itt_title);
-        TextView text_itt_circle = (TextView) trainingItem.findViewById(R.id.text_itt_circle_goal);
+        TextView text_itt_circle = (TextView) trainingItem.findViewById(R.id.text_itt_circle);
         TextView text_itt_day = (TextView) trainingItem.findViewById(R.id.text_itt_day);
         TextView text_itt_count = (TextView) trainingItem.findViewById(R.id.text_itt_count);
 
         text_itt_title.setText(trainingProgram.getName());
-        text_itt_circle.setText(trainingProgram.getCircleGoal());
+        text_itt_circle.setText(trainingProgram.getCircleToFormat());
         final TrainingProgram tp = trainingProgram;
         int day = trainingProgram.countTodayInCircle();
         TrainingDay today = tpdbOpenHelper.inputTrainingDay(trainingProgram.getId(),
                 trainingProgram.getTrainingDay(day - 1).getTitle(), day);
         if(today.isRestDay()){
-            text_itt_day.setText("休息: " + today.getTitle());
+            text_itt_day.setText("休息");
             text_itt_count.setText("");
         }else {
-            text_itt_day.setText("训练: " + today.getTitle());
+            text_itt_day.setText(today.getTitle());
             text_itt_count.setText(today.numberOfExercise() + "个动作  "
                     + today.numberOfSingleSets() + "组");
         }
@@ -139,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         final View trainingItem = getLayoutInflater().inflate(R.layout.item_training_today, null);
         layoutTT.addView(trainingItem);
         TextView text_itt_title = (TextView) trainingItem.findViewById(R.id.text_itt_title);
-        TextView text_itt_circle = (TextView) trainingItem.findViewById(R.id.text_itt_circle_goal);
+        TextView text_itt_circle = (TextView) trainingItem.findViewById(R.id.text_itt_circle);
         TextView text_itt_day = (TextView) trainingItem.findViewById(R.id.text_itt_day);
         TextView text_itt_count = (TextView) trainingItem.findViewById(R.id.text_itt_count);
 
@@ -152,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         //设置内容
         text_itt_title.setText(trainingRecord.getName());
         text_itt_circle.setText("已完成");
-        text_itt_day.setText("训练: " + trainingRecord.getTrainingDay(0).getTitle());
+        text_itt_day.setText(trainingRecord.getTrainingDay(0).getTitle());
         text_itt_count.setText(trainingRecord.getTrainingDay(0).numberOfExercise() + "个动作  "
                 + trainingRecord.getTrainingDay(0).numberOfSingleSets() + "组");
 

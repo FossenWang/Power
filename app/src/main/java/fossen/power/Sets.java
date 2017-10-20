@@ -120,7 +120,7 @@ public class Sets implements Serializable {
     public int getRest() {
         return rest;
     }
-    public String getRestSting(){
+    public String getRestString(){
         if (rest<60){
             return rest + "s";
         }else if(rest%60==0){

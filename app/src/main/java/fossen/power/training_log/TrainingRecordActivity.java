@@ -21,8 +21,7 @@ public class TrainingRecordActivity extends AppCompatActivity {
     private View header;
     private TextView text_title;
     private TextView text_count;
-
-
+    private TextView text_date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +41,9 @@ public class TrainingRecordActivity extends AppCompatActivity {
         trList.addHeaderView(header);
         text_title = (TextView) findViewById(R.id.text_tr_title);
         text_count = (TextView) findViewById(R.id.text_tr_count);
+        text_date = (TextView) findViewById(R.id.text_tr_date);
 
-        //绑定配适器
+                //绑定配适器
         trAdapter = new TrainingRecordAdapter(record.getTrainingDay(0), this);
         trList.setAdapter(trAdapter);
 
@@ -51,6 +51,10 @@ public class TrainingRecordActivity extends AppCompatActivity {
         text_title.setText(record.getName()+"  "+record.getTrainingDay(0).getTitle());
         text_count.setText(record.getTrainingDay(0).numberOfExercise() + "个动作  "
                 + record.getTrainingDay(0).numberOfSingleSets() + "组");
+        String date = record.getDate();
+        text_date.setText(Integer.parseInt(date.substring(0,4))+"年"
+                +Integer.parseInt(date.substring(4,6))+"月"
+                +Integer.parseInt(date.substring(6,8))+"日");
     }
 
     @Override

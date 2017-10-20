@@ -21,7 +21,7 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:paddingStart="16dp"
-            android:text="1   训练日"
+            android:text="训练  练胸日"
             android:textColor="@color/black"
             android:textSize="17sp" />
 

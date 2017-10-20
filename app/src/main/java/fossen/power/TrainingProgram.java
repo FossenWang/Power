@@ -129,6 +129,15 @@ public class TrainingProgram implements Serializable {
         }
         return str;
     }
+    public String getCircleToFormat(){
+        String str;
+        if (start!=0) {
+            str = "周期: " + countTodayInCircle()+"/"+circleDays()+"天";
+        }else {
+            str = "周期: "+circleDays()+"天";
+        }
+        return str;
+    }
     public void setStart(int start) {
         this.start = start;
     }

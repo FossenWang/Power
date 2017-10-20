@@ -131,7 +131,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
 
                 holder0.text_exercise.setText(sets.getExercise(0).getName());
                 holder0.text_sets.setText(sets.getRepmax() + " RM × " + sets.numberOfSingleSets() + "组");
-                holder0.text_rest.setText("休息: " + sets.getRestSting());
+                holder0.text_rest.setText("休息: " + sets.getRestString());
                 holder0.text_record.setText(sets.getAllSetsToFormat("kg"));
 
                 //单击进入组集修改模式
@@ -174,7 +174,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
                 //加载组集数据
                 holder1.text_exercise.setText(sets.getExercise(0).getName());
                 holder1.text_sets.setText(sets.getRepmax() + " RM × " + sets.numberOfSingleSets());
-                holder1.text_rest.setText("休息: " + sets.getRestSting());
+                holder1.text_rest.setText("休息: " + sets.getRestString());
 
                 //创建可编辑的训练记录
                 holder1.layout_record.removeAllViews();

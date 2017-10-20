@@ -15,35 +15,38 @@
         android:elevation="2dp"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/text_tpc_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:text="推拉腿式训练"
+            android:textColor="@color/black"
+            android:textSize="21sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_tpc_circle_goal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="目标: 增肌    循环: 1/7天"
+            android:textSize="13sp" />
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/text_tpc_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:text="推拉腿式训练"
-                android:textColor="@color/black"
-                android:textSize="21sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/text_tpc_circle_goal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="16dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="目标: 增肌    循环: 1/7天"
-                android:textSize="13sp" />
         </FrameLayout>
 
         <FrameLayout
@@ -66,9 +69,9 @@
                 android:id="@+id/arrow_tpc_note"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:layout_gravity="end"
+                android:layout_gravity="bottom|end"
+                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginTop="2dp"
                 app:srcCompat="@drawable/ic_arrow_down_24dp" />
         </FrameLayout>
 
