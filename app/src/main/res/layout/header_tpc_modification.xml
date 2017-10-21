@@ -44,21 +44,20 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="48dp"
                 android:layout_marginStart="16dp"
                 android:gravity="center"
                 android:text="目标:"
                 android:textColor="@color/black"
                 android:textSize="13sp" />
 
-            <EditText
-                android:id="@+id/edit_tpc_goal_mod"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_marginStart="48dp"
-                android:ems="4"
-                android:hint="@string/training_goal"
-                android:textSize="13sp" />
+            <NumberPicker
+                android:id="@+id/picker_tpcm_goal"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="48dp">
+
+            </NumberPicker>
 
             <ImageView
                 android:id="@+id/button_tpcm_add"

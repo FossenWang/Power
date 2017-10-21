@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import fossen.power.R;
@@ -28,13 +29,13 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
     private ListView list_tpm;
     private View header;
     private EditText editTitle;
-    private EditText editGoal;
     private EditText editNote;
     private ImageView button_add;
     private TextView text_circle;
     private Button button_save;
     private Button button_cancel;
     private AlertDialog dialog_cancel;
+    private NumberPicker picker_goal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,16 +53,15 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
         header = getLayoutInflater().inflate(R.layout.header_tpc_modification,null);
         list_tpm.addHeaderView(header);
         editTitle = (EditText) findViewById(R.id.edit_tpc_title_mod);
-        editGoal = (EditText) findViewById(R.id.edit_tpc_goal_mod);
         editNote = (EditText) findViewById(R.id.edit_tpc_note_mod);
         button_add = (ImageView) findViewById(R.id.button_tpcm_add);
         text_circle = (TextView) findViewById(R.id.text_tpcm_circle);
         button_save = (Button) findViewById(R.id.button_tpm_save);
         button_cancel = (Button) findViewById(R.id.button_tpm_cancel);
+        picker_goal = (NumberPicker) findViewById(R.id.picker_tpcm_goal);
 
         //设置列表头视图的内容
         editTitle.setText(tp.getName());
-        editGoal.setText(tp.getGoal() );
         editNote.setText(tp.getNote().replace("\\n","\n"));
         text_circle.setText("周期: " + tp.circleDays() + "天");
 
@@ -123,16 +123,6 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
                 tp.setName(s.toString());
             }
         });
-        editGoal.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override
-            public void afterTextChanged(Editable s) {
-                tp.setGoal(s.toString());
-            }
-        });
         editNote.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -141,6 +131,29 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 tp.setNote(s.toString());
+            }
+        });
+
+        //设置目标选择框
+        final String[] display = new String[]{"增肌","减脂","保持","力量","爆发","耐力","速度"};
+        picker_goal.setDisplayedValues(display);
+        picker_goal.setMinValue(0);
+        picker_goal.setMaxValue(display.length-1);
+        picker_goal.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        if(tp.getGoal().isEmpty()){
+            picker_goal.setValue(0);
+            tp.setGoal(display[0]);
+        }else {
+            for(int i = 0; i<(display.length); i++){
+                if(tp.getGoal().equals(display[i])){
+                    picker_goal.setValue(i);
+                }
+            }
+        }
+        picker_goal.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                tp.setGoal(display[newVal]);
             }
         });
     }
