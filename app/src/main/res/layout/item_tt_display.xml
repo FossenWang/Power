@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -14,7 +15,8 @@
         android:layout_marginTop="4dp"
         android:background="@drawable/ripple_white_corners"
         android:elevation="2dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,6 +35,14 @@
                 android:text="动作名动作名"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
+
+            <ImageView
+                android:id="@+id/arrow_ttd_exercise"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center_vertical"
+                android:padding="4dp"
+                app:srcCompat="@drawable/ic_arrow_down_24dp" />
 
         </LinearLayout>
 
@@ -63,32 +73,31 @@
         </FrameLayout>
 
         <TextView
-            android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:gravity="center"
             android:text="训练记录"
             android:textColor="@color/black"
             android:textSize="17sp" />
 
+        <TextView
+            android:id="@+id/text_ttd_load_reps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.5"
+            android:text="暂无"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
         <LinearLayout
+            android:id="@+id/layout_ttd_record"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/text_ttd_load_reps"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="4dp"
-                android:gravity="center"
-                android:lineSpacingMultiplier="1.5"
-                android:text="暂无"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
         </LinearLayout>
 
     </LinearLayout>
