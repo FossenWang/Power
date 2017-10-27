@@ -75,10 +75,10 @@ public class TrainingProgramModifyAdapter extends BaseAdapter {
         }
 
         if(trainingProgram.getTrainingDay(position).isRestDay()){
-            holder.text_day.setText((position+1) + "  休息: ");
+            holder.text_day.setText((position+1) + "  休息  ");
             holder.text_count.setText("添加动作");
         }else {
-            holder.text_day.setText((position + 1) + "  训练: ");
+            holder.text_day.setText((position + 1) + "  训练  ");
             holder.text_count.setText(trainingProgram.getTrainingDay(position).numberOfExercise()
                     + "个动作  "
                     + trainingProgram.getTrainingDay(position).numberOfSingleSets()

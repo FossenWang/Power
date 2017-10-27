@@ -135,7 +135,7 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
         });
 
         //设置目标选择框
-        final String[] display = new String[]{"增肌","减脂","保持","力量","爆发","耐力","速度"};
+        final String[] display = this.getString(R.string.goals).split(",");
         picker_goal.setDisplayedValues(display);
         picker_goal.setMinValue(0);
         picker_goal.setMaxValue(display.length-1);

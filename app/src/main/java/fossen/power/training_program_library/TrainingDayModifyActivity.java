@@ -50,10 +50,10 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
 
         //设置列表头视图的内容
         if(td.isRestDay()){
-            text_day.setText((dayIndex +1) + "  休息: " + td.getTitle());
+            text_day.setText((dayIndex +1) + "  休息  " + td.getTitle());
             text_count.setText("");
         }else{
-            text_day.setText((dayIndex +1) + "  训练: " + td.getTitle());
+            text_day.setText((dayIndex +1) + "  训练  " + td.getTitle());
             text_count.setText(td.numberOfExercise() + "个动作  "
                     + td.numberOfSingleSets() + "组");
         }
@@ -73,10 +73,10 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
                 td.addSets(newSets);
                 tdmAdapter.notifyDataSetChanged();
                 if(td.isRestDay()){
-                    text_day.setText((dayIndex +1) + "  休息: " + td.getTitle());
+                    text_day.setText((dayIndex +1) + "  休息  " + td.getTitle());
                     text_count.setText("");
                 }else{
-                    text_day.setText((dayIndex +1) + "  训练: " + td.getTitle());
+                    text_day.setText((dayIndex +1) + "  训练  " + td.getTitle());
                     text_count.setText(td.numberOfExercise() + "个动作  "
                             + td.numberOfSingleSets() + "组");
                 }
