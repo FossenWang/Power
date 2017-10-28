@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import fossen.power.exercise_library.ExerciseLibraryActivity;
+import fossen.power.exercise_library.ExerciseTypesActivity;
 import fossen.power.training_log.TrainingLogActivity;
 import fossen.power.training_log.TrainingRecordActivity;
 import fossen.power.training_program_library.TrainingProgramLibraryActivity;
@@ -52,12 +52,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //设置ExerciseLibraryActivity的入口
+        //设置ExerciseTypesActivity的入口
         View inExerciseLibrary = findViewById(R.id.in_exercise_library);
         inExerciseLibrary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), ExerciseLibraryActivity.class);
+                Intent intent = new Intent(v.getContext(), ExerciseTypesActivity.class);
                 startActivity(intent);
             }
         });

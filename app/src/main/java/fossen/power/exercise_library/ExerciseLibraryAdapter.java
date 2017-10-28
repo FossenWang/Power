@@ -8,7 +8,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import fossen.power.Exercise;
 import fossen.power.R;
@@ -18,36 +17,32 @@ import fossen.power.R;
  */
 
 public class ExerciseLibraryAdapter extends BaseExpandableListAdapter {
-    private ArrayList<HashMap<String,String>> sort;
-    private ArrayList<ArrayList<Exercise>> exerciseList;
+    private ArrayList<ArrayList<Exercise>> sortedExercises;
     private Context mContext;
 
-    public ExerciseLibraryAdapter(ArrayList<HashMap<String,String>> sort,
-                                  ArrayList<ArrayList<Exercise>> exerciseList,
-                                  Context mContext){
-        this.sort = sort;
-        this.exerciseList = exerciseList;
+    public ExerciseLibraryAdapter(ArrayList<ArrayList<Exercise>> sortedExercises, Context mContext){
+        this.sortedExercises = sortedExercises;
         this.mContext = mContext;
     }
 
     @Override
     public int getGroupCount() {
-        return sort.size();
+        return sortedExercises.size();
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return exerciseList.get(groupPosition).size();
+        return sortedExercises.get(groupPosition).size();
     }
 
     @Override
     public String getGroup(int groupPosition) {
-        return sort.get(groupPosition).get("sort_chinese");
+        return sortedExercises.get(groupPosition).get(0).getSort();
     }
 
     @Override
     public Exercise getChild(int groupPosition, int childPosition) {
-        return exerciseList.get(groupPosition).get(childPosition);
+        return sortedExercises.get(groupPosition).get(childPosition);
     }
 
     @Override
@@ -83,7 +78,7 @@ public class ExerciseLibraryAdapter extends BaseExpandableListAdapter {
         }else {
             groupHolder = (GroupViewHolder) convertView.getTag();
         }
-        groupHolder.group_text.setText(sort.get(groupPosition).get("sort_chinese"));
+        groupHolder.group_text.setText(getGroup(groupPosition));
         return convertView;
     }
 
@@ -96,13 +91,11 @@ public class ExerciseLibraryAdapter extends BaseExpandableListAdapter {
                     R.layout.item_exerlib_item, parent, false);
             childHolder = new ChildViewHolder();
             childHolder.text_exercise = (TextView) convertView.findViewById(R.id.text_el_exercise);
-            childHolder.text_muscle = (TextView) convertView.findViewById(R.id.text_el_muscle);
             convertView.setTag(childHolder);
         }else{
             childHolder = (ChildViewHolder) convertView.getTag();
         }
-        childHolder.text_exercise.setText(exerciseList.get(groupPosition).get(childPosition).getName());
-        childHolder.text_muscle.setText(exerciseList.get(groupPosition).get(childPosition).getMuscle());
+        childHolder.text_exercise.setText(getChild(groupPosition,childPosition).getName());
         return convertView;
     }
 
@@ -111,6 +104,5 @@ public class ExerciseLibraryAdapter extends BaseExpandableListAdapter {
     }
     private static class ChildViewHolder{
         TextView text_exercise;
-        TextView text_muscle;
     }
 }

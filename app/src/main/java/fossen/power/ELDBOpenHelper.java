@@ -18,10 +18,16 @@ import java.util.HashMap;
 
 public class ELDBOpenHelper extends SQLiteOpenHelper {
     private Context elContext;
-    private final static String ELDB_Name = "exercise_library.db";//动作数据库的名字
+    public final static String ELDB_NAME = "exercise_library.db";//动作数据库的名字
+    public final static String TABLE_TYPES = "types";
+    public final static String FIELD_ID = "id";
+    public final static String FIELD_NAME = "name";
+    public final static String FIELD_SORT = "sort";
+    public final static String FIELD_TYPE_NAME = "type_name";
+    public final static String FIELD_TYPE_CHINESE = "type_chinese";
 
     public ELDBOpenHelper(Context context){
-        super(context, ELDB_Name, null, 1);
+        super(context, ELDB_NAME, null, 1);
         elContext = context;
     }
 
@@ -50,37 +56,38 @@ public class ELDBOpenHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
 
     //从数据库导入所有动作类别
-    public ArrayList<HashMap<String,String>> inputExerciseSort(){
+    public ArrayList<HashMap<String,String>> inputExerciseTypes(){
         SQLiteDatabase eldb = this.getReadableDatabase();
-        ArrayList<HashMap<String,String>> sort = new ArrayList<>();
+        ArrayList<HashMap<String,String>> types = new ArrayList<>();
         HashMap<String,String> map;
-        Cursor cursor = eldb.rawQuery("SELECT * FROM sort ORDER BY number",null);
+        Cursor cursor = eldb.rawQuery("SELECT * FROM "+ TABLE_TYPES +" ORDER BY " + FIELD_ID,null);
         while (cursor.moveToNext()){
             map = new HashMap<>();
-            map.put("sort_name", cursor.getString(cursor.getColumnIndex("sort_name")));
-            map.put("sort_chinese", cursor.getString(cursor.getColumnIndex("sort_chinese")));
-            sort.add(map);
+            map.put(FIELD_TYPE_NAME, cursor.getString(cursor.getColumnIndex(FIELD_TYPE_NAME)));
+            map.put(FIELD_TYPE_CHINESE, cursor.getString(cursor.getColumnIndex(FIELD_TYPE_CHINESE)));
+            map.put(FIELD_SORT, cursor.getString(cursor.getColumnIndex(FIELD_SORT)));
+            types.add(map);
         }
         cursor.close();
-        return sort;
+        return types;
     }
 
     //从数据库导入某类动作的数据
-    public ArrayList<ArrayList<Exercise>> inputExercises(ArrayList<HashMap<String,String>> sort){
+    public ArrayList<ArrayList<Exercise>> inputExercises(String type, String[] sorts){
         SQLiteDatabase eldb = this.getReadableDatabase();
         ArrayList<ArrayList<Exercise>> sortedExercises = new ArrayList<>();
         ArrayList<Exercise> exercises;
-        String table;
-        for(HashMap<String,String> map : sort){
-            table = map.get("sort_name");
+        for(String sort : sorts){
             exercises = new ArrayList<Exercise>();
-            Cursor cursor = eldb.rawQuery("SELECT * FROM "+table+" ORDER BY id",null);
+            Cursor cursor = eldb.rawQuery("SELECT * FROM "+ type
+                    + " WHERE " + FIELD_SORT + " = ?" +" ORDER BY " + FIELD_ID, new String[]{sort});
             while (cursor.moveToNext()){
-                String name = cursor.getString(cursor.getColumnIndex("name"));
-                String muscle = cursor.getString(cursor.getColumnIndex("muscle"));
-                exercises.add(new Exercise(name, muscle));
+                String name = cursor.getString(cursor.getColumnIndex(FIELD_NAME));
+                exercises.add(new Exercise(name, sort));
             }
-            sortedExercises.add(exercises);
+            if(exercises.size()!=0){
+                sortedExercises.add(exercises);
+            }
             cursor.close();
         }
         return sortedExercises;

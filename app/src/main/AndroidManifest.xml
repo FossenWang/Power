@@ -29,7 +29,8 @@
         <activity android:name=".training_program_library.TrainingDayModifyActivity" />
         <activity android:name=".training_program_library.ChooseExerciseActivity" />
         <activity android:name=".training_log.TrainingLogActivity" />
-        <activity android:name=".training_log.TrainingRecordActivity"></activity>
+        <activity android:name=".training_log.TrainingRecordActivity" />
+        <activity android:name=".exercise_library.ExerciseTypesActivity"></activity>
     </application>
 
 </manifest>

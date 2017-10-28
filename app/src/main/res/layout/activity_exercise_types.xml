@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="fossen.power.exercise_library.ExerciseTypesActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_et"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="?attr/colorPrimary"
+        android:elevation="3dp"
+        android:theme="@style/Toolbar"
+        app:title="@string/title_exercise_library" />
+
+    <ListView
+        android:id="@+id/list_et"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

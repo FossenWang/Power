@@ -77,7 +77,7 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
         SQLiteDatabase tpdb = this.getReadableDatabase();
 
         //导入训练方案的基本信息
-        Cursor cursor = tpdb.rawQuery("SELECT * FROM program_list WHERE id=?",new String[]{id});
+        Cursor cursor = tpdb.rawQuery("SELECT * FROM program_list WHERE id = ?", new String[]{id});
         while (cursor.moveToNext()) {
             tp = new TrainingProgram();
             tp.setId(cursor.getString(cursor.getColumnIndex("id")));

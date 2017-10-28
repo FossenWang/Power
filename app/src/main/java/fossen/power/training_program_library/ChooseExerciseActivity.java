@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,9 +42,12 @@ public class ChooseExerciseActivity extends AppCompatActivity {
             }
         }
 
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         eldbOpenHelper = new ELDBOpenHelper(this);
-        ArrayList<HashMap<String,String>> sort = eldbOpenHelper.inputExerciseSort();
-        ArrayList<ArrayList<Exercise>> exerciseList = eldbOpenHelper.inputExercises(sort);
+        ArrayList<HashMap<String,String>> sort = eldbOpenHelper.inputExerciseTypes();
+        ArrayList<ArrayList<Exercise>> exerciseList = eldbOpenHelper.inputExercises("", new String[]{""});
 
         //绑定配适器
         ChooseExerciseAdapter ceAdapter = new ChooseExerciseAdapter(sort,exerciseList,checkedExercises,this);

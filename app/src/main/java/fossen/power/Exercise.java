@@ -12,18 +12,18 @@ public class Exercise implements Serializable {
     private String name = "";//动作名称
     private String type = "";//动作类别：自重，器械，力量举等
     private int icon;//图标
-    private String muscle = "";//锻炼肌群
+    private String sort = "";//动作细分
 
     public Exercise(){};
-    public Exercise(String name,String muscle){
+    public Exercise(String name,String sort){
         this.name = name;
-        this.muscle = muscle;
+        this.sort = sort;
     }
     public Exercise(String name){
         this.name = name;
     }
 
-    //设置和返回动作名，类别，图标,锻炼肌群
+    //设置和返回动作名，类别，图标,动作细分
     public void setId(String id) {
         this.id = id;
     }
@@ -36,11 +36,11 @@ public class Exercise implements Serializable {
     public String getName(){
         return name;
     }
-    public void setMuscle(String muscle) {
-        this.muscle = muscle;
+    public void setSort(String sort) {
+        this.sort = sort;
     }
-    public String getMuscle() {
-        return muscle;
+    public String getSort() {
+        return sort;
     }
     public void setType(String str){
         type = str;

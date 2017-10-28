@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|end"
         android:layout_marginEnd="16dp"
-        android:text="muscle"
+        android:text="sort"
         android:textSize="13sp" />
 
     <CheckBox

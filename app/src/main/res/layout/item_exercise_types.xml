@@ -2,17 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/text_el_exercise"
-        android:layout_width="wrap_content"
+        android:id="@+id/text_et_type"
+        android:layout_width="match_parent"
         android:layout_height="48dp"
         android:gravity="center_vertical"
         android:paddingEnd="16dp"
-        android:paddingStart="48dp"
-        android:text="Exrecise name"
+        android:paddingStart="32dp"
+        android:text="负重"
         android:textColor="@color/black"
-        android:textSize="15sp" />
-
+        android:textSize="17sp" />
 </LinearLayout>

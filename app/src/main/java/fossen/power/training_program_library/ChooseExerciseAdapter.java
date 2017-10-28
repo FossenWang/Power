@@ -111,7 +111,7 @@ public class ChooseExerciseAdapter extends BaseExpandableListAdapter implements 
             childHolder = (ChildViewHolder) convertView.getTag();
         }
         Exercise exercise = exerciseList.get(groupPosition).get(childPosition);
-        childHolder.text_muscle.setText(exercise.getMuscle());
+        childHolder.text_muscle.setText(exercise.getSort());
         childHolder.check_exercise.setText(exercise.getName());
         childHolder.check_exercise.setOnCheckedChangeListener(this);
         if(checkedExercises.contains(exercise.getName())){
