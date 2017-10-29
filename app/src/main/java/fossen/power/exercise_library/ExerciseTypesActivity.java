@@ -40,7 +40,6 @@ public class ExerciseTypesActivity extends AppCompatActivity {
                 //进入动作库Activity
                 Intent intent = new Intent(ExerciseTypesActivity.this,ExerciseLibraryActivity.class);
                 intent.putExtra("type_name",types.get(position).get("type_name"));
-                intent.putExtra("sort",types.get(position).get("sort"));
                 startActivity(intent);
             }
         });

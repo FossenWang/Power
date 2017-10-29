@@ -8,21 +8,22 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import fossen.power.ELDBOpenHelper;
 import fossen.power.Exercise;
 import fossen.power.R;
+import fossen.power.Sets;
 
 public class ChooseExerciseActivity extends AppCompatActivity {
 
     private ExpandableListView explist_ce;
     private Button button_cancel;
     private Button button_yes;
-    private String names;
-    private ArrayList<String> checkedExercises = new ArrayList<>();
     private ELDBOpenHelper eldbOpenHelper;
     private Intent result;
+    private Sets sets;
+    private ArrayList<String> checkedExercises;
+    private ArrayList<ArrayList<Exercise>> sortedExercises;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,22 +36,18 @@ public class ChooseExerciseActivity extends AppCompatActivity {
         //准备数据
         result = getIntent();
         setResult(RESULT_CANCELED, result);
-        names = result.getStringExtra("names");
-        if(!names.equals("")) {
-            for(String name: names.split(",")) {
-                checkedExercises.add(name);
-            }
-        }
-
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        sets = (Sets) result.getSerializableExtra("sets");
         eldbOpenHelper = new ELDBOpenHelper(this);
-        ArrayList<HashMap<String,String>> sort = eldbOpenHelper.inputExerciseTypes();
-        ArrayList<ArrayList<Exercise>> exerciseList = eldbOpenHelper.inputExercises("", new String[]{""});
+        sortedExercises = eldbOpenHelper.inputExercises(sets.getExerciseType());
+        checkedExercises = new ArrayList<>();
+        for(Exercise exercise: sets.getExerciseList()){
+            checkedExercises.add(exercise.getName());
+            for(int i = 0; i<sortedExercises.size(); i++){
+                if(exercise.getSort().equals(sortedExercises.get(i))){
+                    explist_ce.expandGroup(i);break;}}}
 
         //绑定配适器
-        ChooseExerciseAdapter ceAdapter = new ChooseExerciseAdapter(sort,exerciseList,checkedExercises,this);
+        ChooseExerciseAdapter ceAdapter = new ChooseExerciseAdapter(sortedExercises, checkedExercises, this);
         explist_ce.setAdapter(ceAdapter);
 
         //确认修改后的数据，传回上一个Activity
@@ -58,11 +55,12 @@ public class ChooseExerciseActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 result = new Intent();
-                String names = "";
-                for(String exercise: checkedExercises){
-                    names += exercise + ",";
+                String[] names = new String[checkedExercises.size()];
+                for(int i = 0; i<checkedExercises.size(); i++){
+                    names[i] = checkedExercises.get(i);
                 }
-                result.putExtra("names", names);
+                sets.setExerciseList(names);
+                result.putExtra("sets", sets);
                 setResult(RESULT_OK, result);
                 ChooseExerciseActivity.this.finish();
             }

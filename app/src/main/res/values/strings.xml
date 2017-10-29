@@ -22,5 +22,7 @@
     <string name="month">月</string>
     <string name="day">日</string>
     <string name="goals">增肌,减脂,保持,力量,爆发,耐力,速度"</string>
+    <string name="sets_structure">自重组,负重组,拉伸组</string>
+    <string name="exercise_type">bodyweight,equipment,stretching</string>
 
 </resources>

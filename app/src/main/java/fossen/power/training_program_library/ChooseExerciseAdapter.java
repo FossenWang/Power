@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -14,23 +15,21 @@ import java.util.HashMap;
 
 import fossen.power.Exercise;
 import fossen.power.R;
+import fossen.power.Sets;
 
 /**
  * Created by Administrator on 2017/10/2.
  */
 
 public class ChooseExerciseAdapter extends BaseExpandableListAdapter implements CompoundButton.OnCheckedChangeListener {
-    private ArrayList<HashMap<String,String>> sort;
-    private ArrayList<ArrayList<Exercise>> exerciseList;
+    private ArrayList<ArrayList<Exercise>> sortedExercises;
     private ArrayList<String> checkedExercises;
     private Context mContext;
 
-    public ChooseExerciseAdapter(ArrayList<HashMap<String,String>> sort,
-                                 ArrayList<ArrayList<Exercise>> exerciseList,
+    public ChooseExerciseAdapter(ArrayList<ArrayList<Exercise>> sortedExercises,
                                  ArrayList<String> checkedExercises,
                                  Context mContext){
-        this.sort = sort;
-        this.exerciseList = exerciseList;
+        this.sortedExercises = sortedExercises;
         this.checkedExercises = checkedExercises;
         this.mContext = mContext;
     }
@@ -50,19 +49,19 @@ public class ChooseExerciseAdapter extends BaseExpandableListAdapter implements 
 
     @Override
     public int getGroupCount() {
-        return sort.size();
+        return sortedExercises.size();
     }
     @Override
     public int getChildrenCount(int groupPosition) {
-        return exerciseList.get(groupPosition).size();
+        return sortedExercises.get(groupPosition).size();
     }
     @Override
     public String getGroup(int groupPosition) {
-        return sort.get(groupPosition).get("sort_chinese");
+        return sortedExercises.get(groupPosition).get(0).getSort();
     }
     @Override
     public Exercise getChild(int groupPosition, int childPosition) {
-        return exerciseList.get(groupPosition).get(childPosition);
+        return sortedExercises.get(groupPosition).get(childPosition);
     }
     @Override
     public long getGroupId(int groupPosition) {
@@ -93,7 +92,7 @@ public class ChooseExerciseAdapter extends BaseExpandableListAdapter implements 
         }else {
             groupHolder = (GroupViewHolder) convertView.getTag();
         }
-        groupHolder.group_text.setText(sort.get(groupPosition).get("sort_chinese"));
+        groupHolder.group_text.setText(getGroup(groupPosition));
         return convertView;
     }
 
@@ -105,13 +104,11 @@ public class ChooseExerciseAdapter extends BaseExpandableListAdapter implements 
                     R.layout.item_exercise_check, parent, false);
             childHolder = new ChildViewHolder();
             childHolder.check_exercise = (CheckBox) convertView.findViewById(R.id.check_cei_exercise);
-            childHolder.text_muscle = (TextView) convertView.findViewById(R.id.text_cei_muscle);
             convertView.setTag(childHolder);
         }else{
             childHolder = (ChildViewHolder) convertView.getTag();
         }
-        Exercise exercise = exerciseList.get(groupPosition).get(childPosition);
-        childHolder.text_muscle.setText(exercise.getSort());
+        Exercise exercise = sortedExercises.get(groupPosition).get(childPosition);
         childHolder.check_exercise.setText(exercise.getName());
         childHolder.check_exercise.setOnCheckedChangeListener(this);
         if(checkedExercises.contains(exercise.getName())){
@@ -127,6 +124,5 @@ public class ChooseExerciseAdapter extends BaseExpandableListAdapter implements 
     }
     private static class ChildViewHolder{
         CheckBox check_exercise;
-        TextView text_muscle;
     }
 }

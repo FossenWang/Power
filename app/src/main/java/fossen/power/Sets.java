@@ -141,4 +141,15 @@ public class Sets implements Serializable {
     public String getStructure() {
         return structure;
     }
+    public String getExerciseType(){
+        String type = "";
+        switch (getStructure()){
+            case "bodyweight": type = "bodyweight";break;
+            case "bodyweight_supersets": type = "bodyweight";break;
+            case "equipment": type = "equipment";break;
+            case "equipment_supersets": type = "equipment";break;
+            case "stretching": type = "stretching";break;
+        }
+        return type;
+    }
 }

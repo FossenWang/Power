@@ -23,13 +23,11 @@ public class ExerciseLibraryActivity extends AppCompatActivity {
         //设置toolbar和返回键
         ComponentCreator.createBackToolbar(this,R.id.toolbar_el);
 
+        //从数据库导入动作分类数据
         Intent intent = getIntent();
         String type = intent.getStringExtra("type_name");
-        String[] sorts = intent.getStringExtra("sort").split(",");
-
-        //从数据库导入动作分类数据
         ELDBOpenHelper eldbOpenHelper = new ELDBOpenHelper(this);
-        final ArrayList<ArrayList<Exercise>> sortedExercises = eldbOpenHelper.inputExercises(type, sorts);
+        final ArrayList<ArrayList<Exercise>> sortedExercises = eldbOpenHelper.inputExercises(type);
 
         //设置配适器
         ExpandableListView expListView = (ExpandableListView) findViewById(R.id.explist_el);

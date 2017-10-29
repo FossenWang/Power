@@ -112,11 +112,7 @@ public class TrainingDayModifyAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ChooseExerciseActivity.class);
-                String names = "";
-                for(Exercise exercise: sets.getExerciseList()){
-                    names += exercise.getName() + ",";
-                }
-                intent.putExtra("names", names);
+                intent.putExtra("sets",sets);
                 tdmActivity.startActivityForResult(intent,pos);
             }
         });

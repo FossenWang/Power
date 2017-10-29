@@ -73,14 +73,23 @@ public class ELDBOpenHelper extends SQLiteOpenHelper {
     }
 
     //从数据库导入某类动作的数据
-    public ArrayList<ArrayList<Exercise>> inputExercises(String type, String[] sorts){
+    public ArrayList<ArrayList<Exercise>> inputExercises(String type){
         SQLiteDatabase eldb = this.getReadableDatabase();
         ArrayList<ArrayList<Exercise>> sortedExercises = new ArrayList<>();
         ArrayList<Exercise> exercises;
+        String[] sorts = {};
+        Cursor cursor = eldb.rawQuery("SELECT * FROM "+ TABLE_TYPES
+                + " WHERE " + FIELD_TYPE_NAME + " = ?"
+                + " ORDER BY " + FIELD_ID, new String[]{type});
+        if (cursor.moveToNext()){
+            sorts = cursor.getString(cursor.getColumnIndex(FIELD_SORT)).split(",");
+        }
+        cursor.close();
         for(String sort : sorts){
             exercises = new ArrayList<Exercise>();
-            Cursor cursor = eldb.rawQuery("SELECT * FROM "+ type
-                    + " WHERE " + FIELD_SORT + " = ?" +" ORDER BY " + FIELD_ID, new String[]{sort});
+            cursor = eldb.rawQuery("SELECT * FROM "+ type
+                    + " WHERE " + FIELD_SORT + " = ?"
+                    +" ORDER BY " + FIELD_ID, new String[]{sort});
             while (cursor.moveToNext()){
                 String name = cursor.getString(cursor.getColumnIndex(FIELD_NAME));
                 exercises.add(new Exercise(name, sort));

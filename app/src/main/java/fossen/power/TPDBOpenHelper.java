@@ -191,9 +191,10 @@ public class TPDBOpenHelper extends SQLiteOpenHelper {
                                 names,
                                 Integer.toString(sets.numberOfSingleSets()),
                                 sets.getRepmax(),
-                                Integer.toString(sets.getRest())
+                                Integer.toString(sets.getRest()),
+                                sets.getStructure()
                         };
-                        tpdb.execSQL("INSERT INTO " + id + " VALUES (?,?,?,?,?,?,'')", values);
+                        tpdb.execSQL("INSERT INTO " + id + " VALUES (?,?,?,?,?,?,?)", values);
                     }
                 }
             }
