@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import fossen.power.R;
-import fossen.power.TPDBOpenHelper;
+import fossen.power.DBOpenHelper;
 import fossen.power.TrainingProgram;
 
 /**
@@ -27,12 +27,12 @@ import fossen.power.TrainingProgram;
 
 public class TrainingProgramLibraryAdapter extends BaseAdapter {
     private ArrayList<TrainingProgram> pList;
-    private TPDBOpenHelper tpdbOpenHelper;
+    private DBOpenHelper DBOpenHelper;
     private Context mContext;
 
-    public TrainingProgramLibraryAdapter(ArrayList<TrainingProgram> pList,TPDBOpenHelper tpdbOpenHelper,Context mContext){
+    public TrainingProgramLibraryAdapter(ArrayList<TrainingProgram> pList, DBOpenHelper DBOpenHelper, Context mContext){
         this.pList = pList;
-        this.tpdbOpenHelper = tpdbOpenHelper;
+        this.DBOpenHelper = DBOpenHelper;
         this.mContext = mContext;
     }
 
@@ -100,7 +100,7 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        tpdbOpenHelper.deleteTrainingProgram(program.getId());
+                        DBOpenHelper.deleteTrainingProgram(program.getId());
                         pList.remove(position);
                         notifyDataSetChanged();
                         return true;
@@ -139,7 +139,7 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     program.setStart(0);
-                                    tpdbOpenHelper.updateStartDate(program);
+                                    DBOpenHelper.updateStartDate(program);
                                     notifyDataSetChanged();
                                 }})
                             .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -166,7 +166,7 @@ public class TrainingProgramLibraryAdapter extends BaseAdapter {
                                 public void onClick(DialogInterface dialog, int which) {
                                     program.setStart(start[0]);
                                     program.setDate(Calendar.getInstance());
-                                    tpdbOpenHelper.updateStartDate(program);
+                                    DBOpenHelper.updateStartDate(program);
                                     notifyDataSetChanged();
                                 }})
                             .setNegativeButton("取消", new DialogInterface.OnClickListener() {

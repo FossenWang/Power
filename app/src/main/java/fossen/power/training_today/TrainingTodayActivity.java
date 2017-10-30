@@ -14,13 +14,13 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 import fossen.power.ComponentCreator;
-import fossen.power.TPDBOpenHelper;
+import fossen.power.DBOpenHelper;
 import fossen.power.TrainingDay;
 import fossen.power.R;
 import fossen.power.TrainingProgram;
 
 public class TrainingTodayActivity extends AppCompatActivity {
-    private TPDBOpenHelper tpdbOpenHelper;
+    private DBOpenHelper DBOpenHelper;
     private TrainingProgram trainingProgram;
     private TrainingDay trainingToday;
     private TrainingTodayAdapter ttAdapter;
@@ -59,10 +59,9 @@ public class TrainingTodayActivity extends AppCompatActivity {
         Intent intent = getIntent();
         trainingProgram = (TrainingProgram) intent.getSerializableExtra("trainingProgram");
         int day = trainingProgram.countTodayInCircle();
-        tpdbOpenHelper = new TPDBOpenHelper(this);
-        trainingToday = tpdbOpenHelper.inputTrainingDay(trainingProgram.getId(),
+        DBOpenHelper = new DBOpenHelper(this);
+        trainingToday = DBOpenHelper.inputTrainingDay(trainingProgram.getId(),
                 trainingProgram.getTrainingDay(day - 1).getTitle(), day);
-        tpdbOpenHelper.inputTrainingRecord(date,trainingProgram,trainingToday);
 
         //给listView添加headerView，用于显示训练的基本信息
         trainingList = (ListView) findViewById(R.id.list_tt);
@@ -117,7 +116,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
         });
 
         //绑定配适器
-        ttAdapter = new TrainingTodayAdapter(tpdbOpenHelper, trainingProgram, trainingToday, this, actionLayout, actionView);
+        ttAdapter = new TrainingTodayAdapter(DBOpenHelper, trainingProgram, trainingToday, this, actionLayout, actionView);
         trainingList.setAdapter(ttAdapter);
 
         //设置底部操作栏
@@ -149,7 +148,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
                                 have = true;
                                 break out;}}}
                     if (have){//判断是否有记录
-                        tpdbOpenHelper.saveTrainingRecord(date, trainingProgram, trainingToday);
+                        DBOpenHelper.saveTrainingRecord(date, trainingProgram, trainingToday);
                     }
                     int item = ttAdapter.getWritingItem();
                     ttAdapter.setWritingItem(-1);
@@ -185,7 +184,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        tpdbOpenHelper.close();
+        DBOpenHelper.close();
     }
 
     private void setStartTrainingText(){

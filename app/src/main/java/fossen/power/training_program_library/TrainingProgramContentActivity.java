@@ -13,14 +13,14 @@ import android.widget.TextView;
 
 import fossen.power.ComponentCreator;
 import fossen.power.R;
-import fossen.power.TPDBOpenHelper;
+import fossen.power.DBOpenHelper;
 import fossen.power.TrainingProgram;
 
 public class TrainingProgramContentActivity extends AppCompatActivity {
-    private TPDBOpenHelper tpdbOpenHelper;
+    private DBOpenHelper DBOpenHelper;
     private TrainingProgram trainingProgram;
     private TrainingProgramContentAdapter tpcAdapter;
-    private String id;
+    private int id;
 
     private Toolbar toolbar;
     private ExpandableListView list_tpc;
@@ -44,7 +44,7 @@ public class TrainingProgramContentActivity extends AppCompatActivity {
 
         //获取训练方案id
         Intent intent = getIntent();
-        id = intent.getStringExtra("id");
+        id = intent.getIntExtra("id",0);
 
         //设置toolbar和返回键
         toolbar = ComponentCreator.createBackToolbar(this,R.id.toolbar_tpc);
@@ -93,10 +93,10 @@ public class TrainingProgramContentActivity extends AppCompatActivity {
         super.onStart();
 
         //加载训练方案
-        if(tpdbOpenHelper == null){
-            tpdbOpenHelper = new TPDBOpenHelper(this);
+        if(DBOpenHelper == null){
+            DBOpenHelper = new DBOpenHelper(this);
         }
-        trainingProgram = tpdbOpenHelper.inputTrainingProgram(id);
+        trainingProgram = DBOpenHelper.inputTrainingProgram(id);
 
         //设置列表头视图的内容
         textTitle.setText(trainingProgram.getName());
@@ -104,13 +104,13 @@ public class TrainingProgramContentActivity extends AppCompatActivity {
         textNote.setText(trainingProgram.getNote().replace("\\n","\n"));
 
         //绑定配适器
-        tpcAdapter = new TrainingProgramContentAdapter(trainingProgram, tpdbOpenHelper, this);
+        tpcAdapter = new TrainingProgramContentAdapter(trainingProgram, DBOpenHelper, this);
         list_tpc.setAdapter(tpcAdapter);
     }
 
     @Override
     protected void onStop(){
         super.onStop();
-        tpdbOpenHelper.close();
+        DBOpenHelper.close();
     }
 }

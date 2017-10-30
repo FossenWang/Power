@@ -9,11 +9,11 @@ import android.widget.TextView;
 
 import fossen.power.ComponentCreator;
 import fossen.power.R;
-import fossen.power.TPDBOpenHelper;
+import fossen.power.DBOpenHelper;
 import fossen.power.TrainingProgram;
 
 public class TrainingRecordActivity extends AppCompatActivity {
-    private TPDBOpenHelper tpdbOpenHelper;
+    private DBOpenHelper DBOpenHelper;
     private TrainingProgram record;
 
     private TrainingRecordAdapter trAdapter;
@@ -31,7 +31,7 @@ public class TrainingRecordActivity extends AppCompatActivity {
         ComponentCreator.createBackToolbar(this, R.id.toolbar_tr);
 
         //加载训练记录数据
-        tpdbOpenHelper = new TPDBOpenHelper(this);
+        DBOpenHelper = new DBOpenHelper(this);
         Intent intent = getIntent();
         record = (TrainingProgram) intent.getSerializableExtra("record");
 
@@ -60,6 +60,6 @@ public class TrainingRecordActivity extends AppCompatActivity {
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        tpdbOpenHelper.close();
+        DBOpenHelper.close();
     }
 }

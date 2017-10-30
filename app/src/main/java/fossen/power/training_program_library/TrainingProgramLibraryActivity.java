@@ -12,12 +12,12 @@ import java.util.ArrayList;
 
 import fossen.power.ComponentCreator;
 import fossen.power.R;
-import fossen.power.TPDBOpenHelper;
+import fossen.power.DBOpenHelper;
 import fossen.power.TrainingProgram;
 
 public class TrainingProgramLibraryActivity extends AppCompatActivity {
     private ArrayList<TrainingProgram> programs;
-    private TPDBOpenHelper tpdbOpenHelper;
+    private DBOpenHelper DBOpenHelper;
     private TrainingProgramLibraryAdapter tplAdapter;
 
     private ListView listView;
@@ -44,7 +44,7 @@ public class TrainingProgramLibraryActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Intent intent = new Intent(TrainingProgramLibraryActivity.this,TrainingProgramModifyActivity.class);
-                intent.putExtra("id",tpdbOpenHelper.createTrainingProgram());
+                intent.putExtra("id", DBOpenHelper.createTrainingProgram());
                 TrainingProgramLibraryActivity.this.startActivity(intent);
                 return true;
             }
@@ -56,19 +56,19 @@ public class TrainingProgramLibraryActivity extends AppCompatActivity {
         super.onStart();
 
         //加载训练方案列表
-        if(tpdbOpenHelper == null){
-            tpdbOpenHelper = new TPDBOpenHelper(this);
+        if(DBOpenHelper == null){
+            DBOpenHelper = new DBOpenHelper(this);
         }
-        programs = tpdbOpenHelper.inputTrainingProgramList();
+        programs = DBOpenHelper.inputTrainingProgramList();
 
         //绑定配适器
-        tplAdapter = new TrainingProgramLibraryAdapter(programs,tpdbOpenHelper,this);
+        tplAdapter = new TrainingProgramLibraryAdapter(programs, DBOpenHelper,this);
         listView.setAdapter(tplAdapter);
     }
 
     @Override
     protected void onStop(){
         super.onStop();
-        tpdbOpenHelper.close();
+        DBOpenHelper.close();
     }
 }

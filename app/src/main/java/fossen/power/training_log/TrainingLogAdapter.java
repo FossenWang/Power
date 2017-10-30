@@ -11,12 +11,11 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import fossen.power.R;
-import fossen.power.TPDBOpenHelper;
+import fossen.power.DBOpenHelper;
 import fossen.power.TrainingProgram;
 
 /**
@@ -26,15 +25,15 @@ import fossen.power.TrainingProgram;
 public class TrainingLogAdapter extends BaseExpandableListAdapter {
     private Context mContext;
     private ExpandableListView expList;
-    private TPDBOpenHelper tpdbOpenHelper;
+    private DBOpenHelper DBOpenHelper;
     private ArrayList<ArrayList<TrainingProgram>> trainingLog = new ArrayList<>();
     private ArrayList<String> trainingCalendar;
 
-    public TrainingLogAdapter(Context mContext, ExpandableListView expList, TPDBOpenHelper tpdbOpenHelper) {
+    public TrainingLogAdapter(Context mContext, ExpandableListView expList, DBOpenHelper DBOpenHelper) {
         this.mContext = mContext;
         this.expList = expList;
-        this.tpdbOpenHelper = tpdbOpenHelper;
-        trainingCalendar = tpdbOpenHelper.inputTrainingCalendar();
+        this.DBOpenHelper = DBOpenHelper;
+        trainingCalendar = DBOpenHelper.inputTrainingCalendar();
         inputNextRecordDay();
     }
 
@@ -44,7 +43,7 @@ public class TrainingLogAdapter extends BaseExpandableListAdapter {
     //以此实现动态加载训练日，没有浏览到的训练日就不用加载
     private void inputNextRecordDay(){
         if(getGroupCount()<trainingCalendar.size()){
-            trainingLog.add(tpdbOpenHelper.inputTrainingLog(trainingCalendar.get(getGroupCount())));
+            trainingLog.add(DBOpenHelper.inputTrainingLog(trainingCalendar.get(getGroupCount())));
         }else {
             trainingLog.add(new ArrayList<TrainingProgram>());
         }
@@ -125,12 +124,12 @@ public class TrainingLogAdapter extends BaseExpandableListAdapter {
         }
 
         final TrainingProgram record = trainingLog.get(groupPosition).get(childPosition);
-        final String id = record.getId();
+        final int id = record.getId();
         final String date = record.getDate();
         final int gPos = groupPosition;
         final int cPos = childPosition;
         if(record.getTrainingDay(0).numberOfSets()==0){
-            tpdbOpenHelper.inputTrainingRecord(record);
+            DBOpenHelper.inputTrainingRecord(record);
         }//防止重复导入
         childHolder.text_title.setText(record.getName()+"  "+record.getTrainingDay(0).getTitle());
         childHolder.text_count.setText(record.getTrainingDay(0).numberOfExercise() + "个动作  "
@@ -160,7 +159,7 @@ public class TrainingLogAdapter extends BaseExpandableListAdapter {
                             trainingLog.remove(gPos);
                             trainingCalendar.remove(gPos);
                         }
-                        tpdbOpenHelper.deleteTrainingRecord(date, id);
+                        DBOpenHelper.deleteTrainingRecord(date, id);
                         notifyDataSetChanged();
                         return true;
                     }

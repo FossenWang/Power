@@ -9,7 +9,7 @@ import android.widget.ExpandableListView;
 
 import java.util.ArrayList;
 
-import fossen.power.ELDBOpenHelper;
+import fossen.power.DBOpenHelper;
 import fossen.power.Exercise;
 import fossen.power.R;
 import fossen.power.Sets;
@@ -19,7 +19,7 @@ public class ChooseExerciseActivity extends AppCompatActivity {
     private ExpandableListView explist_ce;
     private Button button_cancel;
     private Button button_yes;
-    private ELDBOpenHelper eldbOpenHelper;
+    private DBOpenHelper dbOpenHelper;
     private Intent result;
     private Sets sets;
     private ArrayList<String> checkedExercises;
@@ -37,8 +37,8 @@ public class ChooseExerciseActivity extends AppCompatActivity {
         result = getIntent();
         setResult(RESULT_CANCELED, result);
         sets = (Sets) result.getSerializableExtra("sets");
-        eldbOpenHelper = new ELDBOpenHelper(this);
-        sortedExercises = eldbOpenHelper.inputExercises(sets.getExerciseType());
+        dbOpenHelper = new DBOpenHelper(this);
+        sortedExercises = dbOpenHelper.inputExercises(sets.getExerciseType());
         checkedExercises = new ArrayList<>();
         for(Exercise exercise: sets.getExerciseList()){
             checkedExercises.add(exercise.getName());
@@ -78,6 +78,6 @@ public class ChooseExerciseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        eldbOpenHelper.close();
+        dbOpenHelper.close();
     }
 }

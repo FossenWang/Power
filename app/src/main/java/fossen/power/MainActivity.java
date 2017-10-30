@@ -21,7 +21,7 @@ import fossen.power.training_program_library.TrainingProgramLibraryActivity;
 import fossen.power.training_today.TrainingTodayActivity;
 
 public class MainActivity extends AppCompatActivity {
-    private TPDBOpenHelper tpdbOpenHelper;
+    private DBOpenHelper DBOpenHelper;
     private ViewGroup layoutTT;
     private String date;
     private ArrayList<TrainingProgram> tpList;
@@ -68,21 +68,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (tpdbOpenHelper == null) {
-            tpdbOpenHelper = new TPDBOpenHelper(this);
+        if (DBOpenHelper == null) {
+            DBOpenHelper = new DBOpenHelper(this);
         }
         Calendar today = Calendar.getInstance();
         date = Integer.toString(today.get(Calendar.YEAR))
                 + Integer.toString(today.get(Calendar.MONTH) + 1)
                 + Integer.toString(today.get(Calendar.DAY_OF_MONTH));
-        tpList = tpdbOpenHelper.inputTrainingProgramList();
-        logList = tpdbOpenHelper.inputTrainingLog(date);
+        tpList = DBOpenHelper.inputTrainingProgramList();
+        logList = DBOpenHelper.inputTrainingLog(date);
         layoutTT.removeAllViews();
         boolean training = false;
         out : for(int i = 0; i < tpList.size(); i++){
             if(tpList.get(i).getStart()>0){
                 for (TrainingProgram log : logList){
-                    if(log.getId().equals(tpList.get(i).getId())){
+                    if(log.getId()==tpList.get(i).getId()){
                         continue out;
                     }//判断训练方案是否有今日的记录，有就跳过
                 }
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         text_itt_circle.setText(trainingProgram.getCircleToFormat());
         final TrainingProgram tp = trainingProgram;
         int day = trainingProgram.countTodayInCircle();
-        TrainingDay today = tpdbOpenHelper.inputTrainingDay(trainingProgram.getId(),
+        TrainingDay today = DBOpenHelper.inputTrainingDay(trainingProgram.getId(),
                 trainingProgram.getTrainingDay(day - 1).getTitle(), day);
         if(today.isRestDay()){
             text_itt_day.setText("休息");
@@ -141,10 +141,10 @@ public class MainActivity extends AppCompatActivity {
         TextView text_itt_day = (TextView) trainingItem.findViewById(R.id.text_itt_day);
         TextView text_itt_count = (TextView) trainingItem.findViewById(R.id.text_itt_count);
 
-        final String id = trainingRecord.getId();
+        final int id = trainingRecord.getId();
         final TrainingProgram record = trainingRecord;
         if(record.getTrainingDay(0).numberOfSets()==0){
-            tpdbOpenHelper.inputTrainingRecord(record);
+            DBOpenHelper.inputTrainingRecord(record);
         }//防止重复导入
 
         //设置内容
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        tpdbOpenHelper.deleteTrainingRecord(date, id);
+                        DBOpenHelper.deleteTrainingRecord(date, id);
                         onStart();
                         return true;
                     }
@@ -199,6 +199,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop(){
         super.onStop();
-        tpdbOpenHelper.close();
+        DBOpenHelper.close();
     }
 }

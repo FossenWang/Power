@@ -11,7 +11,7 @@ import java.util.Calendar;
 public class TrainingProgram implements Serializable {
     //训练日列表
     private ArrayList<TrainingDay> tList = new ArrayList<TrainingDay>();
-    private String id = "";
+    private int id = 0;
     private String name = "" ;//方案名
     private String note = "";//说明
     private String goal = "";//训练目的
@@ -59,10 +59,10 @@ public class TrainingProgram implements Serializable {
     }
 
     //存取方案名，目标，说明，开始日期，总天数,开始与否等信息
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
-    public String getId() {
+    public int getId() {
         return id;
     }
     public void setName(String str){

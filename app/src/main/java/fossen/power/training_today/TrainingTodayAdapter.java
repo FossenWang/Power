@@ -15,7 +15,7 @@ import android.widget.Toast;
 import fossen.power.ComponentCreator;
 import fossen.power.R;
 import fossen.power.Sets;
-import fossen.power.TPDBOpenHelper;
+import fossen.power.DBOpenHelper;
 import fossen.power.TrainingDay;
 import fossen.power.TrainingProgram;
 
@@ -24,7 +24,7 @@ import fossen.power.TrainingProgram;
  */
 
 public class TrainingTodayAdapter extends BaseAdapter {
-    private TPDBOpenHelper tpdbOpenHelper;
+    private DBOpenHelper DBOpenHelper;
     private TrainingProgram trainingProgram;
     private TrainingDay trainingDay;
     private Context mContext;
@@ -34,14 +34,14 @@ public class TrainingTodayAdapter extends BaseAdapter {
     private int writingItem = -1;//-1表示无编辑中的组集，>-1时表示启用修改模式的组集序号,
     private int recordingSets = 0;//表示第一个未记录的组集
 
-    public TrainingTodayAdapter(TPDBOpenHelper tpdbOpenHelper,
+    public TrainingTodayAdapter(DBOpenHelper DBOpenHelper,
                                 TrainingProgram trainingProgram,
                                 TrainingDay trainingDay ,
                                 Context mContext,
                                 ViewGroup actionLayout,
                                 View actionView
                                 ) {
-        this.tpdbOpenHelper = tpdbOpenHelper;
+        this.DBOpenHelper = DBOpenHelper;
         this.trainingProgram = trainingProgram;
         this.trainingDay = trainingDay;
         this.mContext = mContext;
@@ -168,7 +168,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
                         int i = item.getOrder();
                         if(i>0) {
                             sets.exchangeExercise(0, i);
-                            tpdbOpenHelper.updateExercise(trainingProgram.getId(),
+                            DBOpenHelper.updateExercise(trainingProgram.getId(),
                                     trainingProgram.countTodayInCircle(), pos + 1, sets);
                             notifyDataSetChanged();
                             Toast.makeText(mContext, "你选择了："+item.getTitle(), Toast.LENGTH_SHORT).show();

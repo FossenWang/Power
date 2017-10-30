@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import fossen.power.ComponentCreator;
-import fossen.power.ELDBOpenHelper;
+import fossen.power.DBOpenHelper;
 import fossen.power.R;
 
 public class ExerciseTypesActivity extends AppCompatActivity {
@@ -25,8 +25,8 @@ public class ExerciseTypesActivity extends AppCompatActivity {
         ComponentCreator.createBackToolbar(this, R.id.toolbar_et);
 
         //从数据库导入动作分类数据
-        ELDBOpenHelper eldbOpenHelper = new ELDBOpenHelper(this);
-        final ArrayList<HashMap<String,String>> types = eldbOpenHelper.inputExerciseTypes();
+        DBOpenHelper dbOpenHelper = new DBOpenHelper(this);
+        final ArrayList<HashMap<String,String>> types = dbOpenHelper.inputExerciseTypes();
 
         //设置配适器
         ListView typeList = (ListView) findViewById(R.id.list_et);

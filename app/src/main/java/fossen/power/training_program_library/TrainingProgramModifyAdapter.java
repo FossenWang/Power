@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import fossen.power.R;
-import fossen.power.TPDBOpenHelper;
 import fossen.power.TrainingProgram;
 
 /**

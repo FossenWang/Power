@@ -9,7 +9,7 @@ import android.widget.ExpandableListView;
 import java.util.ArrayList;
 
 import fossen.power.ComponentCreator;
-import fossen.power.ELDBOpenHelper;
+import fossen.power.DBOpenHelper;
 import fossen.power.Exercise;
 import fossen.power.R;
 
@@ -26,8 +26,8 @@ public class ExerciseLibraryActivity extends AppCompatActivity {
         //从数据库导入动作分类数据
         Intent intent = getIntent();
         String type = intent.getStringExtra("type_name");
-        ELDBOpenHelper eldbOpenHelper = new ELDBOpenHelper(this);
-        final ArrayList<ArrayList<Exercise>> sortedExercises = eldbOpenHelper.inputExercises(type);
+        DBOpenHelper dbOpenHelper = new DBOpenHelper(this);
+        final ArrayList<ArrayList<Exercise>> sortedExercises = dbOpenHelper.inputExercises(type);
 
         //设置配适器
         ExpandableListView expListView = (ExpandableListView) findViewById(R.id.explist_el);

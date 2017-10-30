@@ -3,17 +3,16 @@ package fossen.power.training_log;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
 import fossen.power.ComponentCreator;
 import fossen.power.R;
-import fossen.power.TPDBOpenHelper;
+import fossen.power.DBOpenHelper;
 
 public class TrainingLogActivity extends AppCompatActivity {
     private ExpandableListView expList;
     private TrainingLogAdapter tlAdapter;
-    private TPDBOpenHelper tpdbOpenHelper;
+    private DBOpenHelper DBOpenHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +21,9 @@ public class TrainingLogActivity extends AppCompatActivity {
 
         ComponentCreator.createBackToolbar(this, R.id.toolbar_tl);
 
-        tpdbOpenHelper = new TPDBOpenHelper(this);
+        DBOpenHelper = new DBOpenHelper(this);
         expList = (ExpandableListView) findViewById(R.id.explist_tl);
-        tlAdapter = new TrainingLogAdapter(this, expList, tpdbOpenHelper);
+        tlAdapter = new TrainingLogAdapter(this, expList, DBOpenHelper);
         expList.setAdapter(tlAdapter);
         expList.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
@@ -38,6 +37,6 @@ public class TrainingLogActivity extends AppCompatActivity {
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        tpdbOpenHelper.close();
+        DBOpenHelper.close();
     }
 }

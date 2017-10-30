@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import fossen.power.R;
 import fossen.power.Sets;
-import fossen.power.TPDBOpenHelper;
+import fossen.power.DBOpenHelper;
 import fossen.power.TrainingDay;
 import fossen.power.TrainingProgram;
 import fossen.power.exercise_library.ExerciseFormActivity;
@@ -26,12 +26,12 @@ import fossen.power.exercise_library.ExerciseFormActivity;
 
 public class TrainingProgramContentAdapter extends BaseExpandableListAdapter {
     private TrainingProgram trainingProgram;
-    private TPDBOpenHelper tpdbOpenHelper;
+    private DBOpenHelper DBOpenHelper;
     private Context mContext;
 
-    public TrainingProgramContentAdapter(TrainingProgram trainingProgram, TPDBOpenHelper tpdbOpenHelper, Context mContext){
+    public TrainingProgramContentAdapter(TrainingProgram trainingProgram, DBOpenHelper DBOpenHelper, Context mContext){
         this.trainingProgram = trainingProgram;
-        this.tpdbOpenHelper = tpdbOpenHelper;
+        this.DBOpenHelper = DBOpenHelper;
         this.mContext = mContext;
     }
 
@@ -159,7 +159,7 @@ public class TrainingProgramContentAdapter extends BaseExpandableListAdapter {
                         int i = item.getOrder();
                         if(i>0) {
                             sets.exchangeExercise(0, i);
-                            tpdbOpenHelper.updateExercise(trainingProgram.getId(),
+                            DBOpenHelper.updateExercise(trainingProgram.getId(),
                                     groupPosition + 1, childPosition + 1, sets);
                             notifyDataSetChanged();
                             Toast.makeText(mContext, "你选择了："+item.getTitle(), Toast.LENGTH_SHORT).show();

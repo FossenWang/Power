@@ -16,15 +16,15 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import fossen.power.R;
-import fossen.power.TPDBOpenHelper;
+import fossen.power.DBOpenHelper;
 import fossen.power.TrainingDay;
 import fossen.power.TrainingProgram;
 
 public class TrainingProgramModifyActivity extends AppCompatActivity {
-    private TPDBOpenHelper tpdbOpenHelper;
+    private DBOpenHelper DBOpenHelper;
     private TrainingProgram tp;
     private TrainingProgramModifyAdapter tpmAdapter;
-    private String id;
+    private int id;
 
     private ListView list_tpm;
     private View header;
@@ -44,9 +44,9 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
 
         //获取训练方案id
         Intent intent = getIntent();
-        id = intent.getStringExtra("id");
-        tpdbOpenHelper = new TPDBOpenHelper(this);
-        tp = tpdbOpenHelper.inputTrainingProgram(id);
+        id = intent.getIntExtra("id",0);
+        DBOpenHelper = new DBOpenHelper(this);
+        tp = DBOpenHelper.inputTrainingProgram(id);
 
         // 给listView添加headerView，用于显示训练方案的基本信息
         list_tpm = (ListView) findViewById(R.id.list_tpm);
@@ -84,7 +84,7 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 tp.setStart(0);
-                tpdbOpenHelper.updateTrainingProgram(tp);
+                DBOpenHelper.updateTrainingProgram(tp);
                 TrainingProgramModifyActivity.this.finish();
             }
         });
@@ -178,6 +178,6 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        tpdbOpenHelper.close();
+        DBOpenHelper.close();
     }
 }
