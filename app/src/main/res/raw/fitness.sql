@@ -12,10 +12,10 @@ CREATE TABLE IF NOT EXISTS `programs` (
 	`record`	TEXT DEFAULT '',
 	FOREIGN KEY(`id`) REFERENCES `program_list`(`id`) ON DELETE CASCADE
 );
-INSERT INTO `programs` VALUES (1,1,1,'深蹲',5,'8~12',120,'equipment','1');
-INSERT INTO `programs` VALUES (1,1,2,'器械腿推',4,'8~12',120,'equipment','1');
-INSERT INTO `programs` VALUES (1,1,3,'哑铃弓步',3,'10~15',60,'equipment','1');
-INSERT INTO `programs` VALUES (1,1,4,'坐姿腿屈伸',3,'10~15',60,'equipment','1');
+INSERT INTO `programs` VALUES (1,1,1,'深蹲',5,'8~12',120,'equipment','');
+INSERT INTO `programs` VALUES (1,1,2,'器械腿推',4,'8~12',120,'equipment','');
+INSERT INTO `programs` VALUES (1,1,3,'哑铃弓步',3,'10~15',60,'equipment','');
+INSERT INTO `programs` VALUES (1,1,4,'坐姿腿屈伸',3,'10~15',60,'equipment','');
 INSERT INTO `programs` VALUES (1,1,5,'卧姿腿弯举',3,'10~15',60,'equipment','');
 INSERT INTO `programs` VALUES (1,1,6,'站立小腿举,坐姿小腿举',4,'10~15',60,'equipment','');
 INSERT INTO `programs` VALUES (1,2,1,'卧推,哑铃卧推',5,'8~12',120,'equipment','');

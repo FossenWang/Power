@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,8 +25,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         dbContext = context;
     }
 
-    @Override
     //数据库第一次创建时被调用
+    @Override
     public void onCreate(SQLiteDatabase db) {
         //导入SQL文件中的语句，直接生成数据库
         InputStream input = dbContext.getResources().openRawResource(R.raw.fitness);
@@ -83,6 +84,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             tp.setId(cursor.getInt(cursor.getColumnIndex("id")));
             tp.setName(cursor.getString(cursor.getColumnIndex("name")));
             tp.setGoal(cursor.getString(cursor.getColumnIndex("goal")));
+            //训练日标题可以为空，split第二个参数为-1时，会保留最后的空字符串
             tp.addTrainingDay(cursor.getString(cursor.getColumnIndex("day_name")).split(",",-1));
             tp.setStart(cursor.getInt(cursor.getColumnIndex("start")));
             tp.setDate(cursor.getString(cursor.getColumnIndex("date")));
@@ -102,6 +104,14 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                 sets.setRest(cursor.getInt(cursor.getColumnIndex("rest")));
                 sets.setRepmax(cursor.getString(cursor.getColumnIndex("reps")));
                 sets.setStructure(cursor.getString(cursor.getColumnIndex("structure")));
+                String[] detail = cursor.getString(cursor.getColumnIndex("record")).split(",");
+                for (int i = 0; i<detail.length; i++){
+                    String[] strings = detail[i].split("×");
+                    if (strings.length==2){
+                        sets.getSet(i).setLoad(Double.parseDouble(strings[0]));
+                        sets.getSet(i).setReps(Integer.parseInt(strings[1]));
+                    }
+                }
                 td.addSets(sets);
             }
             cursor.close();
@@ -125,10 +135,48 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             sets.setRest(cursor.getInt(cursor.getColumnIndex("rest")));
             sets.setRepmax(cursor.getString(cursor.getColumnIndex("reps")));
             sets.setStructure(cursor.getString(cursor.getColumnIndex("structure")));
+            String[] detail = cursor.getString(cursor.getColumnIndex("record")).split(",");
+            for (int i = 0; i<detail.length; i++){
+                String[] strings = detail[i].split("×");
+                if (strings.length==2){
+                    sets.getSet(i).setLoad(Double.parseDouble(strings[0]));
+                    sets.getSet(i).setReps(Integer.parseInt(strings[1]));
+                }
+            }
             td.addSets(sets);
         }
+        Toast.makeText(dbContext, td.getSets(0).getAllSetsToFormat("kg"), Toast.LENGTH_SHORT).show();
         cursor.close();
         return td;
+    }
+
+    //更新训练方案的某个训练日中储存的上次训练的记录
+    public void updateRecordInProgram(int id, int day, TrainingDay trainingDay){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        if(!trainingDay.isRestDay()){  //不保存休息日
+            for(int i = 0; i<trainingDay.numberOfSets(); i++) {
+                Sets sets = trainingDay.getSets(i);
+                if (!sets.getAllSetsToFormat("kg").equals("暂无")) {//有记录才保存
+                    String record = "";
+                    for(int j = 0; j < sets.numberOfSingleSets(); j++){
+                        if(sets.getSet(j).getReps() != 0) {
+                            record += sets.getSet(j).getLoad() +"×"+ sets.getSet(j).getReps() + ",";
+                        }
+                    }record = record.substring(0, record.length() - 1);
+                    String[] values = {
+                            record,
+                            Integer.toString(id),
+                            Integer.toString(day),
+                            Integer.toString(i + 1)
+                    };
+                    db.execSQL("UPDATE programs SET record = ? WHERE id = ? AND day = ? AND number = ?", values);
+                    Toast.makeText(dbContext, record, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }else {
+            Toast.makeText(dbContext, trainingDay.numberOfSets()+"keng", Toast.LENGTH_SHORT).show();
+        }
     }
 
     //更新训练方案的使用状态
@@ -154,7 +202,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                 new String[]{names,Integer.toString(id),Integer.toString(day),Integer.toString(number)});
     }
 
-    //保存更新的训练计划
+    //保存更新后的训练计划
     public void updateTrainingProgram(TrainingProgram trainingProgram){
         SQLiteDatabase db = this.getWritableDatabase();
         String name = trainingProgram.getName();
@@ -165,7 +213,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         String dayNames = "";
         for(int i = 0; i < trainingProgram.circleDays(); i++){
             dayNames += (trainingProgram.getTrainingDay(i).getTitle() + ",");
-        }
+        }//训练日标题可以为空，split第二个参数为-1时，会保留最后的空字符串
+        //考虑训练日全空时，仅用逗号区分训练日，则训练日数为逗号数加一
         dayNames = dayNames.substring(0,dayNames.length()-1);
 
         //更新program_list
@@ -183,8 +232,13 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                         String names = "";
                         for (Exercise exercise : sets.getExerciseList()) {
                             names += (exercise.getName() + ",");
-                        }
-                        names = names.substring(0, names.length() - 1);
+                        }names = names.substring(0, names.length() - 1);
+                        String record = "";
+                        for(int j = 0; j < sets.numberOfSingleSets(); j++){
+                            if(sets.getSet(j).getReps() != 0) {
+                                record += sets.getSet(j).getLoad() +"×"+ sets.getSet(j).getReps() + ",";
+                            }
+                        }record = record.substring(0, record.length() - 1);
                         String[] values = {
                                 Integer.toString(id),
                                 Integer.toString(day),
@@ -194,9 +248,9 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                                 sets.getRepmax(),
                                 Integer.toString(sets.getRest()),
                                 sets.getStructure(),
-                                //record
+                                record
                         };
-                        db.execSQL("INSERT INTO programs VALUES (?,?,?,?,?,?,?,?,'')", values);
+                        db.execSQL("INSERT INTO programs VALUES (?,?,?,?,?,?,?,?,?)", values);
                     }
                 }
             }

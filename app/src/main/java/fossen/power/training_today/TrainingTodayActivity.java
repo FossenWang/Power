@@ -58,7 +58,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
                 + Integer.toString(today.get(Calendar.DAY_OF_MONTH));
         Intent intent = getIntent();
         trainingProgram = (TrainingProgram) intent.getSerializableExtra("trainingProgram");
-        int day = trainingProgram.countTodayInCircle();
+        final int day = trainingProgram.countTodayInCircle();
         DBOpenHelper = new DBOpenHelper(this);
         trainingToday = DBOpenHelper.inputTrainingDay(trainingProgram.getId(),
                 trainingProgram.getTrainingDay(day - 1).getTitle(), day);
@@ -149,6 +149,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
                                 break out;}}}
                     if (have){//判断是否有记录
                         DBOpenHelper.saveTrainingRecord(date, trainingProgram, trainingToday);
+                        DBOpenHelper.updateRecordInProgram(trainingProgram.getId(),day,trainingToday);
                     }
                     int item = ttAdapter.getWritingItem();
                     ttAdapter.setWritingItem(-1);
