@@ -7,15 +7,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import fossen.power.ComponentCreator;
 import fossen.power.R;
 import fossen.power.Sets;
 import fossen.power.DBOpenHelper;
+import fossen.power.SingleSet;
 import fossen.power.TrainingDay;
 import fossen.power.TrainingProgram;
 
@@ -27,6 +30,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
     private DBOpenHelper DBOpenHelper;
     private TrainingProgram trainingProgram;
     private TrainingDay trainingDay;
+    private int dayIndex;
     private Context mContext;
     private ViewGroup actionLayout;
     private View actionView;
@@ -37,6 +41,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
     public TrainingTodayAdapter(DBOpenHelper DBOpenHelper,
                                 TrainingProgram trainingProgram,
                                 TrainingDay trainingDay ,
+                                int day,
                                 Context mContext,
                                 ViewGroup actionLayout,
                                 View actionView
@@ -44,6 +49,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
         this.DBOpenHelper = DBOpenHelper;
         this.trainingProgram = trainingProgram;
         this.trainingDay = trainingDay;
+        dayIndex = day-1;
         this.mContext = mContext;
         this.actionLayout = actionLayout;
         this.actionView = actionView;
@@ -97,6 +103,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
         ViewHolder holder;
         final int pos = position;
         final Sets sets = trainingDay.getSets(position);
+        Sets lastTrainingSets = trainingProgram.getTrainingDay(dayIndex).getSets(pos);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(
@@ -121,13 +128,11 @@ public class TrainingTodayAdapter extends BaseAdapter {
         //判断展示记录或者修改记录
         holder.layout_record.removeAllViews();
         if(position == writingItem){
-            holder.text_record.setText("");
-
+            holder.text_record.setText("上次训练\n"+lastTrainingSets.getAllSetsToFormat("kg"));
             //创建可编辑的训练记录
             for(int i = 0; i < sets.numberOfSingleSets(); i++){
-                holder.layout_record.addView(ComponentCreator.createLoadRepsPickers(mContext, i, sets));
+                holder.layout_record.addView(createLoadRepsPickers(i, sets, lastTrainingSets));
             }
-
             //屏蔽点击事件
             holder.layout_sets.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -135,7 +140,6 @@ public class TrainingTodayAdapter extends BaseAdapter {
             });
         }else {
             holder.text_record.setText(sets.getAllSetsToFormat("kg"));
-
             //单击进入组集修改模式
             holder.layout_sets.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -169,7 +173,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
                         if(i>0) {
                             sets.exchangeExercise(0, i);
                             DBOpenHelper.updateExercise(trainingProgram.getId(),
-                                    trainingProgram.countTodayInCircle(), pos + 1, sets);
+                                    dayIndex+1, pos + 1, sets);
                             notifyDataSetChanged();
                             Toast.makeText(mContext, "你选择了："+item.getTitle(), Toast.LENGTH_SHORT).show();
                         }
@@ -180,6 +184,95 @@ public class TrainingTodayAdapter extends BaseAdapter {
             }
         });
         return convertView;
+    }
+
+    //创建一行带有负重，次数选择器的视图
+    private View createLoadRepsPickers(int index, Sets sets, Sets lastTrainingSets){
+        View loadRepsView = LayoutInflater.from(mContext).inflate(R.layout.item_ttw_load_reps, null);
+        TextView textOrder = (TextView) loadRepsView.findViewById(R.id.text_ttw_order);
+        //TextView textUnit = (TextView) loadRepsView.findViewById(R.id.text_ttw_unit);
+        NumberPicker loadPicker = (NumberPicker) loadRepsView.findViewById(R.id.picker_ttw_load);
+        NumberPicker repsPicker = (NumberPicker) loadRepsView.findViewById(R.id.picker_ttw_reps);
+        final CheckBox checkBox = (CheckBox) loadRepsView.findViewById(R.id.check_ttw);
+
+        final SingleSet set = sets.getSet(index);
+        SingleSet lastSet = lastTrainingSets.getSet(index);
+        int loadValue, reps;
+        //已有记录则显示记录，没有则显示上个周期内训练的记录，没有则显示最大次数
+        if(set.getReps()==0){
+            if (lastSet.getReps()==0) {
+                reps = Integer.parseInt(sets.getRepmax().split("~")[1]);
+                loadValue = 1;
+            }else {
+                reps = lastSet.getReps();
+                loadValue = (int) (lastSet.getLoad()/2.5);
+            }
+        }else {
+            reps = set.getReps();
+            loadValue = (int) (set.getLoad()/2.5);
+            checkBox.setChecked(true);
+        }
+
+        final SingleSet bufferSet = new SingleSet(loadValue * 2.5, reps);
+
+        textOrder.setText("第" + (index+1) + "组");
+
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    if(bufferSet.getReps() == 0 || bufferSet.getLoad() == 0){
+                        buttonView.setChecked(false);
+                        Toast.makeText(mContext, "完成次数或重量不能为0", Toast.LENGTH_SHORT).show();
+                    }else {
+                        set.setLoad(bufferSet.getLoad());
+                        set.setReps(bufferSet.getReps());
+                    }
+                }else {
+                    set.setLoad(0.0);
+                    set.setReps(0);
+                }
+            }
+        });
+
+        String[] display = new String[200];
+        for(int i = 0; i < display.length; i++){
+            double kg = (i+1) * 2.5;
+            if(kg - (int) kg ==0){
+                display[i] = Integer.toString((int) kg);
+            }else {
+                display[i] = Integer.toString((int) kg) + ".5";
+            }
+        }
+        loadPicker.setDisplayedValues(display);
+        loadPicker.setMinValue(1);
+        loadPicker.setMaxValue(display.length);
+        loadPicker.setValue(loadValue);
+        loadPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                bufferSet.setLoad(newVal * 2.5);
+                if(checkBox.isChecked()){
+                    checkBox.setChecked(false);
+                }
+            }
+        });
+        loadPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);//关闭编辑模式
+
+        repsPicker.setMinValue(1);
+        repsPicker.setMaxValue(30);
+        repsPicker.setValue(reps);
+        repsPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                bufferSet.setReps(newVal);
+                if(checkBox.isChecked()){
+                    checkBox.setChecked(false);
+                }
+            }
+        });
+        repsPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);//关闭编辑模
+        return loadRepsView;
     }
 
     private static class ViewHolder {

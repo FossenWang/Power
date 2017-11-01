@@ -71,10 +71,7 @@ public class MainActivity extends AppCompatActivity {
         if (DBOpenHelper == null) {
             DBOpenHelper = new DBOpenHelper(this);
         }
-        Calendar today = Calendar.getInstance();
-        date = Integer.toString(today.get(Calendar.YEAR))
-                + Integer.toString(today.get(Calendar.MONTH) + 1)
-                + Integer.toString(today.get(Calendar.DAY_OF_MONTH));
+        date = TrainingProgram.formatDate(Calendar.getInstance());
         tpList = DBOpenHelper.inputTrainingProgramList();
         logList = DBOpenHelper.inputTrainingLog(date);
         layoutTT.removeAllViews();
@@ -112,8 +109,7 @@ public class MainActivity extends AppCompatActivity {
         text_itt_circle.setText(trainingProgram.getCircleToFormat());
         final TrainingProgram tp = trainingProgram;
         int day = trainingProgram.countTodayInCircle();
-        TrainingDay today = DBOpenHelper.inputTrainingDay(trainingProgram.getId(),
-                trainingProgram.getTrainingDay(day - 1).getTitle(), day);
+        TrainingDay today = DBOpenHelper.inputTrainingDay(trainingProgram, day);
         if(today.isRestDay()){
             text_itt_day.setText("休息");
             text_itt_count.setText("");

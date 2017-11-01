@@ -165,8 +165,13 @@ public class TrainingDayModifyAdapter extends BaseAdapter {
         holder.picker_sets.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                sets.clearSets();
-                sets.addSet(newVal);
+                if(newVal>sets.numberOfSingleSets()){
+                        sets.addSet(newVal-sets.numberOfSingleSets());
+                    }else if(newVal<sets.numberOfSingleSets()){
+                        for (int i = 0; i<(sets.numberOfSingleSets()-newVal); i++){
+                            sets.removeSet(sets.numberOfSingleSets()-1-i);
+                        }
+                    }
                 text_count.setText(trainingDay.numberOfExercise() + "个动作  "
                         + trainingDay.numberOfSingleSets() + "组");
             }

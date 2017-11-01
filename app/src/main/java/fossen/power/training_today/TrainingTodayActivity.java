@@ -52,16 +52,14 @@ public class TrainingTodayActivity extends AppCompatActivity {
         ComponentCreator.createBackToolbar(this,R.id.toolbar_tt);
 
         //加载训练日数据
-        Calendar today = Calendar.getInstance();
-        date = Integer.toString(today.get(Calendar.YEAR))
-                + Integer.toString(today.get(Calendar.MONTH) + 1)
-                + Integer.toString(today.get(Calendar.DAY_OF_MONTH));
+        date = TrainingProgram.formatDate(Calendar.getInstance());
         Intent intent = getIntent();
         trainingProgram = (TrainingProgram) intent.getSerializableExtra("trainingProgram");
         final int day = trainingProgram.countTodayInCircle();
         DBOpenHelper = new DBOpenHelper(this);
-        trainingToday = DBOpenHelper.inputTrainingDay(trainingProgram.getId(),
-                trainingProgram.getTrainingDay(day - 1).getTitle(), day);
+        //trainingToday用于记录今日训练的详情，内容将更改
+        //trainingProgram中当天的训练日中将添加上次训练的记录，内容不更改
+        trainingToday = DBOpenHelper.inputTrainingDay(trainingProgram, day);
 
         //给listView添加headerView，用于显示训练的基本信息
         trainingList = (ListView) findViewById(R.id.list_tt);
@@ -116,7 +114,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
         });
 
         //绑定配适器
-        ttAdapter = new TrainingTodayAdapter(DBOpenHelper, trainingProgram, trainingToday, this, actionLayout, actionView);
+        ttAdapter = new TrainingTodayAdapter(DBOpenHelper, trainingProgram, trainingToday, day, this, actionLayout, actionView);
         trainingList.setAdapter(ttAdapter);
 
         //设置底部操作栏
@@ -148,7 +146,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
                                 have = true;
                                 break out;}}}
                     if (have){//判断是否有记录
-                        DBOpenHelper.saveTrainingRecord(date, trainingProgram, trainingToday);
+                        DBOpenHelper.saveTrainingRecord(date, trainingProgram.getId(), trainingProgram.getName(), trainingToday);
                         DBOpenHelper.updateRecordInProgram(trainingProgram.getId(),day,trainingToday);
                     }
                     int item = ttAdapter.getWritingItem();
