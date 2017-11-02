@@ -71,10 +71,7 @@ public class MainActivity extends AppCompatActivity {
         if (tpdbOpenHelper == null) {
             tpdbOpenHelper = new TPDBOpenHelper(this);
         }
-        Calendar today = Calendar.getInstance();
-        date = Integer.toString(today.get(Calendar.YEAR))
-                + Integer.toString(today.get(Calendar.MONTH) + 1)
-                + Integer.toString(today.get(Calendar.DAY_OF_MONTH));
+        date = TrainingProgram.formatDate(Calendar.getInstance());
         tpList = tpdbOpenHelper.inputTrainingProgramList();
         logList = tpdbOpenHelper.inputTrainingLog(date);
         layoutTT.removeAllViews();

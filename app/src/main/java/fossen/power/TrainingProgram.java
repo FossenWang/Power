@@ -88,13 +88,36 @@ public class TrainingProgram implements Serializable {
         month = d.get(Calendar.MONTH)+1;
         day = d.get(Calendar.DAY_OF_MONTH);
     }
-    public void setDate(String date){
+    public void setDate(String date) {
         //参数date格式应为yyyymmdd,如20170101,parseInt可以识别开头的0
-        year = Integer.parseInt(date.substring(0,4));
-        month = Integer.parseInt(date.substring(4,6));
-        day = Integer.parseInt(date.substring(6,8));
+        if (date.length() == 8) {
+            year = Integer.parseInt(date.substring(0, 4));
+            month = Integer.parseInt(date.substring(4, 6));
+            day = Integer.parseInt(date.substring(6, 8));
+        }else if (date.length()==7){
+            year = Integer.parseInt(date.substring(0, 4));
+            month = Integer.parseInt(date.substring(4, 6));
+            day = Integer.parseInt(date.substring(6, 7));
+        }
     }
     public String getDate(){
+        String m,d;
+        if(month<10){
+            m = "0"+month;
+        }else{
+            m = Integer.toString(month);
+        }
+        if (day<10){
+            d = "0"+day;
+        }else{
+            d = Integer.toString(day);
+        }
+        return Integer.toString(year)+m+d;
+    }
+    public static String formatDate(Calendar date){
+        int year = date.get(Calendar.YEAR);
+        int month = date.get(Calendar.MONTH)+1;
+        int day = date.get(Calendar.DAY_OF_MONTH);
         String m,d;
         if(month<10){
             m = "0"+month;

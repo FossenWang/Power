@@ -52,10 +52,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
         ComponentCreator.createBackToolbar(this,R.id.toolbar_tt);
 
         //加载训练日数据
-        Calendar today = Calendar.getInstance();
-        date = Integer.toString(today.get(Calendar.YEAR))
-                + Integer.toString(today.get(Calendar.MONTH) + 1)
-                + Integer.toString(today.get(Calendar.DAY_OF_MONTH));
+        date = TrainingProgram.formatDate(Calendar.getInstance());
         Intent intent = getIntent();
         trainingProgram = (TrainingProgram) intent.getSerializableExtra("trainingProgram");
         int day = trainingProgram.countTodayInCircle();
