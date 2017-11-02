@@ -49,11 +49,27 @@ public class Sets implements Serializable {
     }
     //按格式输出有效组的重量与次数，参数为重量单位
     public String getAllSetsToFormat(String unit){
-        String formatSets = "";
+        String formatSets = "-";
         int i = 0;
+        double lastLoad = 0.0;
         if (unit.equals("kg")){    //以kg为单位输出
             for (SingleSet set : setList) {
-                if(set.getReps() != 0) {
+                if(set.getReps()!=0 || set.getLoad()!=0.0) {
+                    if (set.getLoad()==lastLoad){
+                        formatSets += set.getReps()+"-";
+                    }else if (set.getLoad() == set.getLoad().intValue()) {//判断重量是否为整数，是则输出整数，否则保留一位小数输出
+                        formatSets = formatSets.substring(0,formatSets.length()-1);
+                        formatSets += "\n" + Math.round(set.getLoad()) + "kg  " + set.getReps()+"-";
+                        lastLoad = set.getLoad();
+                    }else {
+                        formatSets = formatSets.substring(0,formatSets.length()-1);
+                        formatSets += "\n" + Math.round(set.getLoad() * 10) / 10.0 + "kg  " + set.getReps()+"-";
+                        lastLoad = set.getLoad();
+                    }
+                }
+            }
+            /*for (SingleSet set : setList) {
+                if(set.getReps()!=0 || set.getLoad()!=0.0) {
                     i++;//判断重量是否为整数，是则输出整数，否则保留一位小数输出
                     if (set.getLoad() == set.getLoad().intValue()) {
                         formatSets += "第" + i + "组  " + Math.round(set.getLoad()) + " kg × " + set.getReps() + "次\n";
@@ -61,18 +77,25 @@ public class Sets implements Serializable {
                         formatSets += "第" + i + "组  " + Math.round(set.getLoad() * 10) / 10.0 + " kg × " + set.getReps() + "次\n";
                     }
                 }
-            }
+            }*/
         }else {    //以lb为单位输出
             for (SingleSet set : setList) {
-                if (set.getReps() != 0) {
-                    formatSets += "第" + (++i) + "组  " + set.getLoadToPound() + " lb × " + set.getReps() + "次\n";
+                if (set.getReps()!=0 || set.getLoad()!=0.0) {
+                    if (set.getLoad()==lastLoad) {
+                        formatSets += set.getReps() + "-";
+                    }else {
+                        formatSets = formatSets.substring(0,formatSets.length()-1);
+                        formatSets += "\n" + set.getLoadToPound() + " lb  " + set.getReps()+"-";
+                        lastLoad = set.getLoad();
+                    }
+                    //formatSets += "第" + (++i) + "组  " + set.getLoadToPound() + " lb × " + set.getReps() + "次\n";
                 }
             }
         }
-        if (formatSets.isEmpty()){
+        if (formatSets.equals("-")){
             formatSets += "暂无 ";
         }
-        return formatSets.substring(0,formatSets.length()-1);
+        return formatSets.substring(1,formatSets.length()-1);
     }
     public void clearSets(){
         setList.clear();

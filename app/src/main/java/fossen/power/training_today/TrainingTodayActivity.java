@@ -1,5 +1,7 @@
 package fossen.power.training_today;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +44,8 @@ public class TrainingTodayActivity extends AppCompatActivity {
     private ImageButton buttonPrevious;
     private ImageButton buttonNext;
     private Button buttonDone;
+    private AlertDialog dialog_finish1;
+    private AlertDialog dialog_finish2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,15 +125,11 @@ public class TrainingTodayActivity extends AppCompatActivity {
         if (trainingToday.isRestDay()){
             startTraining.setText("今日休息");
         }else {
-            setStartTrainingText();
+            startTraining.setText("开始训练");
             startTraining.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (ttAdapter.getRecordingSets() < 0) {
-                        ttAdapter.setWritingItem(0);
-                    } else {
-                        ttAdapter.setWritingItem(ttAdapter.getRecordingSets());
-                    }
+                    ttAdapter.setWritingItem(0);
                     actionLayout.removeAllViews();
                     actionLayout.addView(actionView);
                     trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
@@ -146,15 +146,42 @@ public class TrainingTodayActivity extends AppCompatActivity {
                                 have = true;
                                 break out;}}}
                     if (have){//判断是否有记录
-                        DBOpenHelper.saveTrainingRecord(date, trainingProgram.getId(), trainingProgram.getName(), trainingToday);
-                        DBOpenHelper.updateRecordInProgram(trainingProgram.getId(),day,trainingToday);
+                        if (dialog_finish1==null){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(TrainingTodayActivity.this);
+                            builder.setTitle("确定结束训练并保存？")
+                                    .setPositiveButton("保存", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            DBOpenHelper.saveTrainingRecord(date, trainingProgram.getId(), trainingProgram.getName(), trainingToday);
+                                            DBOpenHelper.updateRecordInProgram(trainingProgram.getId(),day,trainingToday);
+                                            TrainingTodayActivity.this.finish();
+                                        }})
+                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }});
+                            dialog_finish1 = builder.create();
+                        }
+                        dialog_finish1.show();
+                    }else {
+                        if (dialog_finish2==null){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(TrainingTodayActivity.this);
+                            builder.setTitle("本次训练还没有记录，确定要结束训练吗？")
+                                    .setPositiveButton("结束", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            TrainingTodayActivity.this.finish();
+                                        }})
+                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }});
+                            dialog_finish2 = builder.create();
+                        }
+                        dialog_finish2.show();
                     }
-                    int item = ttAdapter.getWritingItem();
-                    ttAdapter.setWritingItem(-1);
-                    actionLayout.removeAllViews();
-                    setStartTrainingText();
-                    actionLayout.addView(startTraining);
-                    trainingList.smoothScrollToPosition(item + 2);
                 }
             });
             buttonPrevious.setOnClickListener(new View.OnClickListener() {
@@ -184,26 +211,5 @@ public class TrainingTodayActivity extends AppCompatActivity {
     protected void onDestroy(){
         super.onDestroy();
         DBOpenHelper.close();
-    }
-
-    private void setStartTrainingText(){
-        int flag = ttAdapter.getRecordingSets();
-        if(flag == 0) {
-            out: for (int i = 0; i < trainingToday.numberOfSets(); i++) {
-                for(int j = 0; j < trainingToday.getSets(i).numberOfSingleSets(); j++) {
-                    if (trainingToday.getSets(i).getSet(j).getReps() != 0) {
-                        flag++;
-                        break out;}}}}
-
-        switch (flag){
-            case 0 :
-                startTraining.setText("开始训练");
-                break;
-            case -1 :
-                startTraining.setText("已完成");
-                break;
-            default:
-                startTraining.setText("继续训练");
-        }
     }
 }

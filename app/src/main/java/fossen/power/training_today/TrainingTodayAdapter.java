@@ -36,7 +36,6 @@ public class TrainingTodayAdapter extends BaseAdapter {
     private View actionView;
 
     private int writingItem = -1;//-1表示无编辑中的组集，>-1时表示启用修改模式的组集序号,
-    private int recordingSets = 0;//表示第一个未记录的组集
 
     public TrainingTodayAdapter(DBOpenHelper DBOpenHelper,
                                 TrainingProgram trainingProgram,
@@ -53,29 +52,14 @@ public class TrainingTodayAdapter extends BaseAdapter {
         this.mContext = mContext;
         this.actionLayout = actionLayout;
         this.actionView = actionView;
-        recordingSets = setRecordingSets();
     }
 
     public void setWritingItem(int position){
         writingItem = position;
-        recordingSets = setRecordingSets();//每次切换在编辑的组集时都要重新计算未完成组
         notifyDataSetChanged();
     }
     public int getWritingItem(){
         return writingItem;
-    }
-    public int getRecordingSets(){
-        return recordingSets;
-    }
-    public int setRecordingSets() {
-        for(int i = 0; i < trainingDay.numberOfSets(); i++){
-            for(int j = 0; j < trainingDay.getSets(i).numberOfSingleSets(); j++){
-                if(trainingDay.getSets(i).getSet(j).getReps() == 0){
-                    return i;
-                }
-            }
-        }
-        return -1;//第一个有空SingleSet的Sets记为recordingSets，没有则是-1，表示全部完成
     }
 
     @Override
@@ -144,13 +128,14 @@ public class TrainingTodayAdapter extends BaseAdapter {
             holder.layout_sets.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (writingItem == -1) {
+                        actionLayout.removeAllViews();
+                        actionLayout.addView(actionView);
+                    }
                     setWritingItem(pos);
-                    actionLayout.removeAllViews();
-                    actionLayout.addView(actionView);
                 }
             });
         }
-
 
         //单击下箭头弹出菜单，选择替换动作
         holder.arrow.setOnClickListener(new View.OnClickListener() {

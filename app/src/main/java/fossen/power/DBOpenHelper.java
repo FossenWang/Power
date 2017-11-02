@@ -163,7 +163,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                         if(sets.getSet(j).getReps() != 0) {
                             record += sets.getSet(j).getLoad() +"×"+ sets.getSet(j).getReps() + ",";
                         }
-                    }record = record.substring(0, record.length() - 1);
+                    }
                     String[] values = {
                             record,
                             Integer.toString(id),
@@ -329,9 +329,10 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             sets.setStructure(cursor.getString(cursor.getColumnIndex("structure")));
             String[] detail = cursor.getString(cursor.getColumnIndex("record")).split(",");
             for (String str : detail){
-                double load = Double.parseDouble(str.split("×")[0]);
-                int reps = Integer.parseInt(str.split("×")[1]);
-                sets.addSet(new SingleSet(load, reps));
+                String[] strings = str.split("×");
+                if (strings.length==2) {
+                    sets.addSet(new SingleSet(Double.parseDouble(strings[0]), Integer.parseInt(strings[1])));
+                }
             }
             record.getTrainingDay(0).addSets(sets);
         }
