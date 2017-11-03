@@ -107,31 +107,13 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layout_tt"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingStart="16dp"
-                    android:paddingTop="16dp"
-                    android:text="@string/title_training_today"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-                <LinearLayout
-                    android:id="@+id/layout_tt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:divider="@drawable/divider_1dp"
-                    android:orientation="vertical"
-                    android:showDividers="beginning|middle">
-
-                </LinearLayout>
+                android:layout_height="match_parent"
+                android:background="?android:attr/selectableItemBackground"
+                android:divider="@drawable/divider_1dp"
+                android:orientation="vertical"
+                android:showDividers="beginning|middle">
 
             </LinearLayout>
 

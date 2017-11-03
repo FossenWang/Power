@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -27,7 +29,9 @@ public class TrainingTodayActivity extends AppCompatActivity {
     private TrainingDay trainingToday;
     private TrainingTodayAdapter ttAdapter;
     private String date;
+    private int today;
 
+    private Toolbar topBar;
     private ListView trainingList;
     private View header;
     private View header2;
@@ -46,6 +50,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
     private Button buttonDone;
     private AlertDialog dialog_finish1;
     private AlertDialog dialog_finish2;
+    private AlertDialog dialog_quit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +58,23 @@ public class TrainingTodayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_training_today);
 
         //设置toolbar和返回键
-        ComponentCreator.createBackToolbar(this,R.id.toolbar_tt);
+        topBar = ComponentCreator.createBackToolbar(this,R.id.toolbar_tt);
+        topBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openQuitDialog();
+            }
+        });
 
         //加载训练日数据
         date = TrainingProgram.formatDate(Calendar.getInstance());
         Intent intent = getIntent();
         trainingProgram = (TrainingProgram) intent.getSerializableExtra("trainingProgram");
-        final int day = trainingProgram.countTodayInCircle();
+        today = trainingProgram.countTodayInCircle();
         DBOpenHelper = new DBOpenHelper(this);
         //trainingToday用于记录今日训练的详情，内容将更改
         //trainingProgram中当天的训练日中将添加上次训练的记录，内容不更改
-        trainingToday = DBOpenHelper.inputTrainingDay(trainingProgram, day);
+        trainingToday = DBOpenHelper.inputTrainingDay(trainingProgram, today);
 
         //给listView添加headerView，用于显示训练的基本信息
         trainingList = (ListView) findViewById(R.id.list_tt);
@@ -118,7 +129,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
         });
 
         //绑定配适器
-        ttAdapter = new TrainingTodayAdapter(DBOpenHelper, trainingProgram, trainingToday, day, this, actionLayout, actionView);
+        ttAdapter = new TrainingTodayAdapter(DBOpenHelper, trainingProgram, trainingToday, today, this, actionLayout, actionView);
         trainingList.setAdapter(ttAdapter);
 
         //设置底部操作栏
@@ -146,41 +157,9 @@ public class TrainingTodayActivity extends AppCompatActivity {
                                 have = true;
                                 break out;}}}
                     if (have){//判断是否有记录
-                        if (dialog_finish1==null){
-                            AlertDialog.Builder builder = new AlertDialog.Builder(TrainingTodayActivity.this);
-                            builder.setTitle("确定结束训练并保存？")
-                                    .setPositiveButton("保存", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            DBOpenHelper.saveTrainingRecord(date, trainingProgram.getId(), trainingProgram.getName(), trainingToday);
-                                            DBOpenHelper.updateRecordInProgram(trainingProgram.getId(),day,trainingToday);
-                                            TrainingTodayActivity.this.finish();
-                                        }})
-                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
-                                        }});
-                            dialog_finish1 = builder.create();
-                        }
-                        dialog_finish1.show();
+                        openFinish1Dialog();
                     }else {
-                        if (dialog_finish2==null){
-                            AlertDialog.Builder builder = new AlertDialog.Builder(TrainingTodayActivity.this);
-                            builder.setTitle("本次训练还没有记录，确定要结束训练吗？")
-                                    .setPositiveButton("结束", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            TrainingTodayActivity.this.finish();
-                                        }})
-                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
-                                        }});
-                            dialog_finish2 = builder.create();
-                        }
-                        dialog_finish2.show();
+                        openFinish2Dialog();
                     }
                 }
             });
@@ -205,6 +184,73 @@ public class TrainingTodayActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    public void openFinish1Dialog(){
+        if (dialog_finish1==null){
+            AlertDialog.Builder builder = new AlertDialog.Builder(TrainingTodayActivity.this);
+            builder.setTitle("确定结束训练并保存？")
+                    .setPositiveButton("保存", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            DBOpenHelper.saveTrainingRecord(date, trainingProgram.getId(), trainingProgram.getName(), trainingToday);
+                            DBOpenHelper.updateRecordInProgram(trainingProgram.getId(),today,trainingToday);
+                            TrainingTodayActivity.this.finish();
+                        }})
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }});
+            dialog_finish1 = builder.create();
+        }
+        dialog_finish1.show();
+    }
+
+    public void openFinish2Dialog(){
+        if (dialog_finish2==null){
+            AlertDialog.Builder builder = new AlertDialog.Builder(TrainingTodayActivity.this);
+            builder.setTitle("本次训练还没有记录，确定要结束训练吗？")
+                    .setPositiveButton("结束", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            TrainingTodayActivity.this.finish();
+                        }})
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }});
+            dialog_finish2 = builder.create();
+        }
+        dialog_finish2.show();
+    }
+
+    public void openQuitDialog(){
+        if (dialog_quit==null){
+            AlertDialog.Builder builder = new AlertDialog.Builder(TrainingTodayActivity.this);
+            builder.setTitle("本次训练未保存，确定要结束吗？")
+                    .setPositiveButton("结束", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            TrainingTodayActivity.this.finish();
+                        }})
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }});
+            dialog_quit = builder.create();
+        }
+        dialog_quit.show();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            openQuitDialog();
+        }
+        return false;
     }
 
     @Override

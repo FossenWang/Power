@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -162,6 +163,14 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         tpmAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            dialog_cancel.show();
+        }
+        return false;
     }
 
     @Override

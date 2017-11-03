@@ -75,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
         tpList = DBOpenHelper.inputTrainingProgramList();
         logList = DBOpenHelper.inputTrainingLog(date);
         layoutTT.removeAllViews();
-        boolean training = false;
+        boolean haveTraining = false;
+        boolean haveRecord = false;
         out : for(int i = 0; i < tpList.size(); i++){
             if(tpList.get(i).getStart()>0){
                 for (TrainingProgram log : logList){
@@ -84,18 +85,26 @@ public class MainActivity extends AppCompatActivity {
                     }//判断训练方案是否有今日的记录，有就跳过
                 }
                 addTrainingItem(tpList.get(i));
-                training = true;
+                haveTraining = true;
             }
         }
+        if(haveTraining){addText(0,"今日训练");}
+        int pos = layoutTT.getChildCount();
         for (TrainingProgram log : logList){
             addRecordItem(log);
-            training = true;
+            haveRecord = true;
         }
-        if(!training){
-            addTrainingItem();
-        }
+        if (haveRecord){addText(pos, "今日完成的训练");}
+        if(!haveTraining && !haveRecord){addTrainingItem();}
     }
 
+    //在item间添加文字“今日训练”
+    protected void addText(int index, String string){
+        View view = getLayoutInflater().inflate(R.layout.item_training_today_text, null);
+        layoutTT.addView(view, index);
+        TextView text = (TextView) view.findViewById(R.id.text_itt_text);
+        text.setText(string);
+    }
     //动态添加今日训练的项目
     protected void addTrainingItem(TrainingProgram trainingProgram){
         View trainingItem = getLayoutInflater().inflate(R.layout.item_training_today, null);
