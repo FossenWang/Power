@@ -30,6 +30,16 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
     private TextView text_count;
     private ImageView button_add;
 
+    private final String DAY_INDEX = "dayIndex";
+    private final String TRAINING_DAY = "trainingDay";
+    private final String SETS = "sets";
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(TRAINING_DAY, trainingDay);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,8 +48,12 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
         //加载训练方案
         result = getIntent();
         setResult(RESULT_CANCELED, result);
-        dayIndex = result.getIntExtra("dayIndex", 0);
-        trainingDay = (TrainingDay) result.getSerializableExtra("trainingDay");
+        dayIndex = result.getIntExtra(DAY_INDEX, 0);
+        if(savedInstanceState==null) {
+            trainingDay = (TrainingDay) result.getSerializableExtra(TRAINING_DAY);
+        }else {
+            trainingDay = (TrainingDay) savedInstanceState.getSerializable(TRAINING_DAY);
+        }
 
         // 给listView添加headerView，显示训练日的基本信息
         list_tdm = (ListView) findViewById(R.id.list_tdm);
@@ -96,7 +110,7 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
                                         + trainingDay.numberOfSingleSets() + "组");
                             }
                             Intent intent = new Intent(TrainingDayModifyActivity.this, ChooseExerciseActivity.class);
-                            intent.putExtra("sets", newSets);
+                            intent.putExtra(SETS, newSets);
                             TrainingDayModifyActivity.this.startActivityForResult(intent, trainingDay.numberOfSets() - 1);
                         }
                         return true;
@@ -111,8 +125,8 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 result = new Intent();
-                result.putExtra("dayIndex", dayIndex);
-                result.putExtra("trainingDay", trainingDay);
+                result.putExtra(DAY_INDEX, dayIndex);
+                result.putExtra(TRAINING_DAY, trainingDay);
                 setResult(RESULT_OK, result);
                 TrainingDayModifyActivity.this.finish();
             }
@@ -138,7 +152,7 @@ public class TrainingDayModifyActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch (resultCode){
             case RESULT_OK :
-                Sets sets = (Sets) data.getSerializableExtra("sets");
+                Sets sets = (Sets) data.getSerializableExtra(SETS);
                 trainingDay.replaceSets(requestCode, sets);
                 break;
             case RESULT_CANCELED : default:

@@ -25,6 +25,20 @@ public class ChooseExerciseActivity extends AppCompatActivity {
     private ArrayList<String> checkedExercises;
     private ArrayList<ArrayList<Exercise>> sortedExercises;
 
+    private final String CHECKED_EXERCISES = "checkedExercises";
+    private final String SETS = "sets";
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        String[] names = new String[checkedExercises.size()];
+        for(int i = 0; i<checkedExercises.size(); i++){
+            names[i] = checkedExercises.get(i);
+        }
+        sets.setExerciseList(names);
+        outState.putSerializable(SETS, sets);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,15 +50,17 @@ public class ChooseExerciseActivity extends AppCompatActivity {
         //准备数据
         result = getIntent();
         setResult(RESULT_CANCELED, result);
-        sets = (Sets) result.getSerializableExtra("sets");
+        if (savedInstanceState==null) {
+            sets = (Sets) result.getSerializableExtra(SETS);
+        }else {
+            sets = (Sets) savedInstanceState.getSerializable(SETS);
+        }
         dbOpenHelper = new DBOpenHelper(this);
         sortedExercises = dbOpenHelper.inputExercises(sets.getExerciseType());
         checkedExercises = new ArrayList<>();
-        for(Exercise exercise: sets.getExerciseList()){
+        for (Exercise exercise : sets.getExerciseList()) {
             checkedExercises.add(exercise.getName());
-            for(int i = 0; i<sortedExercises.size(); i++){
-                if(exercise.getSort().equals(sortedExercises.get(i))){
-                    explist_ce.expandGroup(i);break;}}}
+        }
 
         //绑定配适器
         ChooseExerciseAdapter ceAdapter = new ChooseExerciseAdapter(sortedExercises, checkedExercises, this);
@@ -60,7 +76,7 @@ public class ChooseExerciseActivity extends AppCompatActivity {
                     names[i] = checkedExercises.get(i);
                 }
                 sets.setExerciseList(names);
-                result.putExtra("sets", sets);
+                result.putExtra(SETS, sets);
                 setResult(RESULT_OK, result);
                 ChooseExerciseActivity.this.finish();
             }
@@ -73,6 +89,16 @@ public class ChooseExerciseActivity extends AppCompatActivity {
                 ChooseExerciseActivity.this.finish();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        for (Exercise exercise : sets.getExerciseList()) {
+            for (int i = 0; i < sortedExercises.size(); i++) {
+                if (exercise.getSort().equals(sortedExercises.get(i).get(0).getSort())) {
+                    explist_ce.expandGroup(i);
+                    break;}}}
     }
 
     @Override

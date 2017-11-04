@@ -38,6 +38,15 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
     private AlertDialog dialog_cancel;
     private NumberPicker picker_goal;
 
+    private final String TP = "tp";
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(TP, tp);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +56,12 @@ public class TrainingProgramModifyActivity extends AppCompatActivity {
         Intent intent = getIntent();
         id = intent.getIntExtra("id",0);
         DBOpenHelper = new DBOpenHelper(this);
-        tp = DBOpenHelper.inputTrainingProgram(id);
+        if(savedInstanceState==null) {
+            tp = DBOpenHelper.inputTrainingProgram(id);
+        }else {
+            tp = (TrainingProgram) savedInstanceState.getSerializable(TP);
+        }
+
 
         // 给listView添加headerView，用于显示训练方案的基本信息
         list_tpm = (ListView) findViewById(R.id.list_tpm);

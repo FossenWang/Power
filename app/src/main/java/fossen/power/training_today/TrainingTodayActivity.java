@@ -52,6 +52,22 @@ public class TrainingTodayActivity extends AppCompatActivity {
     private AlertDialog dialog_finish2;
     private AlertDialog dialog_quit;
 
+    private final String TRAINING_PROGRAM = "trainingProgram";
+    private final String TRAINING_TODAY = "trainingToday";
+    private final String DATE = "date";
+    private final String TODAY = "today";
+    private final String WRITING_ITEM = "writingItem";
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(TRAINING_PROGRAM, trainingProgram);
+        outState.putSerializable(TRAINING_TODAY, trainingToday);
+        outState.putString(DATE,date);
+        outState.putInt(TODAY, today);
+        outState.putInt(WRITING_ITEM, ttAdapter.getWritingItem());
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,19 +78,30 @@ public class TrainingTodayActivity extends AppCompatActivity {
         topBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openQuitDialog();
+                if (ttAdapter.getWritingItem()>-1) {
+                    openQuitDialog();
+                }else {
+                    finish();
+                }
             }
         });
 
         //加载训练日数据
-        date = TrainingProgram.formatDate(Calendar.getInstance());
-        Intent intent = getIntent();
-        trainingProgram = (TrainingProgram) intent.getSerializableExtra("trainingProgram");
-        today = trainingProgram.countTodayInCircle();
         DBOpenHelper = new DBOpenHelper(this);
-        //trainingToday用于记录今日训练的详情，内容将更改
-        //trainingProgram中当天的训练日中将添加上次训练的记录，内容不更改
-        trainingToday = DBOpenHelper.inputTrainingDay(trainingProgram, today);
+        if(savedInstanceState==null) {
+            date = TrainingProgram.formatDate(Calendar.getInstance());
+            Intent intent = getIntent();
+            trainingProgram = (TrainingProgram) intent.getSerializableExtra(TRAINING_PROGRAM);
+            today = trainingProgram.countTodayInCircle();
+            //trainingToday用于记录今日训练的详情，内容将更改
+            //trainingProgram中当天的训练日中将添加上次训练的记录，内容不更改
+            trainingToday = DBOpenHelper.inputTrainingDay(trainingProgram, today);
+        }else {
+            date = savedInstanceState.getString(DATE);
+            trainingProgram = (TrainingProgram) savedInstanceState.getSerializable(TRAINING_PROGRAM);
+            today = savedInstanceState.getInt(TODAY);
+            trainingToday = (TrainingDay) savedInstanceState.getSerializable(TRAINING_TODAY);
+        }
 
         //给listView添加headerView，用于显示训练的基本信息
         trainingList = (ListView) findViewById(R.id.list_tt);
@@ -146,6 +173,13 @@ public class TrainingTodayActivity extends AppCompatActivity {
                     trainingList.smoothScrollToPosition(ttAdapter.getWritingItem() + 2);
                 }
             });
+            if (savedInstanceState!=null) {
+                if (savedInstanceState.getInt(WRITING_ITEM) > -1) {
+                    ttAdapter.setWritingItem(savedInstanceState.getInt(WRITING_ITEM));
+                    actionLayout.removeAllViews();
+                    actionLayout.addView(actionView);
+                }
+            }
             actionView.setClickable(true);//拦截点击事件，否则会点中后面的View
             buttonDone.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -184,6 +218,22 @@ public class TrainingTodayActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        DBOpenHelper.close();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if(keyCode == KeyEvent.KEYCODE_BACK && ttAdapter.getWritingItem()>-1){
+            openQuitDialog();
+        }else {
+            finish();
+        }
+        return false;
     }
 
     public void openFinish1Dialog(){
@@ -243,19 +293,5 @@ public class TrainingTodayActivity extends AppCompatActivity {
             dialog_quit = builder.create();
         }
         dialog_quit.show();
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event){
-        if(keyCode == KeyEvent.KEYCODE_BACK){
-            openQuitDialog();
-        }
-        return false;
-    }
-
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-        DBOpenHelper.close();
     }
 }
