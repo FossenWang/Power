@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -25,7 +26,6 @@ public class ChooseExerciseActivity extends AppCompatActivity {
     private ArrayList<String> checkedExercises;
     private ArrayList<ArrayList<Exercise>> sortedExercises;
 
-    private final String CHECKED_EXERCISES = "checkedExercises";
     private final String SETS = "sets";
 
     @Override
@@ -94,11 +94,21 @@ public class ChooseExerciseActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        for (Exercise exercise : sets.getExerciseList()) {
-            for (int i = 0; i < sortedExercises.size(); i++) {
-                if (exercise.getSort().equals(sortedExercises.get(i).get(0).getSort())) {
-                    explist_ce.expandGroup(i);
-                    break;}}}
+        for (String checkedExercise : checkedExercises){
+            boolean exist = false;
+            for (int i = 0; i<sortedExercises.size(); i++){
+                for (int j = 0; j<sortedExercises.get(i).size(); j++){
+                    if (checkedExercise.equals(sortedExercises.get(i).get(j).getName())){
+                        exist = true;
+                        explist_ce.expandGroup(i);
+                    }
+                }
+            }
+            if (!exist){
+                checkedExercises.remove(checkedExercise);
+                Toast.makeText(this, "动作库中没有该动作："+checkedExercise+"，已删除", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
