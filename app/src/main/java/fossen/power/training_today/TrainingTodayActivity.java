@@ -53,18 +53,14 @@ public class TrainingTodayActivity extends AppCompatActivity {
     private AlertDialog dialog_quit;
 
     private final String TRAINING_PROGRAM = "trainingProgram";
-    private final String TRAINING_TODAY = "trainingToday";
     private final String DATE = "date";
-    private final String TODAY = "today";
     private final String WRITING_ITEM = "writingItem";
 
     @Override
     protected void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
         outState.putSerializable(TRAINING_PROGRAM, trainingProgram);
-        outState.putSerializable(TRAINING_TODAY, trainingToday);
         outState.putString(DATE,date);
-        outState.putInt(TODAY, today);
         outState.putInt(WRITING_ITEM, ttAdapter.getWritingItem());
     }
 
@@ -92,16 +88,12 @@ public class TrainingTodayActivity extends AppCompatActivity {
             date = TrainingProgram.formatDate(Calendar.getInstance());
             Intent intent = getIntent();
             trainingProgram = (TrainingProgram) intent.getSerializableExtra(TRAINING_PROGRAM);
-            today = trainingProgram.countTodayInCircle();
-            //trainingToday用于记录今日训练的详情，内容将更改
-            //trainingProgram中当天的训练日中将添加上次训练的记录，内容不更改
-            trainingToday = DBOpenHelper.inputTrainingDay(trainingProgram, today);
         }else {
             date = savedInstanceState.getString(DATE);
             trainingProgram = (TrainingProgram) savedInstanceState.getSerializable(TRAINING_PROGRAM);
-            today = savedInstanceState.getInt(TODAY);
-            trainingToday = (TrainingDay) savedInstanceState.getSerializable(TRAINING_TODAY);
         }
+        today = trainingProgram.countTodayInCircle();
+        trainingToday = trainingProgram.getTrainingDay(today-1);
 
         //给listView添加headerView，用于显示训练的基本信息
         trainingList = (ListView) findViewById(R.id.list_tt);
@@ -156,7 +148,7 @@ public class TrainingTodayActivity extends AppCompatActivity {
         });
 
         //绑定配适器
-        ttAdapter = new TrainingTodayAdapter(DBOpenHelper, trainingProgram, trainingToday, today, this, actionLayout, actionView);
+        ttAdapter = new TrainingTodayAdapter(DBOpenHelper, trainingProgram.getId(), trainingToday, today, this, actionLayout, actionView);
         trainingList.setAdapter(ttAdapter);
 
         //设置底部操作栏
@@ -244,7 +236,6 @@ public class TrainingTodayActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             DBOpenHelper.saveTrainingRecord(date, trainingProgram.getId(), trainingProgram.getName(), trainingToday);
-                            DBOpenHelper.updateRecordInProgram(trainingProgram.getId(),today,trainingToday);
                             TrainingTodayActivity.this.finish();
                         }})
                     .setNegativeButton("取消", new DialogInterface.OnClickListener() {

@@ -13,11 +13,14 @@ public class Exercise implements Serializable {
     private String type = "";//动作类别：自重，器械，力量举等
     private int icon;//图标
     private String sort = "";//动作细分
+    private String record = "";//上次训练的记录
 
     public Exercise(){};
-    public Exercise(String name,String sort){
+    public Exercise(String name, String sort, String type, String record){
         this.name = name;
         this.sort = sort;
+        this.type = type;
+        this.record = record;
     }
     public Exercise(String name){
         this.name = name;
@@ -47,6 +50,12 @@ public class Exercise implements Serializable {
     }
     public String getType(){
         return type;
+    }
+    public void setRecord(String record) {
+        this.record = record;
+    }
+    public String getRecord() {
+        return record;
     }
     public void setIcon(int i){
         icon = i;

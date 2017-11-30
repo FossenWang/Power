@@ -28,7 +28,7 @@ import fossen.power.TrainingProgram;
 
 public class TrainingTodayAdapter extends BaseAdapter {
     private DBOpenHelper DBOpenHelper;
-    private TrainingProgram trainingProgram;
+    private int programId;
     private TrainingDay trainingDay;
     private int dayIndex;
     private Context mContext;
@@ -38,15 +38,15 @@ public class TrainingTodayAdapter extends BaseAdapter {
     private int writingItem = -1;//-1表示无编辑中的组集，>-1时表示启用修改模式的组集序号,
 
     public TrainingTodayAdapter(DBOpenHelper DBOpenHelper,
-                                TrainingProgram trainingProgram,
-                                TrainingDay trainingDay ,
+                                int programId,
+                                TrainingDay trainingDay,
                                 int day,
                                 Context mContext,
                                 ViewGroup actionLayout,
                                 View actionView
                                 ) {
         this.DBOpenHelper = DBOpenHelper;
-        this.trainingProgram = trainingProgram;
+        this.programId = programId;
         this.trainingDay = trainingDay;
         dayIndex = day-1;
         this.mContext = mContext;
@@ -87,7 +87,17 @@ public class TrainingTodayAdapter extends BaseAdapter {
         ViewHolder holder;
         final int pos = position;
         final Sets sets = trainingDay.getSets(position);
-        Sets lastTrainingSets = trainingProgram.getTrainingDay(dayIndex).getSets(pos);
+        Sets lastTrainingSets = new Sets();
+        lastTrainingSets.addSet(sets.numberOfSingleSets());
+        lastTrainingSets.setExerciseList(sets.getExerciseList());
+        String[] detail = lastTrainingSets.getExercise(0).getRecord().split(",");
+        for (int i = 0; i<detail.length && i<lastTrainingSets.numberOfSingleSets(); i++){
+            String[] strings = detail[i].split("×");
+            if (strings.length==2){
+                lastTrainingSets.getSet(i).setLoad(Double.parseDouble(strings[0]));
+                lastTrainingSets.getSet(i).setReps(Integer.parseInt(strings[1]));
+            }
+        }
 
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(
@@ -157,8 +167,7 @@ public class TrainingTodayAdapter extends BaseAdapter {
                         int i = item.getOrder();
                         if(i>0) {
                             sets.exchangeExercise(0, i);
-                            DBOpenHelper.updateExercise(trainingProgram.getId(),
-                                    dayIndex+1, pos + 1, sets);
+                            DBOpenHelper.updateExercise(programId, dayIndex+1, pos + 1, sets);
                             notifyDataSetChanged();
                             Toast.makeText(mContext, "你选择了："+item.getTitle(), Toast.LENGTH_SHORT).show();
                         }

@@ -103,14 +103,6 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                 sets.setRest(cursor.getInt(cursor.getColumnIndex("rest")));
                 sets.setRepmax(cursor.getString(cursor.getColumnIndex("reps")));
                 sets.setStructure(cursor.getString(cursor.getColumnIndex("structure")));
-                String[] detail = cursor.getString(cursor.getColumnIndex("record")).split(",");
-                for (int i = 0; i<detail.length && i<sets.numberOfSingleSets(); i++){
-                    String[] strings = detail[i].split("×");
-                    if (strings.length==2){
-                        sets.getSet(i).setLoad(Double.parseDouble(strings[0]));
-                        sets.getSet(i).setReps(Integer.parseInt(strings[1]));
-                    }
-                }
                 td.addSets(sets);
             }
             cursor.close();
@@ -121,59 +113,24 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     //从数据库导入某个方案的某个训练日的数据，该方法用于今日训练相关
     public TrainingDay inputTrainingDay(TrainingProgram trainingProgram, int day){
         SQLiteDatabase db = this.getReadableDatabase();
-        TrainingDay td;//导入的数据将分别存储于传入的TrainingProgram和新建的TrainingDay，两者数据不共享
-        Sets sets,lastSets;     //区别在于，前者保存上次训练的记录，而后者则不保存
+        TrainingDay td = trainingProgram.getTrainingDay(day-1);
+        Sets sets;     //区别在于，前者保存上次训练的记录，而后者则不保存
         Cursor cursor = db.rawQuery("SELECT * FROM programs WHERE id = ? AND day = ? ORDER BY number",
                 new String[]{Integer.toString(trainingProgram.getId()),Integer.toString(day)});
-        td = new TrainingDay(trainingProgram.getTrainingDay(day-1).getTitle());
         while (cursor.moveToNext()) {//有组集Sets记录则为训练日，无则为休息日
             sets = new Sets();
             sets.addSet(cursor.getInt(cursor.getColumnIndex("sets")));
             sets.setExerciseList(cursor.getString(cursor.getColumnIndex("exercise")).split(","));
+            for(Exercise exercise:sets.getExerciseList()){
+                getExerciseRecord(exercise);
+            }//获取该动作上次的训练记录
             sets.setRest(cursor.getInt(cursor.getColumnIndex("rest")));
             sets.setRepmax(cursor.getString(cursor.getColumnIndex("reps")));
             sets.setStructure(cursor.getString(cursor.getColumnIndex("structure")));
-            td.addSets(sets);//该训练日不导入上次训练的记录
-
-            lastSets = new Sets();
-            lastSets.addSet(sets.numberOfSingleSets());
-            String[] detail = cursor.getString(cursor.getColumnIndex("record")).split(",");
-            for (int i = 0; i<detail.length && i<sets.numberOfSingleSets(); i++){
-                String[] strings = detail[i].split("×");
-                if (strings.length==2){
-                    lastSets.getSet(i).setLoad(Double.parseDouble(strings[0]));
-                    lastSets.getSet(i).setReps(Integer.parseInt(strings[1]));
-                }
-            }//该训练日导入上次训练的记录
-            trainingProgram.getTrainingDay(day-1).addSets(lastSets);
+            td.addSets(sets);
         }
         cursor.close();
         return td;
-    }
-
-    //更新训练方案的某个训练日中储存的上次训练的记录
-    public void updateRecordInProgram(int id, int day, TrainingDay trainingDay){
-        SQLiteDatabase db = this.getWritableDatabase();
-        if(!trainingDay.isRestDay()){  //不保存休息日
-            for(int i = 0; i<trainingDay.numberOfSets(); i++) {
-                Sets sets = trainingDay.getSets(i);
-                if (!sets.getAllSetsToFormat("kg").equals("暂无")) {//有记录才保存
-                    String record = "";
-                    for(int j = 0; j < sets.numberOfSingleSets(); j++){
-                        if(sets.getSet(j).getReps() != 0) {
-                            record += sets.getSet(j).getLoad() +"×"+ sets.getSet(j).getReps() + ",";
-                        }
-                    }
-                    String[] values = {
-                            record,
-                            Integer.toString(id),
-                            Integer.toString(day),
-                            Integer.toString(i + 1)
-                    };
-                    db.execSQL("UPDATE programs SET record = ? WHERE id = ? AND day = ? AND number = ?", values);
-                }
-            }
-        }
     }
 
     //更新训练方案的使用状态
@@ -230,12 +187,6 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                         for (Exercise exercise : sets.getExerciseList()) {
                             names += (exercise.getName() + ",");
                         }names = names.substring(0, names.length() - 1);
-                        String record = "";
-                        for(int j = 0; j < sets.numberOfSingleSets(); j++){
-                            if(sets.getSet(j).getReps() != 0) {
-                                record += sets.getSet(j).getLoad() +"×"+ sets.getSet(j).getReps() + ",";
-                            }
-                        }
                         String[] values = {
                                 Integer.toString(id),
                                 Integer.toString(day),
@@ -245,9 +196,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                                 sets.getRepmax(),
                                 Integer.toString(sets.getRest()),
                                 sets.getStructure(),
-                                record
                         };
-                        db.execSQL("INSERT INTO programs(id,day,number,exercise,sets,reps,rest,structure,record) VALUES (?,?,?,?,?,?,?,?,?)", values);
+                        db.execSQL("INSERT INTO programs(id,day,number,exercise,sets,reps,rest,structure) VALUES (?,?,?,?,?,?,?,?)", values);
                     }
                 }
             }
@@ -290,7 +240,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     }
 
     //导入某日的训练日志目录
-    //训练记录保存在TrainingProgr的实例de内，有且只有一个TrainingDay实例
+    //训练记录保存在TrainingProgram的实例内，有且只有一个TrainingDay实例
     public ArrayList<TrainingProgram> inputTrainingLog(String date){
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<TrainingProgram> catalog = new ArrayList<>();
@@ -307,8 +257,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         return catalog;
     }
 
-    //读取某天某个方案的训练记录,该方法新建一个训练日，用于训练日志部分训练
-    //训练记录保存在TrainingProgram内，有且只有一个TrainingDay
+    //读取某日的训练日志目录中的一条训练记录,该方法新建一个训练日，用于训练日志部分
+    //训练记录保存在TrainingProgram内，有且只有一个TrainingDay实例
     public void inputTrainingRecord(TrainingProgram record){
         SQLiteDatabase db = this.getWritableDatabase();
         int programId = record.getId();
@@ -361,7 +311,9 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                         if(sets.getSet(j).getReps() != 0) {
                             record += sets.getSet(j).getLoad() +"×"+ sets.getSet(j).getReps() + ",";
                         }
-                    }
+                    }//训练记录同时保存在logs和exercises表单中
+                    sets.getExercise(0).setRecord(record);
+                    saveExerciseRecord(sets.getExercise(0));
                     String[] values = {
                             Integer.toString(id),
                             Integer.toString(i + 1),
@@ -415,7 +367,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             cursor = eldb.rawQuery("SELECT * FROM exercises WHERE type = ? AND sort = ? ORDER BY id", new String[]{type,sort});
             while (cursor.moveToNext()){
                 String name = cursor.getString(cursor.getColumnIndex("name"));
-                exercises.add(new Exercise(name, sort));
+                String record = cursor.getString(cursor.getColumnIndex("record"));
+                exercises.add(new Exercise(name, sort, type, record));
             }
             if(exercises.size()!=0){
                 sortedExercises.add(exercises);
@@ -423,5 +376,19 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             cursor.close();
         }
         return sortedExercises;
+    }
+
+    //从数据库中导入某个动作的数据
+    public void getExerciseRecord(Exercise exercise){
+        SQLiteDatabase eldb = this.getReadableDatabase();
+        Cursor cursor = eldb.rawQuery("SELECT record FROM exercises WHERE name = ?", new String[]{exercise.getName()});
+        while (cursor.moveToNext()) {
+            exercise.setRecord(cursor.getString(cursor.getColumnIndex("record")));
+        }
+    }
+    //保存该动作的训练记录
+    public void saveExerciseRecord(Exercise exercise){
+        SQLiteDatabase eldb = this.getReadableDatabase();
+        eldb.execSQL("UPDATE exercises SET record = ? WHERE name = ?", new String[]{exercise.getRecord(), exercise.getName()});
     }
 }
